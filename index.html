@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Lintas">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" href="manifest.json">
+    <title>Lintas — Travel QR & Border Pass Wallet</title>
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass {
+            background: rgba(30, 41, 59, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card-dark {
+            background-color: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .modal-card {
+            background-color: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+        .input-dark {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            border: 1px solid #334155 !important;
+            caret-color: #3b82f6;
+        }
+        .input-dark::placeholder {
+            color: #64748b !important;
+            opacity: 1;
+        }
+        .input-dark:focus {
+            border-color: #3b82f6 !important;
+            outline: none;
+        }
+        .upload-box {
+            background-color: #0f172a;
+            border: 2px dashed #334155;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            transition: transform 0.1s, opacity 0.2s;
+            cursor: pointer;
+        }
+        .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+        .btn-guest {
+            background-color: rgba(30, 41, 59, 0.9);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            transition: transform 0.1s, background-color 0.2s;
+            cursor: pointer;
+        }
+        .btn-guest:active { transform: scale(0.97); background-color: rgba(51, 65, 85, 0.9); }
+        .hide { display: none !important; }
+        .modal-overlay {
+            background: rgba(2, 6, 23, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        @keyframes popScale {
+            0% { opacity: 0; transform: scale(0.94); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-pop {
+            animation: popScale 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes slideFade {
+            0% { opacity: 0.35; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .gallery-slide-anim {
+            animation: slideFade 0.18s ease-out forwards;
+        }
+        .app-icon {
+            width: 108px;
+            height: 108px;
+            background: linear-gradient(145deg, #38bdf8 0%, #2563eb 55%, #1e3a8a 100%);
+            border-radius: 28px;
+            box-shadow: 0 18px 38px -8px rgba(37, 99, 235, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .app-icon::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -20%;
+            width: 140%;
+            height: 75%;
+            background: radial-gradient(circle, rgba(255,255,255,0.28) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .icon-svg {
+            width: 72px;
+            height: 72px;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.35));
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="flex-1 flex flex-col justify-between p-6 text-center">
+        <div class="flex-1 flex flex-col items-center justify-center">
+            <div class="app-icon">
+                <svg class="icon-svg" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="4" stroke-opacity="0.92"/>
+                    <ellipse cx="60" cy="60" rx="16" ry="34" fill="none" stroke="white" stroke-width="2.8" stroke-opacity="0.72"/>
+                    <line x1="26" y1="60" x2="94" y2="60" stroke="white" stroke-width="2.8" stroke-opacity="0.72"/>
+                    <path d="M30 76 C50 50, 72 42, 95 31" fill="none" stroke="#fde047" stroke-width="5.5" stroke-linecap="round"/>
+                    <path d="M83 28 L96 30 L90 42" fill="none" stroke="#fde047" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="30" cy="76" r="4.5" fill="#fde047"/>
+                </svg>
+            </div>
+            
+            <h1 class="text-5xl font-extrabold tracking-tight mb-2 text-white">Lintas</h1>
+            <p style="color: #cbd5e1;" class="text-lg font-medium mb-1">Breeze through borders.</p>
+            <p style="color: #64748b;" class="text-sm mb-8 max-w-xs">All your travel QR passes & receipts, ready offline in one place.</p>
+
+            <div class="w-full max-w-sm space-y-3">
+                <button id="googleSignInBtn" style="background-color: #ffffff; color: #0f172a;" class="w-full font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    <span>Sign in with Google</span>
+                </button>
+
+                <button id="guestSignInBtn" class="btn-guest w-full font-semibold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 text-sm">
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <span>Continue as Guest (Instant Offline Mode)</span>
+                </button>
+
+                <div class="pt-1 flex items-center justify-center gap-2">
+                    <button id="openBenefitsBtn" type="button" class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-400 hover:text-blue-300 py-1.5 px-3 rounded-full bg-blue-500/10 border border-blue-500/20">
+                        <span>Google vs. Guest</span>
+                    </button>
+                    <button id="openPrivacyBtnLogin" type="button" class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-white py-1.5 px-3 rounded-full bg-slate-800/80 border border-slate-700">
+                        <span>Privacy & PDPO</span>
+                    </button>
+                </div>
+
+                <div id="loginError" class="hide mt-4 text-red-400 text-sm bg-red-900/30 p-3 rounded-lg border border-red-500/50"></div>
+            </div>
+        </div>
+
+        <footer class="max-w-sm mx-auto pt-6 pb-2">
+            <p style="color: #64748b;" class="text-[11px] leading-relaxed">
+                For personal travel convenience only. Lintas is an independent utility not affiliated with any government or border agency. Passes are stored locally on your device—do not upload passports or national IDs.
+            </p>
+        </footer>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboardScreen" class="hide flex-1 flex flex-col h-screen overflow-hidden" style="position: relative; z-index: 10;">
+        <div class="glass px-4 py-4 flex items-center justify-between sticky top-0" style="z-index: 20;">
+            <div class="flex items-center gap-2.5">
+                <div style="background: linear-gradient(145deg, #38bdf8, #2563eb);" class="w-8 h-8 rounded-lg flex items-center justify-center shadow">
+                    <svg class="w-5 h-5" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="6"/>
+                        <path d="M30 76 C50 50, 72 42, 95 31" fill="none" stroke="#fde047" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M81 27 L96 30 L89 44" fill="none" stroke="#fde047" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight text-white block leading-none">Lintas</span>
+                    <span class="text-[10px] text-emerald-400 font-medium">● Offline Ready</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="userEmailDisplay" style="color: #cbd5e1;" class="text-xs font-medium max-w-[100px] truncate"></span>
+                <button id="openSettingsBtn" style="background-color: #1e293b; border: 1px solid #334155;" class="p-2 rounded-xl text-slate-300 hover:text-white" title="Account & Privacy Settings">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 pb-16 max-w-2xl w-full mx-auto flex flex-col justify-between">
+            <div>
+                <div id="guestBanner" class="hide mb-5 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3">
+                    <div class="text-left">
+                        <p class="text-xs font-bold text-amber-300">Guest Mode • Local Device</p>
+                        <p style="color: #cbd5e1;" class="text-xs mt-0.5">Link Gmail to keep your profile verified.</p>
+                    </div>
+                    <button id="upgradeGuestBtn" style="background-color: #ffffff; color: #0f172a;" class="shrink-0 text-xs font-bold px-3.5 py-2.5 rounded-xl shadow active:scale-95 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        <span>Link Google</span>
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center mb-6 mt-2">
+                    <h2 class="text-2xl font-bold text-white">My Trips</h2>
+                    <button id="addTripBtn" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3.5 py-1.5 rounded-xl text-sm font-bold active:opacity-80">+ New Trip</button>
+                </div>
+
+                <div id="emptyTripsState" class="text-center py-14 card-dark rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-2 text-white">No Trips Yet</h3>
+                    <p style="color: #94a3b8;" class="text-sm">Tap <strong>+ New Trip</strong> to organize your EES QR, MDAC, boarding passes, or hotel vouchers.</p>
+                </div>
+
+                <div id="tripsContainer" class="space-y-3"></div>
+            </div>
+
+            <div id="adBannerSlot" class="mt-8"></div>
+
+            <p style="color: #475569;" class="text-[11px] text-center leading-relaxed mt-6 px-4">
+                Independent travel utility • Not affiliated with any government agency • Files are stored locally on your device.
+            </p>
+        </div>
+    </div>
+
+    <!-- TRIP DETAIL SCREEN -->
+    <div id="tripDetailScreen" style="background-color: #0f172a; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
+        <div class="glass px-4 py-4 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 overflow-hidden">
+                <button id="backToTripsBtn" class="p-2 -ml-2 text-blue-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <h2 id="tripDetailTitle" class="text-xl font-bold text-white truncate">Trip Name</h2>
+            </div>
+            <button id="deleteTripBtn" class="text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30">Delete Trip</button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-4 pb-24 max-w-2xl w-full mx-auto">
+            <button id="addDocTopBtn" type="button" class="w-full btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
+                + Add QR Pass / Document
+            </button>
+
+            <div id="emptyDocsState" class="text-center py-14 card-dark rounded-2xl p-6">
+                <p style="color: #94a3b8;" class="text-sm mb-2">No passes added to this trip yet.</p>
+                <p style="color: #64748b;" class="text-xs">Upload EES QR, MDAC, ferry/flight passes, or booking receipts for instant offline access.</p>
+            </div>
+            <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN SWIPING GALLERY VIEWER -->
+    <div id="imageViewer" style="z-index: 9999;" class="hide fixed inset-0 bg-black flex flex-col select-none">
+        <div class="p-4 flex justify-between items-center bg-gradient-to-b from-black/95 via-black/75 to-transparent sticky top-0 w-full" style="z-index: 20;">
+            <button id="closeViewerBtn" class="p-2.5 text-white bg-gray-800/90 rounded-full active:scale-95">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="text-center px-3 overflow-hidden">
+                <h3 id="viewerTitle" class="text-white font-bold truncate text-base">Document</h3>
+                <p id="viewerCounter" style="color: #93c5fd;" class="text-xs font-semibold">1 of 1</p>
+            </div>
+            <button id="deleteDocBtn" class="text-red-400 text-xs font-bold px-3.5 py-2 bg-red-950/90 border border-red-500/40 rounded-full active:scale-95">Delete</button>
+        </div>
+
+        <div id="gallerySwipeArea" class="flex-1 relative flex items-center justify-center overflow-auto p-2">
+            <button id="prevDocBtn" type="button" aria-label="Previous pass" style="background: rgba(30, 41, 59, 0.8); z-index: 15;" class="hide absolute left-3 p-2.5 rounded-full text-white border border-white/15 shadow-lg active:scale-90">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            <img id="viewerImage" src="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+
+            <button id="nextDocBtn" type="button" aria-label="Next pass" style="background: rgba(30, 41, 59, 0.8); z-index: 15;" class="hide absolute right-3 p-2.5 rounded-full text-white border border-white/15 shadow-lg active:scale-90">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+
+        <div class="p-3.5 text-center bg-black/90 border-t border-white/10">
+            <div id="galleryDots" class="flex items-center justify-center gap-1.5 mb-2"></div>
+            <p id="viewerHint" style="color: #94a3b8;" class="text-xs">Swipe left/right to switch passes • Pinch to zoom</p>
+        </div>
+    </div>
+
+    <!-- ADD DOCUMENT MODAL -->
+    <div id="newDocModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4 overflow-y-auto">
+        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-5 shadow-2xl my-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-white">Add Travel Pass</h3>
+                <button id="closeDocModalBtn" style="color: #94a3b8;" class="text-sm font-medium hover:text-white p-1">Close</button>
+            </div>
+
+            <div class="mb-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-left">
+                <p class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                    <span>⚠️ QR Passes & Receipts Only</span>
+                </p>
+                <p style="color: #cbd5e1;" class="text-[11px] leading-relaxed mt-1">
+                    For your privacy & data protection (PDPO), please <strong>do NOT upload</strong> passport biodata pages, national IDs (IC), or bank cards.
+                </p>
+            </div>
+
+            <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">1. Pass Label</label>
+            <input type="text" id="docNameInput" placeholder="e.g., EES QR, MDAC, Boarding Pass" class="input-dark w-full rounded-xl px-4 py-3 mb-4 text-sm">
+            
+            <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">2. Select QR / Screenshot</label>
+            <div class="upload-box relative rounded-xl p-5 text-center mb-4">
+                <input type="file" id="docFileInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                <p class="text-sm font-semibold text-blue-400" id="fileStatusText">Tap to select photo or screenshot</p>
+                <p style="color: #64748b;" class="text-[11px] mt-1">Stored privately on your phone for offline scanning</p>
+            </div>
+
+            <label class="flex items-start gap-2.5 mb-5 cursor-pointer text-left">
+                <input type="checkbox" id="pdpoConfirmCheck" class="mt-0.5 w-4 h-4 rounded text-blue-600 focus:ring-0">
+                <span style="color: #cbd5e1;" class="text-xs leading-snug">
+                    I confirm this image is a travel QR/receipt and <strong>does not contain</strong> a passport biodata page or national ID.
+                </span>
+            </label>
+            
+            <button id="saveDocBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl disabled:opacity-50">Save Pass to Device</button>
+        </div>
+    </div>
+
+    <!-- NEW TRIP MODAL -->
+    <div id="newTripModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
+        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold text-white">Create New Trip</h3>
+                <button id="closeTripModalBtn" style="color: #94a3b8;" class="text-sm font-medium hover:text-white p-1">Close</button>
+            </div>
+            <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-2">Trip Destination / Name</label>
+            <input type="text" id="tripNameInput" placeholder="e.g., Miri Weekend, KK Trip" class="input-dark w-full rounded-xl px-4 py-3.5 mb-6 text-base">
+            <button id="saveTripBtn" class="w-full btn-primary font-bold py-3.5 rounded-xl">Create Trip</button>
+        </div>
+    </div>
+
+    <!-- GOOGLE VS GUEST POP-UP -->
+    <div id="benefitsModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
+        <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-5 shadow-2xl text-left">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-white">Google vs. Guest</h3>
+                <button id="closeBenefitsBtn" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="space-y-2.5 mb-5">
+                <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-blue-500/30">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-bold text-white">Google Sign-In</span>
+                        <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Best</span>
+                    </div>
+                    <ul style="color: #cbd5e1;" class="text-xs space-y-1.5">
+                        <li>✓ Verified traveler profile</li>
+                        <li>✓ Easy account recovery</li>
+                        <li>✓ Passes stay private on your phone</li>
+                    </ul>
+                </div>
+
+                <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-slate-700/70">
+                    <span class="text-sm font-bold text-slate-200 block mb-1">Guest Mode</span>
+                    <p style="color: #94a3b8;" class="text-xs">Instant offline access with no login needed. Passes are saved locally on this device.</p>
+                </div>
+            </div>
+
+            <button id="benefitsGoogleBtn" class="w-full btn-primary font-bold py-3 rounded-xl text-sm">Sign in with Google</button>
+        </div>
+    </div>
+
+    <!-- ACCOUNT, PRIVACY & DELETE DATA MODAL -->
+    <div id="settingsModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
+        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl text-left">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-white">Account & Privacy</h3>
+                <button id="closeSettingsBtn" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-slate-700/70 mb-4">
+                <p style="color: #94a3b8;" class="text-xs">Signed in as</p>
+                <p id="settingsUserLabel" class="text-sm font-bold text-white mt-0.5 truncate">Traveler</p>
+                <p class="text-[11px] text-emerald-400 mt-1">✓ Local-Only Storage Active (Zero Cloud Image Upload)</p>
+            </div>
+
+            <div class="space-y-2.5">
+                <button id="openPrivacyFromSettingsBtn" type="button" class="w-full btn-guest font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-between">
+                    <span>Read Privacy Policy & PDPO Notice</span>
+                    <span>→</span>
+                </button>
+
+                <button id="signOutSettingsBtn" type="button" class="w-full btn-guest font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-between">
+                    <span>Sign Out</span>
+                    <span>→</span>
+                </button>
+
+                <button id="deleteAccountBtn" type="button" class="w-full font-bold py-3 px-4 rounded-xl text-xs text-red-400 bg-red-950/50 border border-red-500/30 flex items-center justify-between">
+                    <span>Delete Account & Wipe All Local Data</span>
+                    <span>✕</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRIVACY POLICY & PDPO MODAL -->
+    <div id="privacyModal" style="z-index: 10000;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4">
+        <div class="modal-card animate-pop w-full max-w-md rounded-3xl p-6 shadow-2xl text-left max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between mb-3 shrink-0">
+                <h3 class="text-lg font-bold text-white">Privacy Policy & PDPO</h3>
+                <button id="closePrivacyBtn" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
+                <p><strong>1. Purpose & Independence:</strong> Lintas is an independent personal travel organizer designed to store non-sensitive QR codes (such as EES, MDAC, and boarding passes). Lintas is not affiliated with any government or immigration authority.</p>
+                <p><strong>2. Local Device Storage (PDPO Compliance):</strong> All uploaded images and trip folders are stored locally inside your device's browser storage (IndexedDB). Lintas does not upload, view, or store your uploaded images on external servers.</p>
+                <p><strong>3. Prohibited Documents:</strong> Users must not upload sensitive personal identification documents, including passport biodata pages, national identity cards (IC), or financial cards.</p>
+                <p><strong>4. Authentication & Advertising:</strong> Optional Google Sign-In uses Firebase Authentication solely to verify your session. The mobile app version may display non-intrusive banner advertisements via Google AdMob, which may use device advertising identifiers in accordance with Google's privacy policies.</p>
+                <p><strong>5. Data Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account & Privacy → Delete Account & Wipe All Local Data</em>.</p>
+            </div>
+            <button id="ackPrivacyBtn" class="w-full btn-primary font-bold py-3 rounded-xl text-sm mt-4 shrink-0">Understood</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Modules (Auth Only — Zero Cloud Image Storage) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, signInAnonymously, linkWithPopup, GoogleAuthProvider, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDiOHlvtLaEoB8JpBFZvQQREKpxg97xcuA",
+            authDomain: "lintas-26e22.firebaseapp.com",
+            projectId: "lintas-26e22",
+            storageBucket: "lintas-26e22.firebasestorage.app",
+            messagingSenderId: "685885154478",
+            appId: "1:685885154478:web:541e4f3a87fc439c40f93f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // --- LOCAL INDEXEDDB ENGINE (100% ON-DEVICE, OFFLINE-READY) ---
+        const DB_NAME = "LintasLocalWallet";
+        const DB_VERSION = 1;
+
+        function openLocalDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains("trips")) {
+                        const tripStore = db.createObjectStore("trips", { keyPath: "id" });
+                        tripStore.createIndex("userId", "userId", { unique: false });
+                    }
+                    if (!db.objectStoreNames.contains("documents")) {
+                        const docStore = db.createObjectStore("documents", { keyPath: "id" });
+                        docStore.createIndex("tripId", "tripId", { unique: false });
+                        docStore.createIndex("userId", "userId", { unique: false });
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function dbPut(storeName, item) {
+            const db = await openLocalDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, "readwrite");
+                tx.objectStore(storeName).put(item);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        async function dbGetByIndex(storeName, indexName, value) {
+            const db = await openLocalDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, "readonly");
+                const index = tx.objectStore(storeName).index(indexName);
+                const req = index.getAll(value);
+                req.onsuccess = () => resolve(req.result || []);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function dbDelete(storeName, id) {
+            const db = await openLocalDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, "readwrite");
+                tx.objectStore(storeName).delete(id);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        async function wipeAllUserLocalData(uid) {
+            const trips = await dbGetByIndex("trips", "userId", uid);
+            for (const t of trips) await dbDelete("trips", t.id);
+            const docs = await dbGetByIndex("documents", "userId", uid);
+            for (const d of docs) await dbDelete("documents", d.id);
+        }
+
+        // --- APP STATE & UI ---
+        let currentUser = null;
+        let currentTripId = null;
+        let currentTripDocs = [];
+        let currentDocIndex = 0;
+        let pendingImageData = null;
+
+        const screens = {
+            login: document.getElementById('loginScreen'),
+            dashboard: document.getElementById('dashboardScreen'),
+            tripDetail: document.getElementById('tripDetailScreen'),
+            viewer: document.getElementById('imageViewer')
+        };
+        const modals = {
+            newTrip: document.getElementById('newTripModal'),
+            newDoc: document.getElementById('newDocModal'),
+            benefits: document.getElementById('benefitsModal'),
+            settings: document.getElementById('settingsModal'),
+            privacy: document.getElementById('privacyModal')
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                const guestBanner = document.getElementById('guestBanner');
+                if (user.isAnonymous) {
+                    document.getElementById('userEmailDisplay').textContent = "Guest";
+                    document.getElementById('settingsUserLabel').textContent = "Guest (Local Device)";
+                    guestBanner.classList.remove('hide');
+                } else {
+                    const label = user.email ? user.email.split('@')[0] : "Traveler";
+                    document.getElementById('userEmailDisplay').textContent = label;
+                    document.getElementById('settingsUserLabel').textContent = user.email || "Google Account";
+                    guestBanner.classList.add('hide');
+                }
+                if (!currentTripId) showScreen('dashboard');
+                loadTrips();
+            } else {
+                currentUser = null;
+                currentTripId = null;
+                showScreen('login');
+            }
+        });
+
+        async function triggerGoogleSignIn() {
+            try {
+                modals.benefits.classList.add('hide');
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                document.getElementById('loginError').textContent = `Login Error: ${error.message}`;
+                document.getElementById('loginError').classList.remove('hide');
+            }
+        }
+
+        document.getElementById('googleSignInBtn').addEventListener('click', triggerGoogleSignIn);
+        document.getElementById('benefitsGoogleBtn').addEventListener('click', triggerGoogleSignIn);
+
+        document.getElementById('guestSignInBtn').addEventListener('click', async () => {
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                document.getElementById('loginError').textContent = `Guest Login Error: ${error.message}`;
+                document.getElementById('loginError').classList.remove('hide');
+            }
+        });
+
+        document.getElementById('upgradeGuestBtn').addEventListener('click', async () => {
+            if (!auth.currentUser) return;
+            try {
+                await linkWithPopup(auth.currentUser, provider);
+                document.getElementById('guestBanner').classList.add('hide');
+                const email = auth.currentUser.email || "Traveler";
+                document.getElementById('userEmailDisplay').textContent = email.split('@')[0];
+                document.getElementById('settingsUserLabel').textContent = email;
+                alert("Google account linked! All your local trips remain intact.");
+            } catch (error) {
+                if (error.code === 'auth/credential-already-in-use') {
+                    alert("That Google account already has a Lintas profile. Sign out of Guest mode first, then sign in with Google.");
+                } else {
+                    alert("Could not link account: " + error.message);
+                }
+            }
+        });
+
+        document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
+            modals.settings.classList.add('hide');
+            currentTripId = null;
+            await signOut(auth);
+        });
+
+        document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+            if (!currentUser) return;
+            if (!confirm("Permanently delete your account and wipe ALL saved trips and QR passes from this device? This cannot be undone.")) return;
+            try {
+                await wipeAllUserLocalData(currentUser.uid);
+                modals.settings.classList.add('hide');
+                currentTripId = null;
+                await deleteUser(auth.currentUser);
+                alert("Your account and all local data have been permanently deleted.");
+            } catch (error) {
+                if (error.code === 'auth/requires-recent-login') {
+                    alert("For security, please sign out and sign back in once before deleting your account.");
+                } else {
+                    await signOut(auth);
+                }
+            }
+        });
+
+        async function loadTrips() {
+            if (!currentUser) return;
+            const container = document.getElementById('tripsContainer');
+            container.innerHTML = '';
+
+            const trips = await dbGetByIndex("trips", "userId", currentUser.uid);
+            if (trips.length === 0) {
+                document.getElementById('emptyTripsState').classList.remove('hide');
+            } else {
+                document.getElementById('emptyTripsState').classList.add('hide');
+                trips.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                trips.forEach((trip) => {
+                    const el = document.createElement('div');
+                    el.className = 'card-dark rounded-2xl p-4 flex items-center justify-between shadow-sm cursor-pointer active:opacity-80';
+                    el.innerHTML = `
+                        <div>
+                            <h3 class="font-bold text-lg text-white">${trip.name}</h3>
+                            <p style="color: #94a3b8;" class="text-xs">${new Date(trip.createdAt).toLocaleDateString()} • Stored on device</p>
+                        </div>
+                        <svg style="color: #64748b;" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    `;
+                    el.onclick = () => openTrip(trip.id, trip.name);
+                    container.appendChild(el);
+                });
+            }
+        }
+
+        document.getElementById('saveTripBtn').addEventListener('click', async () => {
+            const name = document.getElementById('tripNameInput').value.trim();
+            if (!name || !currentUser) return;
+
+            const tripId = "trip_" + Date.now();
+            await dbPut("trips", { id: tripId, userId: currentUser.uid, name: name, createdAt: Date.now() });
+            document.getElementById('tripNameInput').value = '';
+            modals.newTrip.classList.add('hide');
+            loadTrips();
+        });
+
+        document.getElementById('deleteTripBtn').addEventListener('click', async () => {
+            if (!currentTripId || !confirm("Delete this trip and all its saved passes?")) return;
+            const docs = await dbGetByIndex("documents", "tripId", currentTripId);
+            for (const d of docs) await dbDelete("documents", d.id);
+            await dbDelete("trips", currentTripId);
+            currentTripId = null;
+            showScreen('dashboard');
+            loadTrips();
+        });
+
+        async function openTrip(id, name) {
+            currentTripId = id;
+            document.getElementById('tripDetailTitle').textContent = name;
+            showScreen('tripDetail');
+            loadDocuments(id);
+        }
+
+        async function loadDocuments(tripId) {
+            const container = document.getElementById('docsContainer');
+            container.innerHTML = '';
+
+            const docs = await dbGetByIndex("documents", "tripId", tripId);
+            docs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            currentTripDocs = docs;
+
+            if (docs.length === 0) {
+                document.getElementById('emptyDocsState').classList.remove('hide');
+            } else {
+                document.getElementById('emptyDocsState').classList.add('hide');
+
+                docs.forEach((d, idx) => {
+                    const el = document.createElement('div');
+                    el.className = 'card-dark rounded-xl overflow-hidden cursor-pointer active:opacity-80 relative';
+                    el.innerHTML = `
+                        <div class="relative">
+                            <img src="${d.imageData}" class="w-full h-36 object-cover bg-black">
+                            <span style="background: rgba(15,23,42,0.8);" class="absolute bottom-2 right-2 text-[10px] font-semibold text-white px-2 py-0.5 rounded-md">Tap to view</span>
+                        </div>
+                        <div class="p-3">
+                            <h4 class="font-bold text-sm text-white truncate">${d.name}</h4>
+                        </div>
+                    `;
+                    el.onclick = () => openGalleryAt(idx);
+                    container.appendChild(el);
+                });
+            }
+        }
+
+        // --- SWIPEABLE GALLERY ENGINE ---
+        function openGalleryAt(index) {
+            if (!currentTripDocs.length) return;
+            currentDocIndex = Math.max(0, Math.min(index, currentTripDocs.length - 1));
+            renderGallerySlide(false);
+            screens.viewer.classList.remove('hide');
+        }
+
+        function renderGallerySlide(animate = true) {
+            const item = currentTripDocs[currentDocIndex];
+            if (!item) return;
+
+            const imgEl = document.getElementById('viewerImage');
+            if (animate) {
+                imgEl.classList.remove('gallery-slide-anim');
+                void imgEl.offsetWidth;
+                imgEl.classList.add('gallery-slide-anim');
+            }
+            imgEl.src = item.imageData;
+            document.getElementById('viewerTitle').textContent = item.name;
+            document.getElementById('viewerCounter').textContent = `${currentDocIndex + 1} of ${currentTripDocs.length}`;
+
+            const prevBtn = document.getElementById('prevDocBtn');
+            const nextBtn = document.getElementById('nextDocBtn');
+            const hintEl = document.getElementById('viewerHint');
+
+            if (currentTripDocs.length > 1) {
+                prevBtn.classList.toggle('hide', currentDocIndex === 0);
+                nextBtn.classList.toggle('hide', currentDocIndex === currentTripDocs.length - 1);
+                hintEl.textContent = "Swipe left or right to switch passes • Pinch to zoom";
+            } else {
+                prevBtn.classList.add('hide');
+                nextBtn.classList.add('hide');
+                hintEl.textContent = "Pinch to zoom • Increase brightness for QR scanning";
+            }
+
+            const dotsContainer = document.getElementById('galleryDots');
+            dotsContainer.innerHTML = '';
+            if (currentTripDocs.length > 1) {
+                currentTripDocs.forEach((_, idx) => {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.style.width = idx === currentDocIndex ? '18px' : '7px';
+                    dot.style.height = '7px';
+                    dot.style.borderRadius = '999px';
+                    dot.style.transition = 'all 0.2s ease';
+                    dot.style.backgroundColor = idx === currentDocIndex ? '#3b82f6' : 'rgba(255,255,255,0.3)';
+                    dot.onclick = () => {
+                        currentDocIndex = idx;
+                        renderGallerySlide(true);
+                    };
+                    dotsContainer.appendChild(dot);
+                });
+            }
+        }
+
+        function goNextDoc() {
+            if (currentDocIndex < currentTripDocs.length - 1) {
+                currentDocIndex++;
+                renderGallerySlide(true);
+            }
+        }
+
+        function goPrevDoc() {
+            if (currentDocIndex > 0) {
+                currentDocIndex--;
+                renderGallerySlide(true);
+            }
+        }
+
+        document.getElementById('nextDocBtn').onclick = goNextDoc;
+        document.getElementById('prevDocBtn').onclick = goPrevDoc;
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isPinching = false;
+        const swipeArea = document.getElementById('gallerySwipeArea');
+
+        swipeArea.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) {
+                isPinching = true;
+                return;
+            }
+            isPinching = false;
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        swipeArea.addEventListener('touchend', (e) => {
+            if (isPinching || e.touches.length > 0 || currentTripDocs.length <= 1) return;
+            const deltaX = e.changedTouches[0].screenX - touchStartX;
+            const deltaY = e.changedTouches[0].screenY - touchStartY;
+
+            if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+                if (deltaX < 0) goNextDoc();
+                else goPrevDoc();
+            }
+        }, { passive: true });
+
+        document.addEventListener('keydown', (e) => {
+            if (screens.viewer.classList.contains('hide')) return;
+            if (e.key === 'ArrowRight') goNextDoc();
+            if (e.key === 'ArrowLeft') goPrevDoc();
+            if (e.key === 'Escape') screens.viewer.classList.add('hide');
+        });
+
+        // --- FILE UPLOAD & SAVE ---
+        document.getElementById('docFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const statusText = document.getElementById('fileStatusText');
+            statusText.textContent = "Optimizing image...";
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    let width = img.width; let height = img.height;
+                    const MAX = 1400;
+                    if (width > height) { if (width > MAX) { height *= MAX / width; width = MAX; } }
+                    else { if (height > MAX) { width *= MAX / height; height = MAX; } }
+                    canvas.width = width; canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    pendingImageData = canvas.toDataURL('image/jpeg', 0.85);
+                    statusText.textContent = "Pass ready! ✓";
+                    statusText.style.color = "#4ade80";
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('saveDocBtn').addEventListener('click', async () => {
+            const name = document.getElementById('docNameInput').value.trim();
+            const pdpoChecked = document.getElementById('pdpoConfirmCheck').checked;
+
+            if (!name) {
+                alert("Please enter a pass label (e.g., EES QR, MDAC).");
+                return;
+            }
+            if (!pendingImageData) {
+                alert("Please tap the upload box to select a QR code or screenshot first.");
+                return;
+            }
+            if (!pdpoChecked) {
+                alert("Please tick the confirmation box confirming this image does not contain a passport biodata page or national ID.");
+                return;
+            }
+            if (!currentTripId || !currentUser) return;
+
+            const docId = "doc_" + Date.now();
+            await dbPut("documents", {
+                id: docId,
+                tripId: currentTripId,
+                userId: currentUser.uid,
+                name: name,
+                imageData: pendingImageData,
+                createdAt: Date.now()
+            });
+
+            document.getElementById('docNameInput').value = '';
+            document.getElementById('pdpoConfirmCheck').checked = false;
+            pendingImageData = null;
+            const statusText = document.getElementById('fileStatusText');
+            statusText.textContent = "Tap to select photo or screenshot";
+            statusText.style.color = "#60a5fa";
+            document.getElementById('docFileInput').value = '';
+            modals.newDoc.classList.add('hide');
+            await loadDocuments(currentTripId);
+        });
+
+        document.getElementById('deleteDocBtn').addEventListener('click', async () => {
+            const targetDoc = currentTripDocs[currentDocIndex];
+            if (!targetDoc || !confirm(`Delete "${targetDoc.name}"?`)) return;
+
+            await dbDelete("documents", targetDoc.id);
+            await loadDocuments(currentTripId);
+
+            if (currentTripDocs.length === 0) {
+                screens.viewer.classList.add('hide');
+            } else {
+                currentDocIndex = Math.min(currentDocIndex, currentTripDocs.length - 1);
+                renderGallerySlide(true);
+            }
+        });
+
+        function showScreen(screenId) {
+            Object.values(screens).forEach(s => s.classList.add('hide'));
+            screens[screenId].classList.remove('hide');
+        }
+
+        // Modal Event Handlers
+        document.getElementById('openBenefitsBtn').onclick = () => modals.benefits.classList.remove('hide');
+        document.getElementById('closeBenefitsBtn').onclick = () => modals.benefits.classList.add('hide');
+        modals.benefits.onclick = (e) => { if (e.target === modals.benefits) modals.benefits.classList.add('hide'); };
+
+        document.getElementById('openPrivacyBtnLogin').onclick = () => modals.privacy.classList.remove('hide');
+        document.getElementById('openPrivacyFromSettingsBtn').onclick = () => {
+            modals.settings.classList.add('hide');
+            modals.privacy.classList.remove('hide');
+        };
+        document.getElementById('closePrivacyBtn').onclick = () => modals.privacy.classList.add('hide');
+        document.getElementById('ackPrivacyBtn').onclick = () => modals.privacy.classList.add('hide');
+
+        document.getElementById('openSettingsBtn').onclick = () => modals.settings.classList.remove('hide');
+        document.getElementById('closeSettingsBtn').onclick = () => modals.settings.classList.add('hide');
+        modals.settings.onclick = (e) => { if (e.target === modals.settings) modals.settings.classList.add('hide'); };
+
+        document.getElementById('addTripBtn').onclick = () => modals.newTrip.classList.remove('hide');
+        document.getElementById('closeTripModalBtn').onclick = () => modals.newTrip.classList.add('hide');
+        document.getElementById('addDocTopBtn').onclick = () => {
+            document.getElementById('pdpoConfirmCheck').checked = false;
+            modals.newDoc.classList.remove('hide');
+        };
+        document.getElementById('closeDocModalBtn').onclick = () => modals.newDoc.classList.add('hide');
+        document.getElementById('backToTripsBtn').onclick = () => {
+            currentTripId = null;
+            showScreen('dashboard');
+        };
+        document.getElementById('closeViewerBtn').onclick = () => screens.viewer.classList.add('hide');
+    </script>
+
+    <!-- Service Worker Registration for PWA / PWABuilder -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
