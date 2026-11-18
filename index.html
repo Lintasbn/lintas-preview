@@ -134,6 +134,13 @@
 
     <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="flex-1 flex flex-col justify-between p-6 text-center">
+        <!-- Minimal Single-Line Local Weather & Next Solat Pill (Opt-in, Never Stored) -->
+        <div class="pt-1 flex justify-center">
+            <button id="localContextPill" type="button" style="background-color: rgba(30, 41, 59, 0.72); border: 1px solid rgba(148, 163, 184, 0.18);" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-medium text-slate-300 hover:text-white hover:border-blue-400/40 transition-colors max-w-full truncate">
+                <span id="localContextText" class="truncate">📍 Tap for local weather &amp; Solat time</span>
+            </button>
+        </div>
+
         <div class="flex-1 flex flex-col items-center justify-center">
             <div class="app-icon">
                 <svg class="icon-svg" viewBox="0 0 120 120">
@@ -148,14 +155,7 @@
             
             <h1 class="text-5xl font-extrabold tracking-tight mb-2 text-white">Lintas</h1>
             <p style="color: #cbd5e1;" class="text-lg font-medium mb-1">Breeze through borders.</p>
-            <p style="color: #64748b;" class="text-sm mb-5 max-w-xs">All your travel QR passes & receipts, synced and ready offline.</p>
-
-            <!-- MINIMAL SINGLE-LINE LOCAL WEATHER & SOLAT PILL (OPT-IN, IN-MEMORY ONLY) -->
-            <div class="mb-6 max-w-sm w-full flex justify-center">
-                <button id="loginAmbientBtn" type="button" style="background: rgba(30, 41, 59, 0.72); border: 1px solid rgba(148, 163, 184, 0.2);" class="inline-flex items-center justify-center gap-1.5 text-[11px] font-medium text-slate-300 hover:text-white py-1.5 px-3.5 rounded-full truncate max-w-full transition-colors">
-                    <span id="loginAmbientText" class="truncate">📍 Check local weather & Solat times</span>
-                </button>
-            </div>
+            <p style="color: #64748b;" class="text-sm mb-8 max-w-xs">All your travel QR passes &amp; receipts, synced and ready offline.</p>
 
             <div class="w-full max-w-sm space-y-3">
                 <button id="googleSignInBtn" style="background-color: #ffffff; color: #0f172a;" class="w-full font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform">
@@ -178,7 +178,7 @@
                         <span>Google vs. Guest</span>
                     </button>
                     <button id="openPrivacyBtnLogin" type="button" class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-white py-1.5 px-3 rounded-full bg-slate-800/80 border border-slate-700">
-                        <span>Privacy & PDPO</span>
+                        <span>Privacy &amp; PDPO</span>
                     </button>
                 </div>
 
@@ -186,9 +186,9 @@
             </div>
         </div>
 
-        <footer class="max-w-sm mx-auto pt-6 pb-2">
+        <footer class="max-w-sm mx-auto pt-4 pb-2">
             <p style="color: #64748b;" class="text-[11px] leading-relaxed">
-                For personal travel convenience only. Lintas is an independent utility not affiliated with any government or border agency. Location never stored • Passes auto-expire after 30 days.
+                For personal travel convenience only. Lintas is an independent utility not affiliated with any government or border agency. Passes auto-expire after 30 days.
             </p>
         </footer>
     </div>
@@ -206,7 +206,7 @@
                 </div>
                 <div>
                     <span class="font-bold text-lg tracking-tight text-white block leading-none">Lintas</span>
-                    <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium">● Sync & Offline Ready</span>
+                    <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium">● Sync &amp; Offline Ready</span>
                 </div>
             </div>
 
@@ -312,7 +312,7 @@
 
         <div class="p-3.5 text-center bg-black/90 border-t border-white/10">
             <div id="galleryDots" class="flex items-center justify-center gap-1.5 mb-2"></div>
-            <p id="viewerHint" style="color: #94a3b8;" class="text-xs">Swipe left/right • Tap screen to show arrows</p>
+            <p id="viewerHint" style="color: #94a3b8;" class="text-xs">Swipe left/right to switch passes • Tap screen to show arrows</p>
         </div>
     </div>
 
@@ -326,10 +326,10 @@
 
             <div class="mb-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-left">
                 <p class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-                    <span>⚠️ QR Passes & Receipts Only</span>
+                    <span>⚠️ QR Passes &amp; Receipts Only</span>
                 </p>
                 <p style="color: #cbd5e1;" class="text-[11px] leading-relaxed mt-1">
-                    For your privacy & data protection (PDPO), please <strong>do NOT upload</strong> passport biodata pages, national IDs (IC), or bank cards. Passports & IDs are automatically blocked.
+                    For your privacy &amp; data protection (PDPO), please <strong>do NOT upload</strong> passport biodata pages, national IDs (IC), or bank cards. Passports &amp; IDs are automatically blocked.
                 </p>
             </div>
 
@@ -340,7 +340,7 @@
             <div class="upload-box relative rounded-xl p-5 text-center mb-4">
                 <input type="file" id="docFileInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                 <p class="text-sm font-semibold text-blue-400" id="fileStatusText">Tap to select photo or screenshot</p>
-                <p id="fileSubText" style="color: #64748b;" class="text-[11px] mt-1">Auto-compressed (~60 KB) & checked on device</p>
+                <p id="fileSubText" style="color: #64748b;" class="text-[11px] mt-1">Auto-compressed (~60 KB) &amp; checked on device</p>
             </div>
 
             <label class="flex items-start gap-2.5 mb-5 cursor-pointer text-left">
@@ -371,7 +371,7 @@
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Upcoming Travel Date (Optional)</label>
             <input type="date" id="tripDateInput" class="input-dark w-full rounded-xl px-4 py-3 mb-3 text-sm">
 
-            <p style="color: #64748b;" class="text-xs mb-5">Checks destination forecast by city name & auto-cleans after 30 days.</p>
+            <p style="color: #64748b;" class="text-xs mb-5">Checks destination forecast by city name &amp; auto-cleans after 30 days.</p>
             <button id="saveTripBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl">Create Trip</button>
         </div>
     </div>
@@ -390,7 +390,7 @@
                 <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-blue-500/30">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-sm font-bold text-white">Google Sign-In</span>
-                        <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Best</span>
+                        <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Recommended</span>
                     </div>
                     <ul style="color: #cbd5e1;" class="text-xs space-y-1.5">
                         <li>✓ Syncs trips across all your phones</li>
@@ -401,7 +401,7 @@
 
                 <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-slate-700/70">
                     <span class="text-sm font-bold text-slate-200 block mb-1">Guest Mode</span>
-                    <p style="color: #94a3b8;" class="text-xs">Instant offline access with no login needed. Passes stay strictly on this phone only.</p>
+                    <p style="color: #94a3b8;" class="text-xs">Instant offline access with no login needed. Passes stay strictly on this device only.</p>
                 </div>
             </div>
 
@@ -413,7 +413,7 @@
     <div id="settingsModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
         <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl text-left">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-white">Account & Privacy</h3>
+                <h3 class="text-lg font-bold text-white">Account &amp; Privacy</h3>
                 <button id="closeSettingsBtn" type="button" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -427,7 +427,7 @@
 
             <div class="space-y-2.5">
                 <button id="openPrivacyFromSettingsBtn" type="button" class="w-full btn-guest font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-between">
-                    <span>Read Privacy Policy & PDPO Notice</span>
+                    <span>Read Privacy Policy &amp; PDPO Notice</span>
                     <span>→</span>
                 </button>
 
@@ -437,7 +437,7 @@
                 </button>
 
                 <button id="deleteAccountBtn" type="button" class="w-full font-bold py-3 px-4 rounded-xl text-xs text-red-400 bg-red-950/50 border border-red-500/30 flex items-center justify-between">
-                    <span>Delete Account & Wipe All Data</span>
+                    <span>Delete Account &amp; Wipe All Data</span>
                     <span>✕</span>
                 </button>
             </div>
@@ -448,17 +448,17 @@
     <div id="privacyModal" style="z-index: 10000;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4">
         <div class="modal-card animate-pop w-full max-w-md rounded-3xl p-6 shadow-2xl text-left max-h-[85vh] flex flex-col">
             <div class="flex items-center justify-between mb-3 shrink-0">
-                <h3 class="text-lg font-bold text-white">Privacy Policy & PDPO</h3>
+                <h3 class="text-lg font-bold text-white">Privacy Policy &amp; PDPO</h3>
                 <button id="closePrivacyBtn" type="button" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
-                <p><strong>1. Purpose & Independence:</strong> Lintas is an independent personal travel organizer designed to store non-sensitive QR codes (such as EES, MDAC, and boarding passes). Lintas is not affiliated with any government or immigration authority.</p>
-                <p><strong>2. Storage & Sync (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching, and automatically deletes trips and passes after 30 days.</p>
-                <p><strong>3. Location & Ambient Weather/Solat:</strong> Lintas never stores or uploads your location to any server. If you optionally tap <em>Check local weather & Solat times</em> on the login screen, coordinates are used once in browser memory to fetch Open-Meteo weather and Aladhan prayer times, then discarded.</p>
-                <p><strong>4. Prohibited Documents & Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs an on-device check before upload and blocks images resembling passports or IDs.</p>
-                <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account & Privacy → Delete Account & Wipe All Data</em>.</p>
+                <p><strong>1. Purpose &amp; Independence:</strong> Lintas is an independent personal travel organizer designed to store non-sensitive QR codes (such as EES, MDAC, and boarding passes). Lintas is not affiliated with any government or immigration authority.</p>
+                <p><strong>2. Storage &amp; Sync (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching, and automatically deletes trips and passes after 30 days.</p>
+                <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Optional login-screen weather and Solat prayer times use a one-time browser lookup directly to Open-Meteo and Aladhan APIs without saving coordinates.</p>
+                <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs an on-device check before upload and blocks images resembling passports or IDs.</p>
+                <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account &amp; Privacy → Delete Account &amp; Wipe All Data</em>.</p>
             </div>
             <button id="ackPrivacyBtn" type="button" class="w-full btn-primary font-bold py-3 rounded-xl text-sm mt-4 shrink-0">Understood</button>
         </div>
@@ -476,7 +476,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Modules -->
+    <!-- Firebase SDK Modules (Auth + Cloud Firestore with Offline Persistence) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, signInAnonymously, linkWithPopup, GoogleAuthProvider, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -498,8 +498,99 @@
             localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
         });
 
+        // 30-Day Retention Policy
         const RETENTION_DAYS = 30;
         const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
+
+        // --- LOGIN SCREEN MINIMAL LOCAL WEATHER + NEXT SOLAT PILL ---
+        function formatTime12h(hhmm) {
+            if (!hhmm) return '';
+            const clean = hhmm.split(' ')[0];
+            const [hStr, mStr] = clean.split(':');
+            let h = parseInt(hStr, 10);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${mStr} ${ampm}`;
+        }
+
+        function getNextPrayer(timings) {
+            const schedule = [
+                { name: 'Subuh', time: timings.Fajr },
+                { name: 'Zohor', time: timings.Dhuhr },
+                { name: 'Asar', time: timings.Asr },
+                { name: 'Maghrib', time: timings.Maghrib },
+                { name: 'Isyak', time: timings.Isha }
+            ];
+            const now = new Date();
+            const nowMins = now.getHours() * 60 + now.getMinutes();
+
+            for (const p of schedule) {
+                if (!p.time) continue;
+                const [h, m] = p.time.split(' ')[0].split(':').map(Number);
+                if (h * 60 + m > nowMins) {
+                    return `${p.name} ${formatTime12h(p.time)}`;
+                }
+            }
+            return `Subuh ${formatTime12h(schedule[0].time)}`;
+        }
+
+        async function loadLocalWeatherAndSolat() {
+            const pillText = document.getElementById('localContextText');
+            if (!('geolocation' in navigator)) {
+                pillText.textContent = "Weather & Solat unavailable on this browser";
+                return;
+            }
+            pillText.textContent = "Checking local weather & Solat...";
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const { latitude, longitude } = pos.coords;
+                try {
+                    const [wxRes, solatRes, placeRes] = await Promise.allSettled([
+                        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`),
+                        fetch(`https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=11`),
+                        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
+                    ]);
+
+                    let cityLabel = '';
+                    if (placeRes.status === 'fulfilled' && placeRes.value.ok) {
+                        const pData = await placeRes.value.json();
+                        cityLabel = pData.city || pData.locality || pData.principalSubdivision || '';
+                    }
+
+                    let wxStr = '';
+                    if (wxRes.status === 'fulfilled' && wxRes.value.ok) {
+                        const wData = await wxRes.value.json();
+                        if (wData.current) {
+                            const emoji = weatherCodeToEmoji(wData.current.weather_code);
+                            wxStr = `${emoji} ${Math.round(wData.current.temperature_2m)}°C`;
+                        }
+                    }
+
+                    let solatStr = '';
+                    if (solatRes.status === 'fulfilled' && solatRes.value.ok) {
+                        const sData = await solatRes.value.json();
+                        if (sData.data && sData.data.timings) {
+                            solatStr = `🕌 ${getNextPrayer(sData.data.timings)}`;
+                        }
+                    }
+
+                    const parts = [];
+                    if (cityLabel) parts.push(`📍 ${cityLabel}`);
+                    if (wxStr) parts.push(wxStr);
+                    if (solatStr) parts.push(solatStr);
+
+                    pillText.textContent = parts.length > 0
+                        ? parts.join(' • ')
+                        : "📍 Tap to refresh local weather & Solat";
+                } catch (_) {
+                    pillText.textContent = "📍 Tap to retry weather & Solat";
+                }
+            }, () => {
+                pillText.textContent = "📍 Location permission off • Tap to enable";
+            }, { timeout: 8000, maximumAge: 300000 });
+        }
+
+        document.getElementById('localContextPill').addEventListener('click', loadLocalWeatherAndSolat);
 
         // --- CUSTOM PROMISE-BASED CONFIRM MODAL ---
         function askConfirm(title, message, proceedLabel = "Delete") {
@@ -526,7 +617,7 @@
             });
         }
 
-        // --- WEATHER HELPERS ---
+        // --- DESTINATION WEATHER FORECAST BY CITY NAME ---
         function weatherCodeToEmoji(code) {
             if (code === 0) return '☀️';
             if (code >= 1 && code <= 3) return '⛅';
@@ -537,84 +628,6 @@
             return '🌤️';
         }
 
-        // --- SINGLE-LINE LOGIN AMBIENT BAR (CURRENT PLACE WEATHER + NEXT SOLAT) ---
-        function formatTime12h(hhmm) {
-            if (!hhmm) return '';
-            const clean = hhmm.split(' ')[0];
-            const [hStr, mStr] = clean.split(':');
-            let h = parseInt(hStr, 10);
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;
-            return `${h}:${mStr} ${ampm}`;
-        }
-
-        function getNextSolatLabel(timings) {
-            if (!timings) return '';
-            const now = new Date();
-            const curMins = now.getHours() * 60 + now.getMinutes();
-            const schedule = [
-                { name: 'Subuh', key: 'Fajr' },
-                { name: 'Zohor', key: 'Dhuhr' },
-                { name: 'Asar', key: 'Asr' },
-                { name: 'Maghrib', key: 'Maghrib' },
-                { name: 'Isyak', key: 'Isha' }
-            ];
-            for (const p of schedule) {
-                const raw = (timings[p.key] || '').split(' ')[0];
-                const [h, m] = raw.split(':').map(Number);
-                if (!isNaN(h) && (h * 60 + m) > curMins) {
-                    return `🕌 ${p.name} ${formatTime12h(raw)}`;
-                }
-            }
-            return `🕌 Subuh ${formatTime12h(timings.Fajr)}`;
-        }
-
-        async function loadLoginWeatherAndSolat() {
-            const labelEl = document.getElementById('loginAmbientText');
-            if (!navigator.geolocation) {
-                labelEl.textContent = "Location unavailable on this browser";
-                return;
-            }
-            labelEl.textContent = "Checking local weather & Solat...";
-
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                try {
-                    const [geoRes, wxRes, solatRes] = await Promise.all([
-                        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`).then(r => r.json()).catch(() => null),
-                        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`).then(r => r.json()).catch(() => null),
-                        fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=11`).then(r => r.json()).catch(() => null)
-                    ]);
-
-                    const addr = (geoRes && geoRes.address) || {};
-                    const place = addr.city || addr.town || addr.suburb || addr.state || 'Here';
-
-                    let wxStr = '';
-                    if (wxRes && wxRes.current) {
-                        wxStr = `${weatherCodeToEmoji(wxRes.current.weather_code)} ${Math.round(wxRes.current.temperature_2m)}°C`;
-                    }
-
-                    let solatStr = '';
-                    if (solatRes && solatRes.data && solatRes.data.timings) {
-                        solatStr = getNextSolatLabel(solatRes.data.timings);
-                    }
-
-                    const parts = [`📍 ${place}`];
-                    if (wxStr) parts.push(wxStr);
-                    if (solatStr) parts.push(solatStr);
-                    labelEl.textContent = parts.join(' • ');
-                } catch (_) {
-                    labelEl.textContent = "📍 Tap to retry weather & Solat";
-                }
-            }, () => {
-                labelEl.textContent = "📍 Location permission declined";
-            }, { timeout: 8000, maximumAge: 300000 });
-        }
-
-        document.getElementById('loginAmbientBtn').addEventListener('click', loadLoginWeatherAndSolat);
-
-        // --- DESTINATION WEATHER FORECAST BY CITY NAME ---
         async function fetchDestinationWeather(cityName, travelDate) {
             if (!cityName) return null;
             try {
@@ -690,4 +703,839 @@
             const db = await openLocalDB();
             return new Promise((resolve, reject) => {
                 const tx = db.transaction(storeName, "readwrite");
-                tx.objectStore
+                tx.objectStore(storeName).put(item);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        async function localGetByIndex(storeName, indexName, value) {
+            const db = await openLocalDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, "readonly");
+                const index = tx.objectStore(storeName).index(indexName);
+                const req = index.getAll(value);
+                req.onsuccess = () => resolve(req.result || []);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function localDelete(storeName, id) {
+            const db = await openLocalDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, "readwrite");
+                tx.objectStore(storeName).delete(id);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        // --- UNIFIED STORAGE LAYER ---
+        function isCloudUser() {
+            return currentUser && !currentUser.isAnonymous;
+        }
+
+        async function saveTripData(trip) {
+            if (isCloudUser()) {
+                await setDoc(doc(dbCloud, "trips", trip.id), trip);
+            } else {
+                await localPut("trips", trip);
+            }
+        }
+
+        async function fetchUserTrips(uid) {
+            if (isCloudUser()) {
+                const q = query(collection(dbCloud, "trips"), where("userId", "==", uid));
+                const snap = await getDocs(q);
+                return snap.docs.map(d => d.data());
+            } else {
+                return await localGetByIndex("trips", "userId", uid);
+            }
+        }
+
+        async function deleteTripData(tripId) {
+            if (isCloudUser()) {
+                await deleteDoc(doc(dbCloud, "trips", tripId));
+            } else {
+                await localDelete("trips", tripId);
+            }
+        }
+
+        async function saveDocData(docItem) {
+            if (isCloudUser()) {
+                await setDoc(doc(dbCloud, "documents", docItem.id), docItem);
+            } else {
+                await localPut("documents", docItem);
+            }
+        }
+
+        async function fetchTripDocs(tripId, uid) {
+            if (isCloudUser()) {
+                const q = query(collection(dbCloud, "documents"), where("userId", "==", uid), where("tripId", "==", tripId));
+                const snap = await getDocs(q);
+                return snap.docs.map(d => d.data());
+            } else {
+                return await localGetByIndex("documents", "tripId", tripId);
+            }
+        }
+
+        async function deleteDocData(docId) {
+            if (isCloudUser()) {
+                await deleteDoc(doc(dbCloud, "documents", docId));
+            } else {
+                await localDelete("documents", docId);
+            }
+        }
+
+        // --- AUTO-CLEANUP EXPIRED ITEMS ---
+        async function cleanupExpiredItems(uid) {
+            const now = Date.now();
+            try {
+                const trips = await fetchUserTrips(uid);
+                for (const t of trips) {
+                    const exp = t.expiresAt || ((t.createdAt || now) + RETENTION_MS);
+                    if (now > exp) {
+                        const docs = await fetchTripDocs(t.id, uid);
+                        for (const d of docs) await deleteDocData(d.id);
+                        await deleteTripData(t.id);
+                    }
+                }
+            } catch (e) {
+                console.warn("Cleanup skipped:", e);
+            }
+        }
+
+        async function wipeAllUserData(uid) {
+            const trips = await fetchUserTrips(uid);
+            for (const t of trips) {
+                const docs = await fetchTripDocs(t.id, uid);
+                for (const d of docs) await deleteDocData(d.id);
+                await deleteTripData(t.id);
+            }
+            const localTrips = await localGetByIndex("trips", "userId", uid);
+            for (const t of localTrips) await localDelete("trips", t.id);
+            const localDocs = await localGetByIndex("documents", "userId", uid);
+            for (const d of localDocs) await localDelete("documents", d.id);
+        }
+
+        // --- ON-DEVICE PASSPORT / NATIONAL ID BLOCKER ---
+        async function detectSensitiveID(canvas) {
+            try {
+                if ('BarcodeDetector' in window) {
+                    const detector = new BarcodeDetector({ formats: ['qr_code', 'aztec', 'pdf417', 'data_matrix'] });
+                    const codes = await detector.detect(canvas);
+                    if (codes && codes.length > 0) return { blocked: false, reason: 'qr_verified' };
+                }
+                if (typeof jsQR === 'function') {
+                    const ctx = canvas.getContext('2d');
+                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const qr = jsQR(imgData.data, imgData.width, imgData.height);
+                    if (qr && qr.data) return { blocked: false, reason: 'qr_verified' };
+                }
+            } catch (e) { /* Fall through to Layer 2 OCR */ }
+
+            if (typeof Tesseract === 'undefined') return { blocked: false };
+
+            try {
+                const result = await Tesseract.recognize(canvas, 'eng');
+                const rawText = (result && result.data && result.data.text) ? result.data.text.toUpperCase() : '';
+                const compact = rawText.replace(/\s+/g, '');
+
+                if (/P<[A-Z]{3}/.test(compact) || /I<[A-Z]{3}/.test(compact) || /<{5,}/.test(compact)) {
+                    return { blocked: true, type: 'Passport / ICAO ID (MRZ detected)' };
+                }
+
+                const idKeywords = [
+                    'PASSPORT', 'PASPORT', 'IDENTITY CARD', 'KAD PENGENALAN',
+                    'MYKAD', 'WARGANEGARA', 'TARIKH LAHIR', 'DATE OF BIRTH',
+                    'PLACE OF BIRTH', 'TEMPAT LAHIR', 'NATIONALITY', 'KEWARGANEGARAAN',
+                    'NO. K/P', 'REPUBLIC OF', 'NEGARA BRUNEI DARUSSALAM'
+                ];
+                let hits = 0;
+                for (const kw of idKeywords) {
+                    if (rawText.includes(kw)) hits++;
+                }
+                if (hits >= 2) {
+                    return { blocked: true, type: 'National ID or Passport document' };
+                }
+            } catch (e) {
+                console.warn("OCR check skipped:", e);
+            }
+            return { blocked: false };
+        }
+
+        // --- SMART ~60 KB IMAGE AUTO-COMPRESSOR ---
+        function compressForQR(img) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            let width = img.width;
+            let height = img.height;
+            const MAX = 1000;
+            if (width > height) {
+                if (width > MAX) { height = Math.round(height * MAX / width); width = MAX; }
+            } else {
+                if (height > MAX) { width = Math.round(width * MAX / height); height = MAX; }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+
+            let quality = 0.72;
+            let dataUrl = canvas.toDataURL('image/jpeg', quality);
+            while (dataUrl.length > 220000 && quality > 0.42) {
+                quality -= 0.1;
+                dataUrl = canvas.toDataURL('image/jpeg', quality);
+            }
+            const sizeKB = Math.round((dataUrl.length * 3) / 4 / 1024);
+            return { canvas, dataUrl, sizeKB };
+        }
+
+        // --- APP STATE & UI ---
+        let currentUser = null;
+        let currentTripId = null;
+        let currentTripDocs = [];
+        let currentDocIndex = 0;
+        let pendingImageData = null;
+        let arrowHideTimer = null;
+
+        const screens = {
+            login: document.getElementById('loginScreen'),
+            dashboard: document.getElementById('dashboardScreen'),
+            tripDetail: document.getElementById('tripDetailScreen'),
+            viewer: document.getElementById('imageViewer')
+        };
+        const modals = {
+            newTrip: document.getElementById('newTripModal'),
+            newDoc: document.getElementById('newDocModal'),
+            benefits: document.getElementById('benefitsModal'),
+            settings: document.getElementById('settingsModal'),
+            privacy: document.getElementById('privacyModal')
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const guestBanner = document.getElementById('guestBanner');
+                const syncBadge = document.getElementById('syncStatusBadge');
+                const settingsMode = document.getElementById('settingsStorageMode');
+
+                if (user.isAnonymous) {
+                    document.getElementById('userEmailDisplay').textContent = "Guest";
+                    document.getElementById('settingsUserLabel').textContent = "Guest (Local Device)";
+                    syncBadge.textContent = "● Offline Local Mode";
+                    settingsMode.textContent = "✓ Local-Only Storage Active (30-Day Auto-Delete)";
+                    guestBanner.classList.remove('hide');
+                } else {
+                    const label = user.email ? user.email.split('@')[0] : "Traveler";
+                    document.getElementById('userEmailDisplay').textContent = label;
+                    document.getElementById('settingsUserLabel').textContent = user.email || "Google Account";
+                    syncBadge.textContent = "● Cloud Sync + Offline Ready";
+                    settingsMode.textContent = "✓ Cloud Sync + Offline Cache Active (30-Day Auto-Delete)";
+                    guestBanner.classList.add('hide');
+                }
+                if (!currentTripId) showScreen('dashboard');
+                await cleanupExpiredItems(user.uid);
+                await loadTrips();
+            } else {
+                currentUser = null;
+                currentTripId = null;
+                showScreen('login');
+            }
+        });
+
+        async function triggerGoogleSignIn() {
+            try {
+                modals.benefits.classList.add('hide');
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                document.getElementById('loginError').textContent = `Login Error: ${error.message}`;
+                document.getElementById('loginError').classList.remove('hide');
+            }
+        }
+
+        document.getElementById('googleSignInBtn').addEventListener('click', triggerGoogleSignIn);
+        document.getElementById('benefitsGoogleBtn').addEventListener('click', triggerGoogleSignIn);
+
+        document.getElementById('guestSignInBtn').addEventListener('click', async () => {
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                document.getElementById('loginError').textContent = `Guest Login Error: ${error.message}`;
+                document.getElementById('loginError').classList.remove('hide');
+            }
+        });
+
+        document.getElementById('upgradeGuestBtn').addEventListener('click', async () => {
+            if (!auth.currentUser) return;
+            try {
+                const oldUid = auth.currentUser.uid;
+                const localTrips = await localGetByIndex("trips", "userId", oldUid);
+                const localDocs = await localGetByIndex("documents", "userId", oldUid);
+
+                await linkWithPopup(auth.currentUser, provider);
+                const newUid = auth.currentUser.uid;
+
+                for (const t of localTrips) {
+                    await setDoc(doc(dbCloud, "trips", t.id), { ...t, userId: newUid });
+                }
+                for (const d of localDocs) {
+                    await setDoc(doc(dbCloud, "documents", d.id), { ...d, userId: newUid });
+                }
+
+                document.getElementById('guestBanner').classList.add('hide');
+                const email = auth.currentUser.email || "Traveler";
+                document.getElementById('userEmailDisplay').textContent = email.split('@')[0];
+                document.getElementById('settingsUserLabel').textContent = email;
+                document.getElementById('syncStatusBadge').textContent = "● Cloud Sync + Offline Ready";
+                await loadTrips();
+                alert("Google account linked! Your trips are now synced to the cloud.");
+            } catch (error) {
+                if (error.code === 'auth/credential-already-in-use') {
+                    alert("That Google account already has a Lintas profile. Sign out of Guest mode first, then sign in with Google.");
+                } else {
+                    alert("Could not link account: " + error.message);
+                }
+            }
+        });
+
+        document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
+            modals.settings.classList.add('hide');
+            currentTripId = null;
+            await signOut(auth);
+        });
+
+        document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+            if (!currentUser) return;
+            const confirmed = await askConfirm(
+                "Delete Account & Data?",
+                "Permanently delete your account and wipe ALL saved trips and QR passes? This cannot be undone.",
+                "Wipe Everything"
+            );
+            if (!confirmed) return;
+
+            const btn = document.getElementById('deleteAccountBtn');
+            btn.disabled = true;
+            try {
+                await wipeAllUserData(currentUser.uid);
+                modals.settings.classList.add('hide');
+                currentTripId = null;
+                await deleteUser(auth.currentUser);
+                alert("Your account and all data have been permanently deleted.");
+            } catch (error) {
+                if (error.code === 'auth/requires-recent-login') {
+                    alert("For security, please sign out and sign back in once before deleting your account.");
+                } else {
+                    await signOut(auth);
+                }
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        async function loadTrips() {
+            if (!currentUser) return;
+            const container = document.getElementById('tripsContainer');
+            container.innerHTML = '';
+
+            let trips = [];
+            try {
+                trips = await fetchUserTrips(currentUser.uid);
+            } catch (err) {
+                console.error("Error loading trips:", err);
+            }
+
+            if (trips.length === 0) {
+                document.getElementById('emptyTripsState').classList.remove('hide');
+            } else {
+                document.getElementById('emptyTripsState').classList.add('hide');
+                trips.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                const now = Date.now();
+                for (const trip of trips) {
+                    const exp = trip.expiresAt || ((trip.createdAt || now) + RETENTION_MS);
+                    const daysLeft = Math.max(1, Math.ceil((exp - now) / (24 * 60 * 60 * 1000)));
+                    const storageTag = isCloudUser() ? "Cloud Synced" : "Device Only";
+                    const countdownStr = formatCountdownBadge(trip.travelDate);
+
+                    let weatherText = trip.weatherSummary || '';
+                    if (trip.location && navigator.onLine) {
+                        const freshWx = await fetchDestinationWeather(trip.location, trip.travelDate);
+                        if (freshWx && freshWx.summary) weatherText = freshWx.summary;
+                    }
+
+                    let metaParts = [];
+                    if (trip.location) metaParts.push(`📍 ${trip.location}`);
+                    if (countdownStr) metaParts.push(`📅 ${countdownStr}`);
+                    if (weatherText) metaParts.push(weatherText);
+
+                    const sublineHTML = metaParts.length > 0
+                        ? `<p class="text-xs text-sky-300 font-medium mt-0.5">${metaParts.join(' • ')}</p>
+                           <p style="color: #64748b;" class="text-[11px] mt-1">${storageTag} • <span class="text-amber-400">Auto-deletes in ${daysLeft}d</span></p>`
+                        : `<p style="color: #94a3b8;" class="text-xs mt-0.5">${storageTag} • <span class="text-amber-400">Auto-deletes in ${daysLeft}d</span></p>`;
+
+                    const el = document.createElement('div');
+                    el.className = 'card-dark rounded-2xl p-4 flex items-center justify-between shadow-sm cursor-pointer active:opacity-80 gap-3';
+                    el.innerHTML = `
+                        <div class="overflow-hidden">
+                            <h3 class="font-bold text-lg text-white truncate">${trip.name}</h3>
+                            ${sublineHTML}
+                        </div>
+                        <svg style="color: #64748b;" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    `;
+                    el.onclick = () => openTrip({ ...trip, weatherSummary: weatherText });
+                    container.appendChild(el);
+                }
+            }
+        }
+
+        document.getElementById('saveTripBtn').addEventListener('click', async () => {
+            const name = document.getElementById('tripNameInput').value.trim();
+            const locationRaw = document.getElementById('tripLocationInput').value.trim();
+            const travelDate = document.getElementById('tripDateInput').value;
+            if (!name || !currentUser) {
+                alert("Please enter a trip title.");
+                return;
+            }
+
+            const saveBtn = document.getElementById('saveTripBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = locationRaw ? "Checking forecast..." : "Creating...";
+
+            try {
+                let resolvedLocation = locationRaw;
+                let weatherSummary = '';
+                if (locationRaw) {
+                    const wx = await fetchDestinationWeather(locationRaw, travelDate);
+                    if (wx) {
+                        resolvedLocation = wx.resolvedName;
+                        weatherSummary = wx.summary;
+                    }
+                }
+
+                const now = Date.now();
+                const tripId = "trip_" + now;
+                await saveTripData({
+                    id: tripId,
+                    userId: currentUser.uid,
+                    name: name,
+                    location: resolvedLocation,
+                    travelDate: travelDate || '',
+                    weatherSummary: weatherSummary,
+                    createdAt: now,
+                    expiresAt: now + RETENTION_MS
+                });
+
+                document.getElementById('tripNameInput').value = '';
+                document.getElementById('tripLocationInput').value = '';
+                document.getElementById('tripDateInput').value = '';
+                modals.newTrip.classList.add('hide');
+                await loadTrips();
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Create Trip";
+            }
+        });
+
+        document.getElementById('deleteTripBtn').addEventListener('click', async () => {
+            if (!currentTripId || !currentUser) return;
+            const confirmed = await askConfirm(
+                "Delete Trip?",
+                "This will permanently remove this trip and all its saved QR passes.",
+                "Delete Trip"
+            );
+            if (!confirmed) return;
+
+            const btn = document.getElementById('deleteTripBtn');
+            const targetTripId = currentTripId;
+            btn.disabled = true;
+            btn.textContent = "Deleting...";
+
+            try {
+                const docs = await fetchTripDocs(targetTripId, currentUser.uid);
+                for (const d of docs) {
+                    await deleteDocData(d.id);
+                }
+                await deleteTripData(targetTripId);
+
+                try {
+                    const localDocs = await localGetByIndex("documents", "tripId", targetTripId);
+                    for (const ld of localDocs) await localDelete("documents", ld.id);
+                    await localDelete("trips", targetTripId);
+                } catch (_) {}
+
+                currentTripId = null;
+                showScreen('dashboard');
+                await loadTrips();
+            } catch (err) {
+                console.error("Delete trip failed:", err);
+                alert("Could not delete trip: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Delete Trip";
+            }
+        });
+
+        async function openTrip(trip) {
+            currentTripId = trip.id;
+            document.getElementById('tripDetailTitle').textContent = trip.name;
+
+            const parts = [];
+            if (trip.location) parts.push(`📍 ${trip.location}`);
+            if (trip.travelDate) parts.push(formatCountdownBadge(trip.travelDate));
+            if (trip.weatherSummary) parts.push(trip.weatherSummary);
+            document.getElementById('tripDetailMeta').textContent = parts.join(' • ');
+
+            showScreen('tripDetail');
+            await loadDocuments(trip.id);
+        }
+
+        async function loadDocuments(tripId) {
+            const container = document.getElementById('docsContainer');
+            container.innerHTML = '';
+
+            const docs = await fetchTripDocs(tripId, currentUser.uid);
+            docs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            currentTripDocs = docs;
+
+            if (docs.length === 0) {
+                document.getElementById('emptyDocsState').classList.remove('hide');
+            } else {
+                document.getElementById('emptyDocsState').classList.add('hide');
+
+                docs.forEach((d, idx) => {
+                    const el = document.createElement('div');
+                    el.className = 'card-dark rounded-xl overflow-hidden cursor-pointer active:opacity-80 relative';
+                    el.innerHTML = `
+                        <div class="relative">
+                            <img src="${d.imageData}" class="w-full h-36 object-cover bg-black">
+                            <span style="background: rgba(15,23,42,0.8);" class="absolute bottom-2 right-2 text-[10px] font-semibold text-white px-2 py-0.5 rounded-md">Tap to view</span>
+                        </div>
+                        <div class="p-3">
+                            <h4 class="font-bold text-sm text-white truncate">${d.name}</h4>
+                        </div>
+                    `;
+                    el.onclick = () => openGalleryAt(idx);
+                    container.appendChild(el);
+                });
+            }
+        }
+
+        // --- SWIPEABLE GALLERY ENGINE + AUTO-HIDING ARROWS ---
+        function revealNavArrowsTemporarily() {
+            const prevBtn = document.getElementById('prevDocBtn');
+            const nextBtn = document.getElementById('nextDocBtn');
+            prevBtn.classList.remove('nav-arrow-faded');
+            nextBtn.classList.remove('nav-arrow-faded');
+
+            clearTimeout(arrowHideTimer);
+            if (currentTripDocs.length > 1) {
+                arrowHideTimer = setTimeout(() => {
+                    prevBtn.classList.add('nav-arrow-faded');
+                    nextBtn.classList.add('nav-arrow-faded');
+                }, 2500);
+            }
+        }
+
+        function openGalleryAt(index) {
+            if (!currentTripDocs.length) return;
+            currentDocIndex = Math.max(0, Math.min(index, currentTripDocs.length - 1));
+            renderGallerySlide(false);
+            screens.viewer.classList.remove('hide');
+        }
+
+        function renderGallerySlide(animate = true) {
+            const item = currentTripDocs[currentDocIndex];
+            if (!item) return;
+
+            const imgEl = document.getElementById('viewerImage');
+            if (animate) {
+                imgEl.classList.remove('gallery-slide-anim');
+                void imgEl.offsetWidth;
+                imgEl.classList.add('gallery-slide-anim');
+            }
+            imgEl.src = item.imageData;
+            document.getElementById('viewerTitle').textContent = item.name;
+            document.getElementById('viewerCounter').textContent = `${currentDocIndex + 1} of ${currentTripDocs.length}`;
+
+            const prevBtn = document.getElementById('prevDocBtn');
+            const nextBtn = document.getElementById('nextDocBtn');
+            const hintEl = document.getElementById('viewerHint');
+
+            if (currentTripDocs.length > 1) {
+                prevBtn.classList.toggle('hide', currentDocIndex === 0);
+                nextBtn.classList.toggle('hide', currentDocIndex === currentTripDocs.length - 1);
+                hintEl.textContent = "Swipe left/right • Tap screen to show arrows";
+                revealNavArrowsTemporarily();
+            } else {
+                prevBtn.classList.add('hide');
+                nextBtn.classList.add('hide');
+                hintEl.textContent = "Pinch to zoom • Increase brightness for QR scanning";
+            }
+
+            const dotsContainer = document.getElementById('galleryDots');
+            dotsContainer.innerHTML = '';
+            if (currentTripDocs.length > 1) {
+                currentTripDocs.forEach((_, idx) => {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.style.width = idx === currentDocIndex ? '18px' : '7px';
+                    dot.style.height = '7px';
+                    dot.style.borderRadius = '999px';
+                    dot.style.transition = 'all 0.2s ease';
+                    dot.style.backgroundColor = idx === currentDocIndex ? '#3b82f6' : 'rgba(255,255,255,0.3)';
+                    dot.onclick = () => {
+                        currentDocIndex = idx;
+                        renderGallerySlide(true);
+                    };
+                    dotsContainer.appendChild(dot);
+                });
+            }
+        }
+
+        function goNextDoc() {
+            if (currentDocIndex < currentTripDocs.length - 1) {
+                currentDocIndex++;
+                renderGallerySlide(true);
+            }
+        }
+
+        function goPrevDoc() {
+            if (currentDocIndex > 0) {
+                currentDocIndex--;
+                renderGallerySlide(true);
+            }
+        }
+
+        document.getElementById('nextDocBtn').onclick = (e) => {
+            e.stopPropagation();
+            goNextDoc();
+        };
+        document.getElementById('prevDocBtn').onclick = (e) => {
+            e.stopPropagation();
+            goPrevDoc();
+        };
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isPinching = false;
+        const swipeArea = document.getElementById('gallerySwipeArea');
+
+        swipeArea.addEventListener('click', () => {
+            if (currentTripDocs.length > 1) {
+                revealNavArrowsTemporarily();
+            }
+        });
+
+        swipeArea.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) {
+                isPinching = true;
+                return;
+            }
+            isPinching = false;
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        swipeArea.addEventListener('touchend', (e) => {
+            if (isPinching || e.touches.length > 0 || currentTripDocs.length <= 1) return;
+            const deltaX = e.changedTouches[0].screenX - touchStartX;
+            const deltaY = e.changedTouches[0].screenY - touchStartY;
+
+            if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+                if (deltaX < 0) goNextDoc();
+                else goPrevDoc();
+            }
+        }, { passive: true });
+
+        document.addEventListener('keydown', (e) => {
+            if (screens.viewer.classList.contains('hide')) return;
+            if (e.key === 'ArrowRight') goNextDoc();
+            if (e.key === 'ArrowLeft') goPrevDoc();
+            if (e.key === 'Escape') {
+                clearTimeout(arrowHideTimer);
+                screens.viewer.classList.add('hide');
+            }
+        });
+
+        // --- FILE UPLOAD, AUTO-COMPRESSION & SENSITIVE ID CHECK ---
+        document.getElementById('docFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const statusText = document.getElementById('fileStatusText');
+            const subText = document.getElementById('fileSubText');
+            const saveBtn = document.getElementById('saveDocBtn');
+            pendingImageData = null;
+            saveBtn.disabled = true;
+
+            statusText.textContent = "Optimizing & checking privacy...";
+            statusText.style.color = "#fbbf24";
+            subText.textContent = "Scanning on-device to block Passports / IDs...";
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = async function() {
+                    const { canvas, dataUrl, sizeKB } = compressForQR(img);
+                    const scan = await detectSensitiveID(canvas);
+
+                    if (scan.blocked) {
+                        pendingImageData = null;
+                        e.target.value = '';
+                        statusText.textContent = "Blocked: Passport / National ID Detected";
+                        statusText.style.color = "#f87171";
+                        subText.textContent = "Only QR passes, boarding passes & receipts allowed.";
+                        alert(`Upload Blocked (${scan.type}): For your PDPO privacy protection, Lintas does not allow Passport biodata pages or National IDs. Please select a QR pass or receipt instead.`);
+                        return;
+                    }
+
+                    pendingImageData = dataUrl;
+                    saveBtn.disabled = false;
+                    statusText.textContent = `Pass verified & ready! (${sizeKB} KB) ✓`;
+                    statusText.style.color = "#4ade80";
+                    subText.textContent = scan.reason === 'qr_verified' ? "QR code detected • Compressed for fast sync" : "Privacy check passed • Compressed for fast sync";
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('saveDocBtn').addEventListener('click', async () => {
+            const name = document.getElementById('docNameInput').value.trim();
+            const pdpoChecked = document.getElementById('pdpoConfirmCheck').checked;
+
+            if (!name) {
+                alert("Please enter a pass label (e.g., EES QR, MDAC).");
+                return;
+            }
+            if (!pendingImageData) {
+                alert("Please tap the upload box to select a valid QR code or receipt first.");
+                return;
+            }
+            if (!pdpoChecked) {
+                alert("Please tick the confirmation box confirming this image does not contain a passport biodata page or national ID.");
+                return;
+            }
+            if (!currentTripId || !currentUser) return;
+
+            const saveBtn = document.getElementById('saveDocBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Saving...";
+
+            try {
+                const now = Date.now();
+                const docId = "doc_" + now;
+                await saveDocData({
+                    id: docId,
+                    tripId: currentTripId,
+                    userId: currentUser.uid,
+                    name: name,
+                    imageData: pendingImageData,
+                    createdAt: now,
+                    expiresAt: now + RETENTION_MS
+                });
+
+                document.getElementById('docNameInput').value = '';
+                document.getElementById('pdpoConfirmCheck').checked = false;
+                pendingImageData = null;
+                const statusText = document.getElementById('fileStatusText');
+                statusText.textContent = "Tap to select photo or screenshot";
+                statusText.style.color = "#60a5fa";
+                document.getElementById('fileSubText').textContent = "Auto-compressed (~60 KB) & checked on device";
+                document.getElementById('docFileInput').value = '';
+                modals.newDoc.classList.add('hide');
+                await loadDocuments(currentTripId);
+            } catch (err) {
+                alert("Could not save pass: " + err.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save Pass";
+            }
+        });
+
+        document.getElementById('deleteDocBtn').addEventListener('click', async () => {
+            const targetDoc = currentTripDocs[currentDocIndex];
+            if (!targetDoc) return;
+
+            const confirmed = await askConfirm(
+                "Delete Pass?",
+                `Remove "${targetDoc.name}" from this trip?`,
+                "Delete Pass"
+            );
+            if (!confirmed) return;
+
+            const btn = document.getElementById('deleteDocBtn');
+            btn.disabled = true;
+            btn.textContent = "Deleting...";
+
+            try {
+                await deleteDocData(targetDoc.id);
+                try { await localDelete("documents", targetDoc.id); } catch (_) {}
+
+                await loadDocuments(currentTripId);
+
+                if (currentTripDocs.length === 0) {
+                    clearTimeout(arrowHideTimer);
+                    screens.viewer.classList.add('hide');
+                } else {
+                    currentDocIndex = Math.min(currentDocIndex, currentTripDocs.length - 1);
+                    renderGallerySlide(true);
+                }
+            } catch (err) {
+                console.error("Delete pass failed:", err);
+                alert("Could not delete pass: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Delete";
+            }
+        });
+
+        function showScreen(screenId) {
+            Object.values(screens).forEach(s => s.classList.add('hide'));
+            screens[screenId].classList.remove('hide');
+        }
+
+        // Modal Event Handlers
+        document.getElementById('openBenefitsBtn').onclick = () => modals.benefits.classList.remove('hide');
+        document.getElementById('closeBenefitsBtn').onclick = () => modals.benefits.classList.add('hide');
+        modals.benefits.onclick = (e) => { if (e.target === modals.benefits) modals.benefits.classList.add('hide'); };
+
+        document.getElementById('openPrivacyBtnLogin').onclick = () => modals.privacy.classList.remove('hide');
+        document.getElementById('openPrivacyFromSettingsBtn').onclick = () => {
+            modals.settings.classList.add('hide');
+            modals.privacy.classList.remove('hide');
+        };
+        document.getElementById('closePrivacyBtn').onclick = () => modals.privacy.classList.add('hide');
+        document.getElementById('ackPrivacyBtn').onclick = () => modals.privacy.classList.add('hide');
+
+        document.getElementById('openSettingsBtn').onclick = () => modals.settings.classList.remove('hide');
+        document.getElementById('closeSettingsBtn').onclick = () => modals.settings.classList.add('hide');
+        modals.settings.onclick = (e) => { if (e.target === modals.settings) modals.settings.classList.add('hide'); };
+
+        document.getElementById('addTripBtn').onclick = () => modals.newTrip.classList.remove('hide');
+        document.getElementById('closeTripModalBtn').onclick = () => modals.newTrip.classList.add('hide');
+        document.getElementById('addDocTopBtn').onclick = () => {
+            document.getElementById('pdpoConfirmCheck').checked = false;
+            modals.newDoc.classList.remove('hide');
+        };
+        document.getElementById('closeDocModalBtn').onclick = () => modals.newDoc.classList.add('hide');
+        document.getElementById('backToTripsBtn').onclick = () => {
+            currentTripId = null;
+            showScreen('dashboard');
+        };
+        document.getElementById('closeViewerBtn').onclick = () => {
+            clearTimeout(arrowHideTimer);
+            screens.viewer.classList.add('hide');
+        };
+    </script>
+
+    <!-- Service Worker Registration (Relative path for both GitHub Pages & Netlify) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
