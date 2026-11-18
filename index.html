@@ -66,6 +66,7 @@
             color: #ffffff;
             transition: transform 0.1s, opacity 0.2s;
             cursor: pointer;
+            touch-action: manipulation;
         }
         .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
         .btn-guest {
@@ -74,6 +75,7 @@
             border: 1px solid rgba(148, 163, 184, 0.25);
             transition: transform 0.1s, background-color 0.2s;
             cursor: pointer;
+            touch-action: manipulation;
         }
         .btn-guest:active { transform: scale(0.97); background-color: rgba(51, 65, 85, 0.9); }
         .hide { display: none !important; }
@@ -264,7 +266,7 @@
 
     <!-- TRIP DETAIL SCREEN -->
     <div id="tripDetailScreen" style="background-color: #0f172a; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
-        <div class="glass px-4 py-3.5 flex items-center justify-between gap-2">
+        <div class="glass px-4 py-3.5 flex items-center justify-between gap-2" style="position: relative; z-index: 50;">
             <div class="flex items-center gap-2 overflow-hidden">
                 <button id="backToTripsBtn" type="button" class="p-2 -ml-2 text-blue-400 shrink-0">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -274,7 +276,7 @@
                     <p id="tripDetailMeta" class="text-xs text-sky-300 truncate"></p>
                 </div>
             </div>
-            <button id="deleteTripBtn" type="button" class="shrink-0 text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30">Delete Trip</button>
+            <button id="deleteTripBtn" type="button" class="shrink-0 text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30" style="touch-action: manipulation;">Delete Trip</button>
         </div>
         
         <div class="flex-1 overflow-y-auto p-4 pb-24 max-w-2xl w-full mx-auto">
@@ -322,7 +324,7 @@
     </div>
 
     <!-- ADD DOCUMENT MODAL (WITH GALLERY PICKER + DIRECT CAMERA BUTTON) -->
-    <div id="newDocModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4 overflow-y-auto">
+    <div id="newDocModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4 pb-12 overflow-y-auto">
         <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-5 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-white">Add Travel Pass</h3>
@@ -772,7 +774,8 @@
 
         // --- UNIFIED STORAGE LAYER ---
         function isCloudUser() {
-            return currentUser && !currentUser.isAnonymous;
+            const activeUser = currentUser || auth.currentUser;
+            return activeUser && !activeUser.isAnonymous;
         }
 
         async function saveTripData(trip) {
@@ -794,8 +797,18 @@
         }
 
         async function deleteTripData(tripId) {
-            if (isCloudUser()) {
+            const activeUser = currentUser || auth.currentUser;
+            if (isCloudUser() && activeUser) {
                 await deleteDoc(doc(dbCloud, "trips", tripId));
+                const q = query(
+                    collection(dbCloud, "trips"),
+                    where("userId", "==", activeUser.uid),
+                    where("id", "==", tripId)
+                );
+                const snap = await getDocs(q);
+                for (const d of snap.docs) {
+                    await deleteDoc(d.ref);
+                }
             } else {
                 await localDelete("trips", tripId);
             }
@@ -820,8 +833,18 @@
         }
 
         async function deleteDocData(docId) {
-            if (isCloudUser()) {
+            const activeUser = currentUser || auth.currentUser;
+            if (isCloudUser() && activeUser) {
                 await deleteDoc(doc(dbCloud, "documents", docId));
+                const q = query(
+                    collection(dbCloud, "documents"),
+                    where("userId", "==", activeUser.uid),
+                    where("id", "==", docId)
+                );
+                const snap = await getDocs(q);
+                for (const d of snap.docs) {
+                    await deleteDoc(d.ref);
+                }
             } else {
                 await localDelete("documents", docId);
             }
@@ -1048,7 +1071,8 @@
         });
 
         document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
-            if (!currentUser) return;
+            const activeUser = currentUser || auth.currentUser;
+            if (!activeUser) return;
             const confirmed = await askConfirm(
                 "Delete Account & Data?",
                 "Permanently delete your account and wipe ALL saved trips and QR passes? This cannot be undone.",
@@ -1059,7 +1083,7 @@
             const btn = document.getElementById('deleteAccountBtn');
             btn.disabled = true;
             try {
-                await wipeAllUserData(currentUser.uid);
+                await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
                 currentTripId = null;
                 await deleteUser(auth.currentUser);
@@ -1076,13 +1100,14 @@
         });
 
         async function loadTrips() {
-            if (!currentUser) return;
+            const activeUser = currentUser || auth.currentUser;
+            if (!activeUser) return;
             const container = document.getElementById('tripsContainer');
             container.innerHTML = '';
 
             let trips = [];
             try {
-                trips = await fetchUserTrips(currentUser.uid);
+                trips = await fetchUserTrips(activeUser.uid);
             } catch (err) {
                 console.error("Error loading trips:", err);
             }
@@ -1135,7 +1160,8 @@
             const name = document.getElementById('tripNameInput').value.trim();
             const locationRaw = document.getElementById('tripLocationInput').value.trim();
             const travelDate = document.getElementById('tripDateInput').value;
-            if (!name || !currentUser) {
+            const activeUser = currentUser || auth.currentUser;
+            if (!name || !activeUser) {
                 alert("Please enter a trip title.");
                 return;
             }
@@ -1159,7 +1185,7 @@
                 const tripId = "trip_" + now;
                 await saveTripData({
                     id: tripId,
-                    userId: currentUser.uid,
+                    userId: activeUser.uid,
                     name: name,
                     location: resolvedLocation,
                     travelDate: travelDate || '',
@@ -1180,7 +1206,8 @@
         });
 
         document.getElementById('deleteTripBtn').addEventListener('click', async () => {
-            if (!currentTripId || !currentUser) return;
+            const activeUser = currentUser || auth.currentUser;
+            if (!currentTripId || !activeUser) return;
             const confirmed = await askConfirm(
                 "Delete Trip?",
                 "This will permanently remove this trip and all its saved QR passes.",
@@ -1194,7 +1221,7 @@
             btn.textContent = "Deleting...";
 
             try {
-                const docs = await fetchTripDocs(targetTripId, currentUser.uid);
+                const docs = await fetchTripDocs(targetTripId, activeUser.uid);
                 for (const d of docs) {
                     await deleteDocData(d.id);
                 }
@@ -1233,10 +1260,12 @@
         }
 
         async function loadDocuments(tripId) {
+            const activeUser = currentUser || auth.currentUser;
+            if (!activeUser) return;
             const container = document.getElementById('docsContainer');
             container.innerHTML = '';
 
-            const docs = await fetchTripDocs(tripId, currentUser.uid);
+            const docs = await fetchTripDocs(tripId, activeUser.uid);
             docs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             currentTripDocs = docs;
 
@@ -1454,6 +1483,7 @@
         document.getElementById('saveDocBtn').addEventListener('click', async () => {
             const name = document.getElementById('docNameInput').value.trim();
             const pdpoChecked = document.getElementById('pdpoConfirmCheck').checked;
+            const activeUser = currentUser || auth.currentUser;
 
             if (!name) {
                 alert("Please enter a pass label (e.g., EES QR, MDAC).");
@@ -1467,7 +1497,18 @@
                 alert("Please tick the confirmation box confirming this image does not contain a passport biodata page or national ID.");
                 return;
             }
-            if (!currentTripId || !currentUser) return;
+            if (!activeUser) {
+                alert("Session expired. Please sign in again.");
+                modals.newDoc.classList.add('hide');
+                showScreen('login');
+                return;
+            }
+            if (!currentTripId) {
+                alert("Trip context was reset when switching apps. Please reopen your trip and tap Save Pass again.");
+                modals.newDoc.classList.add('hide');
+                showScreen('dashboard');
+                return;
+            }
 
             const saveBtn = document.getElementById('saveDocBtn');
             saveBtn.disabled = true;
@@ -1479,7 +1520,7 @@
                 await saveDocData({
                     id: docId,
                     tripId: currentTripId,
-                    userId: currentUser.uid,
+                    userId: activeUser.uid,
                     name: name,
                     imageData: pendingImageData,
                     createdAt: now,
@@ -1498,6 +1539,7 @@
                 modals.newDoc.classList.add('hide');
                 await loadDocuments(currentTripId);
             } catch (err) {
+                console.error("Save pass error:", err);
                 alert("Could not save pass: " + err.message);
             } finally {
                 saveBtn.disabled = false;
