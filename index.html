@@ -91,6 +91,28 @@
             opacity: 0 !important;
             pointer-events: none !important;
         }
+        /* Camera Alignment Guide Box */
+        .camera-guide-frame {
+            width: min(82vw, 340px);
+            height: min(56vh, 380px);
+            border: 2px solid rgba(56, 189, 248, 0.75);
+            border-radius: 22px;
+            box-shadow: 0 0 0 9999px rgba(2, 6, 23, 0.62), inset 0 0 24px rgba(56, 189, 248, 0.18);
+            position: relative;
+            pointer-events: none;
+        }
+        .cam-corner {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-color: #38bdf8;
+            border-style: solid;
+        }
+        .cam-tl { top: -3px; left: -3px; border-width: 4px 0 0 4px; border-top-left-radius: 20px; }
+        .cam-tr { top: -3px; right: -3px; border-width: 4px 4px 0 0; border-top-right-radius: 20px; }
+        .cam-bl { bottom: -3px; left: -3px; border-width: 0 0 4px 4px; border-bottom-left-radius: 20px; }
+        .cam-br { bottom: -3px; right: -3px; border-width: 0 4px 4px 0; border-bottom-right-radius: 20px; }
+
         @keyframes popScale {
             0% { opacity: 0; transform: scale(0.94); }
             100% { opacity: 1; transform: scale(1); }
@@ -323,7 +345,7 @@
         </div>
     </div>
 
-    <!-- ADD DOCUMENT MODAL (WITH GALLERY PICKER + DIRECT CAMERA BUTTON) -->
+    <!-- ADD DOCUMENT MODAL (WITH GALLERY PICKER + GUIDED LIVE CAMERA VIEWFINDER) -->
     <div id="newDocModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4 pb-12 overflow-y-auto">
         <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-5 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
@@ -353,13 +375,13 @@
                     <p style="color: #64748b;" class="text-[10px] mt-0.5">Saved screenshot</p>
                 </div>
 
-                <!-- Direct Rear Camera Capture -->
-                <div class="upload-box relative rounded-xl p-3.5 text-center cursor-pointer">
-                    <input type="file" id="docCameraInput" accept="image/*" capture="environment" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                <!-- Guided Live Camera Capture (with native fallback input) -->
+                <button id="openGuidedCameraBtn" type="button" class="upload-box relative rounded-xl p-3.5 text-center cursor-pointer">
                     <svg class="w-6 h-6 mx-auto mb-1.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     <p class="text-xs font-bold text-emerald-400">Take Photo</p>
-                    <p style="color: #64748b;" class="text-[10px] mt-0.5">Open camera</p>
-                </div>
+                    <p style="color: #64748b;" class="text-[10px] mt-0.5">Guided camera box</p>
+                </button>
+                <input type="file" id="docCameraFallbackInput" accept="image/*" capture="environment" class="hide">
             </div>
 
             <div style="background-color: #0f172a;" class="rounded-xl px-3.5 py-2.5 mb-4 border border-slate-800 text-center overflow-hidden">
@@ -375,6 +397,42 @@
             </label>
             
             <button id="saveDocBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl disabled:opacity-50">Save Pass</button>
+        </div>
+    </div>
+
+    <!-- GUIDED LIVE CAMERA ALIGNMENT OVERLAY -->
+    <div id="cameraScannerModal" style="z-index: 10002;" class="hide fixed inset-0 bg-black flex flex-col justify-between select-none">
+        <video id="cameraVideoFeed" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover"></video>
+
+        <!-- Top Controls -->
+        <div class="relative p-4 flex items-center justify-between bg-gradient-to-b from-black/85 to-transparent" style="z-index: 10;">
+            <button id="closeCameraBtn" type="button" class="px-3.5 py-2 rounded-full bg-slate-900/90 text-white text-xs font-bold border border-white/15 active:scale-95">
+                ✕ Cancel
+            </button>
+            <span class="text-xs font-bold text-sky-300 tracking-wide uppercase">Align QR Pass Inside Box</span>
+            <button id="nativeCamSwitchBtn" type="button" class="px-3 py-2 rounded-full bg-slate-900/90 text-slate-300 text-[11px] font-semibold border border-white/15">
+                System Cam
+            </button>
+        </div>
+
+        <!-- Center Alignment Frame -->
+        <div class="relative flex-1 flex flex-col items-center justify-center p-4" style="z-index: 5;">
+            <div class="camera-guide-frame">
+                <div class="cam-corner cam-tl"></div>
+                <div class="cam-corner cam-tr"></div>
+                <div class="cam-corner cam-bl"></div>
+                <div class="cam-corner cam-br"></div>
+            </div>
+            <p class="relative mt-4 text-xs font-medium text-white bg-slate-950/80 px-4 py-1.5 rounded-full border border-white/10" style="z-index: 10;">
+                Hold steady &amp; keep QR code crisp inside the frame
+            </p>
+        </div>
+
+        <!-- Bottom Shutter Bar -->
+        <div class="relative p-6 pb-10 flex items-center justify-center bg-gradient-to-t from-black/90 to-transparent" style="z-index: 10;">
+            <button id="captureFrameBtn" type="button" aria-label="Capture photo" class="w-18 h-18 p-1.5 rounded-full border-4 border-white bg-white/20 active:scale-90 transition-transform shadow-2xl">
+                <span class="block w-14 h-14 rounded-full bg-white"></span>
+            </button>
         </div>
     </div>
 
@@ -881,49 +939,105 @@
             for (const d of localDocs) await localDelete("documents", d.id);
         }
 
-        // --- STRICT ON-DEVICE PASSPORT / NATIONAL ID BLOCKER ---
-        function isSensitiveLabel(labelText) {
-            const clean = (labelText || '').trim().toUpperCase();
-            if (!clean) return false;
-            return /\b(IC|I\.C|MYKAD|PASSPORT|PASPORT|NRIC|IDENTITY CARD|KAD PENGENALAN|ID CARD|SMART CARD)\b/.test(clean);
-        }
+        // --- IMAGE-ONLY MULTI-ANGLE PASSPORT / NATIONAL ID BLOCKER ---
+        function buildScanCanvas(img, rotateDeg = 0) {
+            const MAX_SCAN = 1600;
+            let w = img.width;
+            let h = img.height;
+            if (w > h && w > MAX_SCAN) {
+                h = Math.round(h * MAX_SCAN / w);
+                w = MAX_SCAN;
+            } else if (h >= w && h > MAX_SCAN) {
+                w = Math.round(w * MAX_SCAN / h);
+                h = MAX_SCAN;
+            }
 
-        function buildHighContrastOCRCanvas(sourceCanvas) {
-            const ocrCanvas = document.createElement('canvas');
-            ocrCanvas.width = sourceCanvas.width;
-            ocrCanvas.height = sourceCanvas.height;
-            const ctx = ocrCanvas.getContext('2d');
-            ctx.drawImage(sourceCanvas, 0, 0);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            if (rotateDeg === 90 || rotateDeg === 270) {
+                canvas.width = h;
+                canvas.height = w;
+            } else {
+                canvas.width = w;
+                canvas.height = h;
+            }
 
-            const imgData = ctx.getImageData(0, 0, ocrCanvas.width, ocrCanvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate((rotateDeg * Math.PI) / 180);
+            ctx.drawImage(img, -w / 2, -h / 2, w, h);
+            ctx.restore();
+
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const data = imgData.data;
             for (let i = 0; i < data.length; i += 4) {
                 const lum = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-                // Boost contrast for printed text on glossy ID/passport cards
-                const boosted = lum < 135 ? Math.max(0, lum * 0.65) : Math.min(255, lum * 1.25);
+                const boosted = lum < 135 ? Math.max(0, lum * 0.6) : Math.min(255, lum * 1.25);
                 data[i] = boosted;
                 data[i + 1] = boosted;
                 data[i + 2] = boosted;
             }
             ctx.putImageData(imgData, 0, 0);
-            return ocrCanvas;
+            return canvas;
         }
 
-        async function detectSensitiveID(canvas, labelText = '') {
-            if (isSensitiveLabel(labelText)) {
-                return { blocked: true, type: 'Sensitive ID / Passport label' };
+        function evaluateOCRText(rawText) {
+            const upper = (rawText || '').toUpperCase();
+            const compact = upper.replace(/\s+/g, '');
+
+            // 1. Passport / ICAO Machine Readable Zone
+            if (/P<[A-Z]{3}/.test(compact) || /I<[A-Z]{3}/.test(compact) || /<{4,}/.test(compact)) {
+                return { blocked: true, type: 'Passport / ICAO ID (MRZ detected)' };
             }
 
+            // 2. Brunei IC (00-123456 / 01-123456) or Malaysian MyKad (YYMMDD-PB-NNNN)
+            if (/\b0[01]-\d{6}\b/.test(upper) || /\b\d{6}-\d{2}-\d{4}\b/.test(upper)) {
+                return { blocked: true, type: 'National ID Number (Brunei IC / MyKad)' };
+            }
+
+            // 3. Strong single-match ID / Passport headers
+            const strictSingleKeywords = [
+                'PASSPORT', 'PASPORT', 'IDENTITY CARD', 'KAD PENGENALAN',
+                'MYKAD', 'NEGARA BRUNEI DARUSSALAM', 'WARGANEGARA',
+                'KEWARGANEGARAAN', 'NO. K/P', 'REPUBLIC OF SINGAPORE',
+                'SMART IDENTITY', 'PENDAFTARAN NEGARA'
+            ];
+            for (const kw of strictSingleKeywords) {
+                if (upper.includes(kw)) {
+                    return { blocked: true, type: `National ID or Passport (${kw})` };
+                }
+            }
+
+            // 4. Secondary biodata field combinations
+            const secondaryKeywords = [
+                'TARIKH LAHIR', 'DATE OF BIRTH', 'PLACE OF BIRTH',
+                'TEMPAT LAHIR', 'NATIONALITY', 'JANTINA', 'BANGSA',
+                'DATE OF EXPIRY', 'TARIKH LUPUT', 'AUTHORITY', 'SURNAME', 'GIVEN NAMES'
+            ];
+            let hits = 0;
+            for (const kw of secondaryKeywords) {
+                if (upper.includes(kw)) hits++;
+            }
+            if (hits >= 2) {
+                return { blocked: true, type: 'Personal Biodata / ID Document' };
+            }
+
+            return { blocked: false, textLen: compact.length };
+        }
+
+        async function detectSensitiveIDFromImage(img, compressedCanvas) {
             let hasQR = false;
             try {
                 if ('BarcodeDetector' in window) {
                     const detector = new BarcodeDetector({ formats: ['qr_code', 'aztec', 'pdf417', 'data_matrix'] });
-                    const codes = await detector.detect(canvas);
+                    const codes = await detector.detect(compressedCanvas);
                     if (codes && codes.length > 0) hasQR = true;
                 }
                 if (!hasQR && typeof jsQR === 'function') {
-                    const ctx = canvas.getContext('2d');
-                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const ctx = compressedCanvas.getContext('2d');
+                    const imgData = ctx.getImageData(0, 0, compressedCanvas.width, compressedCanvas.height);
                     const qr = jsQR(imgData.data, imgData.width, imgData.height);
                     if (qr && qr.data) hasQR = true;
                 }
@@ -931,50 +1045,23 @@
 
             if (typeof Tesseract !== 'undefined') {
                 try {
-                    const ocrCanvas = buildHighContrastOCRCanvas(canvas);
-                    const result = await Tesseract.recognize(ocrCanvas, 'eng');
-                    const rawText = (result && result.data && result.data.text) ? result.data.text.toUpperCase() : '';
-                    const compact = rawText.replace(/\s+/g, '');
+                    const uprightCanvas = buildScanCanvas(img, 0);
+                    const res0 = await Tesseract.recognize(uprightCanvas, 'eng');
+                    const text0 = res0?.data?.text || '';
+                    const check0 = evaluateOCRText(text0);
+                    if (check0.blocked) return check0;
 
-                    // 1. Passport / ICAO Machine Readable Zone
-                    if (/P<[A-Z]{3}/.test(compact) || /I<[A-Z]{3}/.test(compact) || /<{4,}/.test(compact)) {
-                        return { blocked: true, type: 'Passport / ICAO ID (MRZ detected)' };
-                    }
-
-                    // 2. Brunei IC (00-123456 / 01-123456) or Malaysian MyKad (YYMMDD-PB-NNNN) number patterns
-                    if (/\b0[01]-\d{6}\b/.test(rawText) || /\b\d{6}-\d{2}-\d{4}\b/.test(rawText)) {
-                        return { blocked: true, type: 'National ID Number (Brunei IC / MyKad)' };
-                    }
-
-                    // 3. Strong single-match ID / Passport headers (Brunei, Malaysia, Singapore, International)
-                    const strictSingleKeywords = [
-                        'PASSPORT', 'PASPORT', 'IDENTITY CARD', 'KAD PENGENALAN',
-                        'MYKAD', 'NEGARA BRUNEI DARUSSALAM', 'WARGANEGARA',
-                        'KEWARGANEGARAAN', 'NO. K/P', 'REPUBLIC OF SINGAPORE'
-                    ];
-                    for (const kw of strictSingleKeywords) {
-                        if (rawText.includes(kw)) {
-                            return { blocked: true, type: `National ID or Passport (${kw})` };
-                        }
-                    }
-
-                    // 4. Secondary biodata field combinations
-                    const secondaryKeywords = [
-                        'TARIKH LAHIR', 'DATE OF BIRTH', 'PLACE OF BIRTH',
-                        'TEMPAT LAHIR', 'NATIONALITY', 'JANTINA', 'BANGSA',
-                        'DATE OF EXPIRY', 'TARIKH LUPUT', 'AUTHORITY'
-                    ];
-                    let hits = 0;
-                    for (const kw of secondaryKeywords) {
-                        if (rawText.includes(kw)) hits++;
-                    }
-                    if (hits >= 2) {
-                        return { blocked: true, type: 'Personal Biodata / ID Document' };
+                    if (check0.textLen < 25) {
+                        const rotatedCanvas = buildScanCanvas(img, 90);
+                        const res90 = await Tesseract.recognize(rotatedCanvas, 'eng');
+                        const check90 = evaluateOCRText(res90?.data?.text || '');
+                        if (check90.blocked) return check90;
                     }
                 } catch (e) {
                     console.warn("OCR check skipped:", e);
                 }
             }
+
             return { blocked: false, reason: hasQR ? 'qr_verified' : 'clean' };
         }
 
@@ -984,7 +1071,7 @@
             const ctx = canvas.getContext('2d');
             let width = img.width;
             let height = img.height;
-            const MAX = 1100;
+            const MAX = 1000;
             if (width > height) {
                 if (width > MAX) { height = Math.round(height * MAX / width); width = MAX; }
             } else {
@@ -996,9 +1083,9 @@
             ctx.fillRect(0, 0, width, height);
             ctx.drawImage(img, 0, 0, width, height);
 
-            let quality = 0.74;
+            let quality = 0.72;
             let dataUrl = canvas.toDataURL('image/jpeg', quality);
-            while (dataUrl.length > 220000 && quality > 0.44) {
+            while (dataUrl.length > 220000 && quality > 0.42) {
                 quality -= 0.1;
                 dataUrl = canvas.toDataURL('image/jpeg', quality);
             }
@@ -1013,6 +1100,7 @@
         let currentDocIndex = 0;
         let pendingImageData = null;
         let arrowHideTimer = null;
+        let activeCameraStream = null;
 
         const screens = {
             login: document.getElementById('loginScreen'),
@@ -1023,6 +1111,7 @@
         const modals = {
             newTrip: document.getElementById('newTripModal'),
             newDoc: document.getElementById('newDocModal'),
+            camera: document.getElementById('cameraScannerModal'),
             benefits: document.getElementById('benefitsModal'),
             settings: document.getElementById('settingsModal'),
             privacy: document.getElementById('privacyModal')
@@ -1479,11 +1568,66 @@
             }
         });
 
-        // --- UNIFIED FILE & CAMERA UPLOAD HANDLER + STRICT ID CHECK ---
+        // --- GUIDED LIVE CAMERA VIEWFINDER CONTROLLER ---
+        function stopLiveCamera() {
+            if (activeCameraStream) {
+                activeCameraStream.getTracks().forEach(track => track.stop());
+                activeCameraStream = null;
+            }
+            const videoEl = document.getElementById('cameraVideoFeed');
+            videoEl.srcObject = null;
+            modals.camera.classList.add('hide');
+        }
+
+        async function startGuidedCamera() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                document.getElementById('docCameraFallbackInput').click();
+                return;
+            }
+            try {
+                activeCameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    },
+                    audio: false
+                });
+                const videoEl = document.getElementById('cameraVideoFeed');
+                videoEl.srcObject = activeCameraStream;
+                modals.camera.classList.remove('hide');
+            } catch (err) {
+                // Seamless fallback to native device camera if permission or live stream is unavailable
+                document.getElementById('docCameraFallbackInput').click();
+            }
+        }
+
+        document.getElementById('openGuidedCameraBtn').addEventListener('click', startGuidedCamera);
+        document.getElementById('closeCameraBtn').addEventListener('click', stopLiveCamera);
+        document.getElementById('nativeCamSwitchBtn').addEventListener('click', () => {
+            stopLiveCamera();
+            document.getElementById('docCameraFallbackInput').click();
+        });
+
+        document.getElementById('captureFrameBtn').addEventListener('click', () => {
+            const videoEl = document.getElementById('cameraVideoFeed');
+            if (!videoEl.videoWidth || !videoEl.videoHeight) return;
+
+            const snapCanvas = document.createElement('canvas');
+            snapCanvas.width = videoEl.videoWidth;
+            snapCanvas.height = videoEl.videoHeight;
+            snapCanvas.getContext('2d').drawImage(videoEl, 0, 0, snapCanvas.width, snapCanvas.height);
+
+            const dataUrl = snapCanvas.toDataURL('image/jpeg', 0.92);
+            stopLiveCamera();
+            processImageDataUrl(dataUrl);
+        });
+
+        // --- UNIFIED FILE & CAMERA UPLOAD HANDLER (IMAGE-CONTENT ONLY CHECK) ---
         function rejectBlockedUpload(reasonText) {
             pendingImageData = null;
             document.getElementById('docFileInput').value = '';
-            document.getElementById('docCameraInput').value = '';
+            document.getElementById('docCameraFallbackInput').value = '';
             const statusText = document.getElementById('fileStatusText');
             const subText = document.getElementById('fileSubText');
             statusText.textContent = "Blocked: Passport / National ID Detected";
@@ -1492,45 +1636,42 @@
             alert(`Upload Blocked (${reasonText}): For your PDPO privacy protection, Lintas does not allow Passport biodata pages or National IDs. Please select or capture a QR pass or receipt instead.`);
         }
 
-        function processSelectedPassFile(inputEl) {
-            const file = inputEl.files[0];
-            if (!file) return;
-
-            const labelText = document.getElementById('docNameInput').value.trim();
-            if (isSensitiveLabel(labelText)) {
-                rejectBlockedUpload("Sensitive ID / Passport label");
-                return;
-            }
-
+        function processImageDataUrl(rawDataUrl) {
             const statusText = document.getElementById('fileStatusText');
             const subText = document.getElementById('fileSubText');
             const saveBtn = document.getElementById('saveDocBtn');
             pendingImageData = null;
             saveBtn.disabled = true;
 
-            statusText.textContent = "Optimizing & checking privacy...";
+            statusText.textContent = "Optimizing & checking document...";
             statusText.style.color = "#fbbf24";
-            subText.textContent = "Scanning on-device to block Passports / IDs...";
+            subText.textContent = "Scanning image on-device to block Passports / IDs...";
 
+            const img = new Image();
+            img.onload = async function() {
+                const { canvas, dataUrl, sizeKB } = compressForQR(img);
+                const scan = await detectSensitiveIDFromImage(img, canvas);
+
+                if (scan.blocked) {
+                    rejectBlockedUpload(scan.type);
+                    return;
+                }
+
+                pendingImageData = dataUrl;
+                saveBtn.disabled = false;
+                statusText.textContent = `Pass verified & ready! (${sizeKB} KB) ✓`;
+                statusText.style.color = "#4ade80";
+                subText.textContent = scan.reason === 'qr_verified' ? "QR code detected • Compressed for fast sync" : "Privacy check passed • Compressed for fast sync";
+            };
+            img.src = rawDataUrl;
+        }
+
+        function processSelectedPassFile(inputEl) {
+            const file = inputEl.files[0];
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = function(event) {
-                const img = new Image();
-                img.onload = async function() {
-                    const { canvas, dataUrl, sizeKB } = compressForQR(img);
-                    const scan = await detectSensitiveID(canvas, labelText);
-
-                    if (scan.blocked) {
-                        rejectBlockedUpload(scan.type);
-                        return;
-                    }
-
-                    pendingImageData = dataUrl;
-                    saveBtn.disabled = false;
-                    statusText.textContent = `Pass verified & ready! (${sizeKB} KB) ✓`;
-                    statusText.style.color = "#4ade80";
-                    subText.textContent = scan.reason === 'qr_verified' ? "QR code detected • Compressed for fast sync" : "Privacy check passed • Compressed for fast sync";
-                };
-                img.src = event.target.result;
+                processImageDataUrl(event.target.result);
             };
             reader.readAsDataURL(file);
         }
@@ -1538,7 +1679,7 @@
         document.getElementById('docFileInput').addEventListener('change', function() {
             processSelectedPassFile(this);
         });
-        document.getElementById('docCameraInput').addEventListener('change', function() {
+        document.getElementById('docCameraFallbackInput').addEventListener('change', function() {
             processSelectedPassFile(this);
         });
 
@@ -1549,10 +1690,6 @@
 
             if (!name) {
                 alert("Please enter a pass label (e.g., EES QR, MDAC).");
-                return;
-            }
-            if (isSensitiveLabel(name)) {
-                rejectBlockedUpload("Sensitive ID / Passport label");
                 return;
             }
             if (!pendingImageData) {
@@ -1601,7 +1738,7 @@
                 statusText.style.color = "#cbd5e1";
                 document.getElementById('fileSubText').textContent = "Auto-compressed (~60 KB) & scanned on-device for IDs";
                 document.getElementById('docFileInput').value = '';
-                document.getElementById('docCameraInput').value = '';
+                document.getElementById('docCameraFallbackInput').value = '';
                 modals.newDoc.classList.add('hide');
                 await loadDocuments(currentTripId);
             } catch (err) {
@@ -1678,7 +1815,10 @@
             document.getElementById('pdpoConfirmCheck').checked = false;
             modals.newDoc.classList.remove('hide');
         };
-        document.getElementById('closeDocModalBtn').onclick = () => modals.newDoc.classList.add('hide');
+        document.getElementById('closeDocModalBtn').onclick = () => {
+            stopLiveCamera();
+            modals.newDoc.classList.add('hide');
+        };
         document.getElementById('backToTripsBtn').onclick = () => {
             currentTripId = null;
             showScreen('dashboard');
