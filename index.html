@@ -537,7 +537,7 @@
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
                 <p><strong>1. Purpose &amp; Independence:</strong> Lintas is an independent personal travel organizer designed to store non-sensitive QR codes (such as EES, MDAC, and boarding passes). Lintas is not affiliated with any government or immigration authority.</p>
-                <p><strong>2. Storage &amp; Sync (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching, and automatically deletes trips and passes after 30 days.</p>
+                <p><strong>2. Storage, Auto-Lock &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Sessions automatically log out after 5 minutes of inactivity, and all trips and passes auto-delete after 30 days.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs an on-device check before upload and blocks images resembling passports or IDs.</p>
                 <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account &amp; Privacy → Delete Account &amp; Wipe All Data</em>.</p>
@@ -592,9 +592,10 @@
             localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
         });
 
-        // 30-Day Retention Policy
+        // 30-Day Retention Policy & 5-Minute PDPO Inactivity Timeout
         const RETENTION_DAYS = 30;
         const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
+        const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
         // --- LOGIN SCREEN MINIMAL LOCAL WEATHER + NEXT SOLAT PILL ---
         function formatTime12h(hhmm) {
@@ -1143,6 +1144,9 @@
         let pendingImageData = null;
         let arrowHideTimer = null;
         let activeCameraStream = null;
+        let inactivityTimer = null;
+        let lastActivityAt = Date.now();
+        let isAutoLoggingOut = false;
 
         const screens = {
             login: document.getElementById('loginScreen'),
@@ -1159,9 +1163,76 @@
             privacy: document.getElementById('privacyModal')
         };
 
+        // --- PDPO INACTIVITY AUTO-LOGOUT CONTROLLER ---
+        function clearInactivityWatch() {
+            if (inactivityTimer) {
+                clearTimeout(inactivityTimer);
+                inactivityTimer = null;
+            }
+        }
+
+        async function triggerInactivityLogout() {
+            if (isAutoLoggingOut) return;
+            const activeUser = currentUser || auth.currentUser;
+            if (!activeUser) return;
+
+            isAutoLoggingOut = true;
+            clearInactivityWatch();
+            clearTimeout(arrowHideTimer);
+            stopLiveCamera();
+
+            // Close all open modals & reset sensitive screen state
+            Object.values(modals).forEach(m => m.classList.add('hide'));
+            document.getElementById('confirmModal').classList.add('hide');
+            pendingImageData = null;
+            currentTripId = null;
+            currentTripDocs = [];
+            showScreen('login');
+
+            try {
+                await signOut(auth);
+            } catch (err) {
+                console.warn("Auto-logout signOut notice:", err);
+            } finally {
+                isAutoLoggingOut = false;
+            }
+
+            await showNotice(
+                "Session Locked for Privacy",
+                "You were automatically signed out after 5 minutes of inactivity to protect your travel passes.",
+                "Lintas • Security Lock"
+            );
+        }
+
+        function resetInactivityTimer() {
+            const activeUser = currentUser || auth.currentUser;
+            if (!activeUser || isAutoLoggingOut) return;
+            lastActivityAt = Date.now();
+            clearInactivityWatch();
+            inactivityTimer = setTimeout(() => {
+                triggerInactivityLogout();
+            }, INACTIVITY_TIMEOUT_MS);
+        }
+
+        ['touchstart', 'click', 'keydown', 'scroll', 'mousemove'].forEach((evt) => {
+            document.addEventListener(evt, resetInactivityTimer, { passive: true });
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            const activeUser = currentUser || auth.currentUser;
+            if (document.visibilityState === 'visible' && activeUser && !isAutoLoggingOut) {
+                if (Date.now() - lastActivityAt >= INACTIVITY_TIMEOUT_MS) {
+                    triggerInactivityLogout();
+                } else {
+                    resetInactivityTimer();
+                }
+            }
+        });
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
+                resetInactivityTimer();
                 const guestBanner = document.getElementById('guestBanner');
                 const syncBadge = document.getElementById('syncStatusBadge');
                 const settingsMode = document.getElementById('settingsStorageMode');
@@ -1170,20 +1241,21 @@
                     document.getElementById('userEmailDisplay').textContent = "Guest";
                     document.getElementById('settingsUserLabel').textContent = "Guest (Local Device)";
                     syncBadge.textContent = "● Offline Local Mode";
-                    settingsMode.textContent = "✓ Local-Only Storage Active (30-Day Auto-Delete)";
+                    settingsMode.textContent = "✓ Local-Only Storage • 5m Auto-Lock Active";
                     guestBanner.classList.remove('hide');
                 } else {
                     const label = user.email ? user.email.split('@')[0] : "Traveler";
                     document.getElementById('userEmailDisplay').textContent = label;
                     document.getElementById('settingsUserLabel').textContent = user.email || "Google Account";
                     syncBadge.textContent = "● Cloud Sync + Offline Ready";
-                    settingsMode.textContent = "✓ Cloud Sync + Offline Cache Active (30-Day Auto-Delete)";
+                    settingsMode.textContent = "✓ Cloud Sync • 5m Auto-Lock • 30d Auto-Delete";
                     guestBanner.classList.add('hide');
                 }
                 if (!currentTripId) showScreen('dashboard');
                 await cleanupExpiredItems(user.uid);
                 await loadTrips();
             } else {
+                clearInactivityWatch();
                 currentUser = null;
                 currentTripId = null;
                 showScreen('login');
@@ -1246,6 +1318,7 @@
         });
 
         document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
+            clearInactivityWatch();
             modals.settings.classList.add('hide');
             currentTripId = null;
             await signOut(auth);
@@ -1264,6 +1337,7 @@
             const btn = document.getElementById('deleteAccountBtn');
             btn.disabled = true;
             try {
+                clearInactivityWatch();
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
                 currentTripId = null;
@@ -1617,11 +1691,12 @@
                 activeCameraStream = null;
             }
             const videoEl = document.getElementById('cameraVideoFeed');
-            videoEl.srcObject = null;
+            if (videoEl) videoEl.srcObject = null;
             modals.camera.classList.add('hide');
         }
 
         async function startGuidedCamera() {
+            resetInactivityTimer();
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                 document.getElementById('docCameraFallbackInput').click();
                 return;
@@ -1651,6 +1726,7 @@
         });
 
         document.getElementById('captureFrameBtn').addEventListener('click', () => {
+            resetInactivityTimer();
             const videoEl = document.getElementById('cameraVideoFeed');
             if (!videoEl.videoWidth || !videoEl.videoHeight) return;
 
@@ -1692,6 +1768,7 @@
         }
 
         function processImageDataUrl(rawDataUrl) {
+            resetInactivityTimer();
             const statusText = document.getElementById('fileStatusText');
             const subText = document.getElementById('fileSubText');
             const saveBtn = document.getElementById('saveDocBtn');
