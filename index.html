@@ -537,7 +537,7 @@
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
                 <p><strong>1. Purpose &amp; Independence:</strong> Lintas is an independent personal travel organizer designed to store non-sensitive QR codes (such as EES, MDAC, and boarding passes). Lintas is not affiliated with any government or immigration authority.</p>
-                <p><strong>2. Storage, Auto-Lock &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Sessions automatically log out after 5 minutes of inactivity, and all trips and passes auto-delete after 30 days.</p>
+                <p><strong>2. Storage, Auto-Lock &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Sessions require a fresh sign-in when the app is reopened, automatically lock after 5 minutes of inactivity, and auto-delete all trips and passes after 30 days.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs an on-device check before upload and blocks images resembling passports or IDs.</p>
                 <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account &amp; Privacy → Delete Account &amp; Wipe All Data</em>.</p>
@@ -573,7 +573,7 @@
     <!-- Firebase SDK Modules (Auth + Cloud Firestore with Offline Persistence) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithPopup, signInAnonymously, linkWithPopup, GoogleAuthProvider, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, setPersistence, browserSessionPersistence, signInWithPopup, signInAnonymously, linkWithPopup, GoogleAuthProvider, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, setDoc, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -587,6 +587,9 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        // Enforce session-only login (clears when tab/app is closed)
+        setPersistence(auth, browserSessionPersistence).catch(() => {});
+
         const provider = new GoogleAuthProvider();
         const dbCloud = initializeFirestore(app, {
             localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
@@ -596,6 +599,7 @@
         const RETENTION_DAYS = 30;
         const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
         const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+        const SESSION_FLAG_KEY = "lintas_active_session";
 
         // --- LOGIN SCREEN MINIMAL LOCAL WEATHER + NEXT SOLAT PILL ---
         function formatTime12h(hhmm) {
@@ -1180,8 +1184,8 @@
             clearInactivityWatch();
             clearTimeout(arrowHideTimer);
             stopLiveCamera();
+            sessionStorage.removeItem(SESSION_FLAG_KEY);
 
-            // Close all open modals & reset sensitive screen state
             Object.values(modals).forEach(m => m.classList.add('hide'));
             document.getElementById('confirmModal').classList.add('hide');
             pendingImageData = null;
@@ -1231,6 +1235,16 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // Require fresh login whenever the app/tab was closed and reopened
+                if (!sessionStorage.getItem(SESSION_FLAG_KEY)) {
+                    clearInactivityWatch();
+                    currentUser = null;
+                    currentTripId = null;
+                    showScreen('login');
+                    await signOut(auth).catch(() => {});
+                    return;
+                }
+
                 currentUser = user;
                 resetInactivityTimer();
                 const guestBanner = document.getElementById('guestBanner');
@@ -1256,6 +1270,7 @@
                 await loadTrips();
             } else {
                 clearInactivityWatch();
+                sessionStorage.removeItem(SESSION_FLAG_KEY);
                 currentUser = null;
                 currentTripId = null;
                 showScreen('login');
@@ -1265,8 +1280,11 @@
         async function triggerGoogleSignIn() {
             try {
                 modals.benefits.classList.add('hide');
+                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                await setPersistence(auth, browserSessionPersistence);
                 await signInWithPopup(auth, provider);
             } catch (error) {
+                sessionStorage.removeItem(SESSION_FLAG_KEY);
                 document.getElementById('loginError').textContent = `Login Error: ${error.message}`;
                 document.getElementById('loginError').classList.remove('hide');
             }
@@ -1277,8 +1295,11 @@
 
         document.getElementById('guestSignInBtn').addEventListener('click', async () => {
             try {
+                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                await setPersistence(auth, browserSessionPersistence);
                 await signInAnonymously(auth);
             } catch (error) {
+                sessionStorage.removeItem(SESSION_FLAG_KEY);
                 document.getElementById('loginError').textContent = `Guest Login Error: ${error.message}`;
                 document.getElementById('loginError').classList.remove('hide');
             }
@@ -1319,6 +1340,7 @@
 
         document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
             clearInactivityWatch();
+            sessionStorage.removeItem(SESSION_FLAG_KEY);
             modals.settings.classList.add('hide');
             currentTripId = null;
             await signOut(auth);
@@ -1338,6 +1360,7 @@
             btn.disabled = true;
             try {
                 clearInactivityWatch();
+                sessionStorage.removeItem(SESSION_FLAG_KEY);
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
                 currentTripId = null;
