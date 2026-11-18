@@ -12,14 +12,12 @@
     <title>Lintas</title>
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
-    <!-- International Modern Display & UI Typography (Outfit + Plus Jakarta Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Lightweight On-Device QR & MRZ/ID Privacy Scanner -->
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         body {
             background-color: #0f172a;
@@ -27,7 +25,6 @@
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Commercial International Brand Wordmark */
         .brand-wordmark {
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
             font-weight: 900;
@@ -112,6 +109,15 @@
             touch-action: manipulation;
         }
         .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+        .btn-biometric {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: #ffffff;
+            border: 1px solid rgba(186, 230, 253, 0.35);
+            transition: transform 0.1s, opacity 0.2s;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .btn-biometric:active { transform: scale(0.97); opacity: 0.9; }
         .btn-guest {
             background-color: rgba(30, 41, 59, 0.9);
             color: #e2e8f0;
@@ -134,7 +140,6 @@
             opacity: 0 !important;
             pointer-events: none !important;
         }
-        /* Camera Alignment Guide Box */
         .camera-guide-frame {
             width: min(82vw, 340px);
             height: min(56vh, 380px);
@@ -206,7 +211,6 @@
 
     <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="flex-1 flex flex-col justify-between p-6 text-center">
-        <!-- Minimal Local Weather & Next Solat Pill -->
         <div class="pt-1 flex justify-center px-2">
             <button id="localContextPill" type="button" style="background-color: rgba(30, 41, 59, 0.72); border: 1px solid rgba(148, 163, 184, 0.18);" class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 px-3.5 py-1.5 rounded-2xl text-[11px] font-medium text-slate-300 hover:text-white hover:border-blue-400/40 transition-colors max-w-full leading-snug" title="Tap to refresh with precise GPS">
                 <span id="localContextText">Loading local weather &amp; Solat...</span>
@@ -230,6 +234,14 @@
             <p style="color: #64748b;" class="text-xs sm:text-sm mb-8 max-w-xs leading-relaxed">All your travel QR passes &amp; receipts, synced and ready offline.</p>
 
             <div class="w-full max-w-sm space-y-3">
+                <!-- BIOMETRIC QUICK UNLOCK BUTTON (SHOWN WHEN FACE ID / FINGERPRINT IS ENROLLED ON DEVICE) -->
+                <button id="biometricUnlockBtn" type="button" class="hide btn-biometric w-full font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path>
+                    </svg>
+                    <span id="biometricBtnLabel">Unlock with Face ID / Fingerprint</span>
+                </button>
+
                 <button id="googleSignInBtn" style="background-color: #ffffff; color: #0f172a;" class="w-full font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform">
                     <svg class="w-6 h-6" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -308,9 +320,23 @@
                     </button>
                 </div>
 
+                <!-- BIOMETRIC OPT-IN BANNER (SHOWN IF DEVICE SUPPORTS FACE ID / FINGERPRINT AND NOT YET ENABLED) -->
+                <div id="biometricSetupBanner" class="hide mb-5 p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-between gap-3">
+                    <div class="text-left">
+                        <p class="text-xs font-bold text-sky-300">Fast Biometric Unlock</p>
+                        <p style="color: #cbd5e1;" class="text-xs mt-0.5">Use Face ID or Fingerprint to unlock Lintas next time.</p>
+                    </div>
+                    <button id="enableBiometricBannerBtn" type="button" class="shrink-0 btn-primary text-xs font-bold px-3.5 py-2.5 rounded-xl shadow">
+                        Enable
+                    </button>
+                </div>
+
                 <div class="flex justify-between items-center mb-6 mt-2">
                     <h2 class="text-2xl font-bold text-white">My Trips</h2>
-                    <button id="addTripBtn" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3.5 py-1.5 rounded-xl text-sm font-bold active:opacity-80">+ New Trip</button>
+                    <div class="flex items-center gap-2">
+                        <button id="refreshTripsBtn" type="button" class="btn-guest px-3 py-1.5 rounded-xl text-xs font-semibold" title="Sync now">↻ Sync</button>
+                        <button id="addTripBtn" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3.5 py-1.5 rounded-xl text-sm font-bold active:opacity-80">+ New Trip</button>
+                    </div>
                 </div>
 
                 <div id="emptyTripsState" class="text-center py-14 card-dark rounded-2xl p-6">
@@ -388,7 +414,7 @@
         </div>
     </div>
 
-    <!-- ADD DOCUMENT MODAL (WITH GALLERY PICKER + GUIDED LIVE CAMERA VIEWFINDER) -->
+    <!-- ADD DOCUMENT MODAL -->
     <div id="newDocModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4 pb-12 overflow-y-auto">
         <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-5 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
@@ -410,7 +436,6 @@
             
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">2. Select or Capture QR Pass</label>
             <div class="grid grid-cols-2 gap-2.5 mb-3">
-                <!-- Gallery / File Picker -->
                 <div class="upload-box relative rounded-xl p-3.5 text-center cursor-pointer">
                     <input type="file" id="docFileInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     <svg class="w-6 h-6 mx-auto mb-1.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -418,7 +443,6 @@
                     <p style="color: #64748b;" class="text-[10px] mt-0.5">Saved screenshot</p>
                 </div>
 
-                <!-- Guided Live Camera Capture (with native fallback input) -->
                 <button id="openGuidedCameraBtn" type="button" class="upload-box relative rounded-xl p-3.5 text-center cursor-pointer">
                     <svg class="w-6 h-6 mx-auto mb-1.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     <p class="text-xs font-bold text-emerald-400">Take Photo</p>
@@ -447,7 +471,6 @@
     <div id="cameraScannerModal" style="z-index: 10002;" class="hide fixed inset-0 bg-black flex flex-col justify-between select-none">
         <video id="cameraVideoFeed" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover"></video>
 
-        <!-- Top Controls -->
         <div class="relative p-4 flex items-center justify-between bg-gradient-to-b from-black/85 to-transparent" style="z-index: 10;">
             <button id="closeCameraBtn" type="button" class="px-3.5 py-2 rounded-full bg-slate-900/90 text-white text-xs font-bold border border-white/15 active:scale-95">
                 ✕ Cancel
@@ -458,7 +481,6 @@
             </button>
         </div>
 
-        <!-- Center Alignment Frame -->
         <div class="relative flex-1 flex flex-col items-center justify-center p-4" style="z-index: 5;">
             <div class="camera-guide-frame">
                 <div class="cam-corner cam-tl"></div>
@@ -471,7 +493,6 @@
             </p>
         </div>
 
-        <!-- Bottom Shutter Bar -->
         <div class="relative p-6 pb-10 flex items-center justify-center bg-gradient-to-t from-black/90 to-transparent" style="z-index: 10;">
             <button id="captureFrameBtn" type="button" aria-label="Capture photo" class="w-18 h-18 p-1.5 rounded-full border-4 border-white bg-white/20 active:scale-90 transition-transform shadow-2xl">
                 <span class="block w-14 h-14 rounded-full bg-white"></span>
@@ -518,7 +539,7 @@
                         <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Recommended</span>
                     </div>
                     <ul style="color: #cbd5e1;" class="text-xs space-y-1.5">
-                        <li>✓ Syncs trips across all your phones</li>
+                        <li>✓ Syncs trips across iPhone &amp; Android</li>
                         <li>✓ Cached offline for border crossings</li>
                         <li>✓ Auto-cleans after 30 days</li>
                     </ul>
@@ -534,7 +555,7 @@
         </div>
     </div>
 
-    <!-- ACCOUNT, PRIVACY & DELETE DATA MODAL -->
+    <!-- ACCOUNT, PRIVACY & BIOMETRIC SETTINGS MODAL -->
     <div id="settingsModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
         <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl text-left">
             <div class="flex items-center justify-between mb-4">
@@ -551,6 +572,11 @@
             </div>
 
             <div class="space-y-2.5">
+                <button id="toggleBiometricBtn" type="button" class="w-full btn-guest font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-between">
+                    <span id="toggleBiometricLabel">Enable Face ID / Biometric Unlock</span>
+                    <span id="toggleBiometricStatus" class="text-sky-400">Off</span>
+                </button>
+
                 <button id="openPrivacyFromSettingsBtn" type="button" class="w-full btn-guest font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-between">
                     <span>Read Privacy Policy &amp; PDPO Notice</span>
                     <span>→</span>
@@ -580,7 +606,7 @@
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
                 <p><strong>1. Independence &amp; User Responsibility:</strong> Lintas is an independent personal travel organizer not affiliated with any government or border authority. All uploaded files remain under your sole control and responsibility; Lintas assumes no liability for user-stored content.</p>
-                <p><strong>2. Storage, Auto-Lock &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Sessions require a fresh sign-in when the app is reopened, automatically lock after 5 minutes of inactivity, and auto-delete all trips and passes after 30 days.</p>
+                <p><strong>2. Storage, Biometric Lock &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Sessions auto-lock after 5 minutes of inactivity, support on-device Face ID / Fingerprint unlock via WebAuthn, and auto-delete all trips and passes after 30 days.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs a multi-layer on-device check before upload and blocks Bruneian or foreign passports and IDs.</p>
                 <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account &amp; Privacy → Delete Account &amp; Wipe All Data</em>.</p>
@@ -589,7 +615,7 @@
         </div>
     </div>
 
-    <!-- CUSTOM BRANDED LINTAS NOTICE MODAL (REPLACES RAW BROWSER ALERT POPUPS) -->
+    <!-- CUSTOM BRANDED LINTAS NOTICE MODAL -->
     <div id="noticeModal" style="z-index: 10003;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
         <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center">
             <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 mb-3">
@@ -613,11 +639,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Modules (Auth + Cloud Firestore with Offline Persistence) -->
+    <!-- Firebase SDK Modules -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, setPersistence, browserSessionPersistence, signInWithPopup, signInAnonymously, linkWithPopup, GoogleAuthProvider, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, setDoc, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, signInAnonymously, linkWithPopup, GoogleAuthProvider, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { initializeFirestore, memoryLocalCache, persistentLocalCache, collection, doc, setDoc, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDiOHlvtLaEoB8JpBFZvQQREKpxg97xcuA",
@@ -630,18 +656,166 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        setPersistence(auth, browserSessionPersistence).catch(() => {});
-
         const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        // Detect iOS / Safari WebKit: avoid Firestore IndexedDB multi-tab hang on iOS by using memoryLocalCache + our custom IndexedDB offline mirror
+        const isAppleWebKit = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
+            (/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
+
         const dbCloud = initializeFirestore(app, {
-            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+            localCache: isAppleWebKit ? memoryLocalCache() : persistentLocalCache()
         });
 
-        // 30-Day Retention Policy & 5-Minute PDPO Inactivity Timeout
         const RETENTION_DAYS = 30;
         const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
-        const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+        const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
         const SESSION_FLAG_KEY = "lintas_active_session";
+        const BIO_CRED_KEY = "lintas_biometric_cred_v1";
+
+        // =========================================================================
+        // BIOMETRIC UNLOCK ENGINE (iOS FACE ID / TOUCH ID + ANDROID FINGERPRINT)
+        // =========================================================================
+        function bufToBase64Url(buf) {
+            const bytes = new Uint8Array(buf);
+            let bin = '';
+            for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
+            return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        function base64UrlToBuf(b64url) {
+            const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+            const pad = b64.length % 4 ? '='.repeat(4 - (b64.length % 4)) : '';
+            const bin = atob(b64 + pad);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            return bytes.buffer;
+        }
+
+        function getSavedBiometricProfile() {
+            try {
+                const raw = localStorage.getItem(BIO_CRED_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        async function isBiometricHardwareAvailable() {
+            try {
+                if (!window.PublicKeyCredential || !PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
+                    return false;
+                }
+                return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+            } catch (_) {
+                return false;
+            }
+        }
+
+        async function enrollBiometricForUser(user) {
+            const supported = await isBiometricHardwareAvailable();
+            if (!supported) {
+                await showNotice("Biometrics Unavailable", "Face ID or Fingerprint unlock is not available on this browser or device.");
+                return false;
+            }
+
+            try {
+                const challenge = new Uint8Array(32);
+                crypto.getRandomValues(challenge);
+                const userIdBytes = new TextEncoder().encode(user.uid.slice(0, 32));
+
+                const cred = await navigator.credentials.create({
+                    publicKey: {
+                        challenge,
+                        rp: { name: "Lintas Travel Wallet", id: window.location.hostname },
+                        user: {
+                            id: userIdBytes,
+                            name: user.email || "lintas-traveler",
+                            displayName: user.email ? user.email.split('@')[0] : "Lintas Traveler"
+                        },
+                        pubKeyCredParams: [
+                            { type: "public-key", alg: -7 },
+                            { type: "public-key", alg: -257 }
+                        ],
+                        authenticatorSelection: {
+                            authenticatorAttachment: "platform",
+                            userVerification: "required",
+                            residentKey: "preferred"
+                        },
+                        timeout: 60000,
+                        attestation: "none"
+                    }
+                });
+
+                if (cred && cred.rawId) {
+                    localStorage.setItem(BIO_CRED_KEY, JSON.stringify({
+                        credId: bufToBase64Url(cred.rawId),
+                        uid: user.uid,
+                        email: user.email || "",
+                        isAnonymous: !!user.isAnonymous
+                    }));
+                    updateBiometricUI();
+                    await showNotice("Biometric Unlock Enabled", "You can now unlock Lintas instantly using Face ID or Fingerprint on this device.", "Lintas • Biometrics");
+                    return true;
+                }
+            } catch (err) {
+                if (err.name !== 'NotAllowedError') {
+                    await showNotice("Biometric Setup Failed", err.message || "Could not register device biometrics.");
+                }
+            }
+            return false;
+        }
+
+        async function verifyBiometricPrompt(credIdB64) {
+            const challenge = new Uint8Array(32);
+            crypto.getRandomValues(challenge);
+
+            const assertion = await navigator.credentials.get({
+                publicKey: {
+                    challenge,
+                    rpId: window.location.hostname,
+                    allowCredentials: [{
+                        type: "public-key",
+                        id: base64UrlToBuf(credIdB64),
+                        transports: ["internal"]
+                    }],
+                    userVerification: "required",
+                    timeout: 60000
+                }
+            });
+            return !!assertion;
+        }
+
+        async function updateBiometricUI() {
+            const bioProfile = getSavedBiometricProfile();
+            const unlockBtn = document.getElementById('biometricUnlockBtn');
+            const unlockLabel = document.getElementById('biometricBtnLabel');
+            const setupBanner = document.getElementById('biometricSetupBanner');
+            const toggleLabel = document.getElementById('toggleBiometricLabel');
+            const toggleStatus = document.getElementById('toggleBiometricStatus');
+            const supported = await isBiometricHardwareAvailable();
+
+            if (bioProfile && supported) {
+                const nameTag = bioProfile.email ? ` (${bioProfile.email.split('@')[0]})` : "";
+                unlockLabel.textContent = `Unlock with Face ID / Biometrics${nameTag}`;
+                unlockBtn.classList.remove('hide');
+                setupBanner.classList.add('hide');
+                toggleLabel.textContent = "Disable Face ID / Biometric Unlock";
+                toggleStatus.textContent = "Active ✓";
+                toggleStatus.className = "text-emerald-400 font-bold";
+            } else {
+                unlockBtn.classList.add('hide');
+                toggleLabel.textContent = "Enable Face ID / Biometric Unlock";
+                toggleStatus.textContent = supported ? "Off" : "Unsupported";
+                toggleStatus.className = "text-slate-400";
+                if (supported && currentUser) {
+                    setupBanner.classList.remove('hide');
+                } else {
+                    setupBanner.classList.add('hide');
+                }
+            }
+        }
 
         // --- LOGIN SCREEN MINIMAL LOCAL WEATHER + NEXT SOLAT PILL ---
         function formatTime12h(hhmm) {
@@ -855,7 +1029,7 @@
             return prettyDate;
         }
 
-        // --- LOCAL INDEXEDDB ENGINE ---
+        // --- LOCAL INDEXEDDB ENGINE (ALSO MIRRORS CLOUD DATA FOR iOS OFFLINE RELIABILITY) ---
         const DB_NAME = "LintasLocalWallet";
         const DB_VERSION = 1;
 
@@ -910,25 +1084,42 @@
             });
         }
 
-        // --- UNIFIED STORAGE LAYER ---
+        // --- UNIFIED STORAGE LAYER (WITH iOS-SAFE TIMEOUT + LOCAL MIRROR CACHE) ---
         function isCloudUser() {
             const activeUser = currentUser || auth.currentUser;
             return activeUser && !activeUser.isAnonymous;
         }
 
+        function withTimeout(promise, ms = 8000) {
+            return Promise.race([
+                promise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Cloud timeout")), ms))
+            ]);
+        }
+
         async function saveTripData(trip) {
+            // Always mirror locally first for instant offline/iOS availability
+            await localPut("trips", trip).catch(() => {});
             if (isCloudUser()) {
                 await setDoc(doc(dbCloud, "trips", trip.id), trip);
-            } else {
-                await localPut("trips", trip);
             }
         }
 
         async function fetchUserTrips(uid) {
             if (isCloudUser()) {
-                const q = query(collection(dbCloud, "trips"), where("userId", "==", uid));
-                const snap = await getDocs(q);
-                return snap.docs.map(d => d.data());
+                try {
+                    const q = query(collection(dbCloud, "trips"), where("userId", "==", uid));
+                    const snap = await withTimeout(getDocs(q), 8000);
+                    const cloudTrips = snap.docs.map(d => d.data());
+                    // Mirror cloud trips into IndexedDB for instant offline access on iOS
+                    for (const t of cloudTrips) {
+                        await localPut("trips", t).catch(() => {});
+                    }
+                    return cloudTrips;
+                } catch (err) {
+                    console.warn("Falling back to local trip cache:", err);
+                    return await localGetByIndex("trips", "userId", uid);
+                }
             } else {
                 return await localGetByIndex("trips", "userId", uid);
             }
@@ -936,6 +1127,7 @@
 
         async function deleteTripData(tripId) {
             const activeUser = currentUser || auth.currentUser;
+            await localDelete("trips", tripId).catch(() => {});
             if (isCloudUser() && activeUser) {
                 await deleteDoc(doc(dbCloud, "trips", tripId));
                 const q = query(
@@ -947,24 +1139,30 @@
                 for (const d of snap.docs) {
                     await deleteDoc(d.ref);
                 }
-            } else {
-                await localDelete("trips", tripId);
             }
         }
 
         async function saveDocData(docItem) {
+            await localPut("documents", docItem).catch(() => {});
             if (isCloudUser()) {
                 await setDoc(doc(dbCloud, "documents", docItem.id), docItem);
-            } else {
-                await localPut("documents", docItem);
             }
         }
 
         async function fetchTripDocs(tripId, uid) {
             if (isCloudUser()) {
-                const q = query(collection(dbCloud, "documents"), where("userId", "==", uid), where("tripId", "==", tripId));
-                const snap = await getDocs(q);
-                return snap.docs.map(d => d.data());
+                try {
+                    const q = query(collection(dbCloud, "documents"), where("userId", "==", uid), where("tripId", "==", tripId));
+                    const snap = await withTimeout(getDocs(q), 8000);
+                    const cloudDocs = snap.docs.map(d => d.data());
+                    for (const d of cloudDocs) {
+                        await localPut("documents", d).catch(() => {});
+                    }
+                    return cloudDocs;
+                } catch (err) {
+                    console.warn("Falling back to local pass cache:", err);
+                    return await localGetByIndex("documents", "tripId", tripId);
+                }
             } else {
                 return await localGetByIndex("documents", "tripId", tripId);
             }
@@ -972,6 +1170,7 @@
 
         async function deleteDocData(docId) {
             const activeUser = currentUser || auth.currentUser;
+            await localDelete("documents", docId).catch(() => {});
             if (isCloudUser() && activeUser) {
                 await deleteDoc(doc(dbCloud, "documents", docId));
                 const q = query(
@@ -983,8 +1182,6 @@
                 for (const d of snap.docs) {
                     await deleteDoc(d.ref);
                 }
-            } else {
-                await localDelete("documents", docId);
             }
         }
 
@@ -1020,10 +1217,10 @@
         }
 
         // =========================================================================
-        // 4-LAYER STRICT BRUNEIAN & FOREIGN PASSPORT / NATIONAL ID BLOCKER
+        // FAST 4-LAYER BRUNEIAN & FOREIGN PASSPORT / NATIONAL ID BLOCKER
         // =========================================================================
         function buildScanCanvas(img, rotateDeg = 0, mode = 'adaptive', cropBottomMRZ = false) {
-            const MAX_SCAN = 1800;
+            const MAX_SCAN = 960;
             let srcX = 0;
             let srcY = cropBottomMRZ ? Math.round(img.height * 0.52) : 0;
             let srcW = img.width;
@@ -1031,8 +1228,8 @@
 
             let w = srcW;
             let h = srcH;
-            if (cropBottomMRZ && w < 1400) {
-                const scale = Math.min(2.2, 1600 / w);
+            if (cropBottomMRZ && w < 900) {
+                const scale = Math.min(1.8, 1000 / w);
                 w = Math.round(w * scale);
                 h = Math.round(h * scale);
             } else if (w > h && w > MAX_SCAN) {
@@ -1096,7 +1293,6 @@
             const compact = upper.replace(/\s+/g, '');
             const lines = upper.split(/\r?\n/).map(l => l.replace(/\s+/g, '')).filter(Boolean);
 
-            // 1. ICAO MRZ Detection (Passports P<, Brunei/Foreign Smart IDs I< / ID / IP / IR, or chevron runs)
             if (
                 /P<[A-Z]{3}/.test(compact) ||
                 /I[A-Z<][A-Z0-9]{2,}/.test(compact) ||
@@ -1112,7 +1308,6 @@
                 }
             }
 
-            // 2. Bruneian & Foreign ID Number Patterns
             if (
                 /\b\d{2}\s*-\s*\d{6}\b/.test(upper) ||
                 /\b\d{6}\s*-\s*\d{2}\s*-\s*\d{4}\b/.test(upper) ||
@@ -1121,7 +1316,6 @@
                 return { blocked: true, type: 'National ID Number' };
             }
 
-            // 3. Single-Match Authoritative ID / Passport Headers (Bruneian + Foreign)
             const strictSingleKeywords = [
                 'NEGARA BRUNEI DARUSSALAM', 'BRUNEI DARUSSALAM', 'KAD PENGENALAN',
                 'PENDAFTARAN KEBANGSAAN', 'PENDAFTARAN NEGARA', 'PESURUHJAYA',
@@ -1139,7 +1333,6 @@
                 }
             }
 
-            // 4. Secondary Biodata Field Combinations (Front or Back of Bruneian & Foreign IDs)
             const secondaryKeywords = [
                 'TARIKH LAHIR', 'DATE OF BIRTH', 'PLACE OF BIRTH', 'TEMPAT LAHIR',
                 'NATIONALITY', 'JANTINA', 'BANGSA', 'ALAMAT', 'RESIDENTIAL ADDRESS',
@@ -1177,16 +1370,13 @@
                 if ('FaceDetector' in window) {
                     const faceDetector = new FaceDetector({ fastMode: true, maxDetectedFaces: 2 });
                     const faces = await faceDetector.detect(img);
-                    if (faces && faces.length > 0) {
-                        return true;
-                    }
+                    if (faces && faces.length > 0) return true;
                 }
             } catch (_) {}
             return false;
         }
 
         async function detectSensitiveIDFromImage(img, compressedCanvas) {
-            // Step A: Check for Barcode / QR Code
             let hasQR = false;
             try {
                 if ('BarcodeDetector' in window) {
@@ -1202,13 +1392,15 @@
                 }
             } catch (_) {}
 
-            // Step B: Portrait Face Check
             const hasFace = await detectPortraitFace(img);
             if (hasFace) {
                 return { blocked: true, type: 'ID / Passport Photo' };
             }
 
-            // Step C: Multi-Pass On-Device OCR
+            if (hasQR) {
+                return { blocked: false, reason: 'qr_verified' };
+            }
+
             if (typeof Tesseract !== 'undefined') {
                 try {
                     const uprightCanvas = buildScanCanvas(img, 0, 'adaptive', false);
@@ -1221,31 +1413,23 @@
                     const checkMrz = evaluateOCRText(resMrz?.data?.text || '');
                     if (checkMrz.blocked) return checkMrz;
 
-                    if (check0.textLen < 35 && checkMrz.textLen < 20) {
+                    if (check0.textLen < 30 && checkMrz.textLen < 18) {
                         const rot90 = buildScanCanvas(img, 90, 'binary', false);
                         const res90 = await Tesseract.recognize(rot90, 'eng');
                         const check90 = evaluateOCRText(res90?.data?.text || '');
                         if (check90.blocked) return check90;
-
-                        const rot270 = buildScanCanvas(img, 270, 'binary', false);
-                        const res270 = await Tesseract.recognize(rot270, 'eng');
-                        const check270 = evaluateOCRText(res270?.data?.text || '');
-                        if (check270.blocked) return check270;
                     }
 
-                    // Step D: Strict Fail-Safe
-                    if (!hasQR && !check0.hasPassKeyword) {
+                    if (!check0.hasPassKeyword) {
                         return { blocked: true, type: 'Unverified Card / Non-QR' };
                     }
                 } catch (e) {
                     console.warn("OCR check error:", e);
-                    if (!hasQR) {
-                        return { blocked: true, type: 'Unverified Document' };
-                    }
+                    return { blocked: true, type: 'Unverified Document' };
                 }
             }
 
-            return { blocked: false, reason: hasQR ? 'qr_verified' : 'receipt_verified' };
+            return { blocked: false, reason: 'receipt_verified' };
         }
 
         // --- SMART ~60 KB IMAGE AUTO-COMPRESSOR ---
@@ -1254,7 +1438,7 @@
             const ctx = canvas.getContext('2d');
             let width = img.width;
             let height = img.height;
-            const MAX = 1000;
+            const MAX = 960;
             if (width > height) {
                 if (width > MAX) { height = Math.round(height * MAX / width); width = MAX; }
             } else {
@@ -1287,6 +1471,7 @@
         let inactivityTimer = null;
         let lastActivityAt = Date.now();
         let isAutoLoggingOut = false;
+        let isSigningIn = false;
 
         const screens = {
             login: document.getElementById('loginScreen'),
@@ -1303,7 +1488,7 @@
             privacy: document.getElementById('privacyModal')
         };
 
-        // --- PDPO INACTIVITY AUTO-LOGOUT CONTROLLER ---
+        // --- PDPO INACTIVITY AUTO-LOCK CONTROLLER (LOCKS UI WITHOUT DESTROYING BIOMETRIC LINK) ---
         function clearInactivityWatch() {
             if (inactivityTimer) {
                 clearTimeout(inactivityTimer);
@@ -1328,25 +1513,27 @@
             currentTripId = null;
             currentTripDocs = [];
             showScreen('login');
+            await updateBiometricUI();
 
-            try {
-                await signOut(auth);
-            } catch (err) {
-                console.warn("Auto-logout signOut notice:", err);
-            } finally {
-                isAutoLoggingOut = false;
+            // If user does NOT have biometrics enrolled, fully sign out of Firebase
+            const bioProfile = getSavedBiometricProfile();
+            if (!bioProfile || bioProfile.uid !== activeUser.uid) {
+                try { await signOut(auth); } catch (_) {}
             }
 
+            isAutoLoggingOut = false;
             await showNotice(
                 "Session Locked for Privacy",
-                "You were automatically signed out after 5 minutes of inactivity to protect your travel passes.",
+                bioProfile
+                    ? "Locked after 5 minutes of inactivity. Tap Unlock with Face ID / Biometrics to resume."
+                    : "You were automatically signed out after 5 minutes of inactivity to protect your travel passes.",
                 "Lintas • Security Lock"
             );
         }
 
         function resetInactivityTimer() {
             const activeUser = currentUser || auth.currentUser;
-            if (!activeUser || isAutoLoggingOut) return;
+            if (!activeUser || isAutoLoggingOut || !sessionStorage.getItem(SESSION_FLAG_KEY)) return;
             lastActivityAt = Date.now();
             clearInactivityWatch();
             inactivityTimer = setTimeout(() => {
@@ -1354,13 +1541,13 @@
             }, INACTIVITY_TIMEOUT_MS);
         }
 
-        ['touchstart', 'click', 'keydown', 'scroll', 'mousemove'].forEach((evt) => {
+        ['touchstart', 'click', 'keydown', 'scroll'].forEach((evt) => {
             document.addEventListener(evt, resetInactivityTimer, { passive: true });
         });
 
         document.addEventListener('visibilitychange', () => {
             const activeUser = currentUser || auth.currentUser;
-            if (document.visibilityState === 'visible' && activeUser && !isAutoLoggingOut) {
+            if (document.visibilityState === 'visible' && activeUser && !isAutoLoggingOut && sessionStorage.getItem(SESSION_FLAG_KEY)) {
                 if (Date.now() - lastActivityAt >= INACTIVITY_TIMEOUT_MS) {
                     triggerInactivityLogout();
                 } else {
@@ -1369,59 +1556,143 @@
             }
         });
 
+        // Handle redirect result if iOS fell back to signInWithRedirect
+        getRedirectResult(auth).then((res) => {
+            if (res && res.user) {
+                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+            }
+        }).catch((err) => {
+            if (err && err.code !== 'auth/popup-closed-by-user') {
+                const errBox = document.getElementById('loginError');
+                errBox.textContent = `Login Error: ${err.message}`;
+                errBox.classList.remove('hide');
+            }
+        });
+
+        async function enterDashboardForUser(user) {
+            currentUser = user;
+            resetInactivityTimer();
+            const guestBanner = document.getElementById('guestBanner');
+            const syncBadge = document.getElementById('syncStatusBadge');
+            const settingsMode = document.getElementById('settingsStorageMode');
+
+            if (user.isAnonymous) {
+                document.getElementById('userEmailDisplay').textContent = "Guest";
+                document.getElementById('settingsUserLabel').textContent = "Guest (Local Device)";
+                syncBadge.textContent = "● Offline Local Mode";
+                settingsMode.textContent = "✓ Local-Only Storage • 5m Auto-Lock Active";
+                guestBanner.classList.remove('hide');
+            } else {
+                const label = user.email ? user.email.split('@')[0] : "Traveler";
+                document.getElementById('userEmailDisplay').textContent = label;
+                document.getElementById('settingsUserLabel').textContent = user.email || "Google Account";
+                syncBadge.textContent = "● Cloud Sync + Offline Ready";
+                settingsMode.textContent = "✓ Cloud Sync • 5m Auto-Lock • 30d Auto-Delete";
+                guestBanner.classList.add('hide');
+            }
+            if (!currentTripId) showScreen('dashboard');
+            await updateBiometricUI();
+            cleanupExpiredItems(user.uid);
+            await loadTrips();
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                const bioProfile = getSavedBiometricProfile();
                 if (!sessionStorage.getItem(SESSION_FLAG_KEY)) {
                     clearInactivityWatch();
                     currentUser = null;
                     currentTripId = null;
                     showScreen('login');
-                    await signOut(auth).catch(() => {});
+                    await updateBiometricUI();
+                    // Keep Firebase user warm ONLY if biometric unlock is enrolled for this UID; otherwise sign out
+                    if (!bioProfile || bioProfile.uid !== user.uid) {
+                        await signOut(auth).catch(() => {});
+                    }
                     return;
                 }
-
-                currentUser = user;
-                resetInactivityTimer();
-                const guestBanner = document.getElementById('guestBanner');
-                const syncBadge = document.getElementById('syncStatusBadge');
-                const settingsMode = document.getElementById('settingsStorageMode');
-
-                if (user.isAnonymous) {
-                    document.getElementById('userEmailDisplay').textContent = "Guest";
-                    document.getElementById('settingsUserLabel').textContent = "Guest (Local Device)";
-                    syncBadge.textContent = "● Offline Local Mode";
-                    settingsMode.textContent = "✓ Local-Only Storage • 5m Auto-Lock Active";
-                    guestBanner.classList.remove('hide');
-                } else {
-                    const label = user.email ? user.email.split('@')[0] : "Traveler";
-                    document.getElementById('userEmailDisplay').textContent = label;
-                    document.getElementById('settingsUserLabel').textContent = user.email || "Google Account";
-                    syncBadge.textContent = "● Cloud Sync + Offline Ready";
-                    settingsMode.textContent = "✓ Cloud Sync • 5m Auto-Lock • 30d Auto-Delete";
-                    guestBanner.classList.add('hide');
-                }
-                if (!currentTripId) showScreen('dashboard');
-                await cleanupExpiredItems(user.uid);
-                await loadTrips();
+                await enterDashboardForUser(user);
             } else {
                 clearInactivityWatch();
                 sessionStorage.removeItem(SESSION_FLAG_KEY);
                 currentUser = null;
                 currentTripId = null;
                 showScreen('login');
+                await updateBiometricUI();
+            }
+        });
+
+        // Biometric Unlock Handler on Login Screen
+        document.getElementById('biometricUnlockBtn').addEventListener('click', async () => {
+            const bioProfile = getSavedBiometricProfile();
+            if (!bioProfile) return;
+            const btn = document.getElementById('biometricUnlockBtn');
+            btn.disabled = true;
+
+            try {
+                const verified = await verifyBiometricPrompt(bioProfile.credId);
+                if (!verified) return;
+
+                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                if (auth.currentUser && auth.currentUser.uid === bioProfile.uid) {
+                    await enterDashboardForUser(auth.currentUser);
+                } else if (bioProfile.isAnonymous) {
+                    await signInAnonymously(auth);
+                } else {
+                    // Re-authenticate Google session if token expired on server
+                    await triggerGoogleSignIn();
+                }
+            } catch (err) {
+                sessionStorage.removeItem(SESSION_FLAG_KEY);
+                if (err.name !== 'NotAllowedError') {
+                    await showNotice("Biometric Verification Failed", "Please sign in with Google or try Face ID / Fingerprint again.");
+                }
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        // Biometric Opt-in / Disable Handlers inside Dashboard & Settings
+        document.getElementById('enableBiometricBannerBtn').addEventListener('click', async () => {
+            const activeUser = currentUser || auth.currentUser;
+            if (activeUser) await enrollBiometricForUser(activeUser);
+        });
+
+        document.getElementById('toggleBiometricBtn').addEventListener('click', async () => {
+            const bioProfile = getSavedBiometricProfile();
+            if (bioProfile) {
+                localStorage.removeItem(BIO_CRED_KEY);
+                await updateBiometricUI();
+                await showNotice("Biometrics Disabled", "Face ID / Fingerprint quick unlock has been removed from this device.", "Lintas • Security");
+            } else {
+                const activeUser = currentUser || auth.currentUser;
+                if (activeUser) await enrollBiometricForUser(activeUser);
             }
         });
 
         async function triggerGoogleSignIn() {
+            if (isSigningIn) return;
+            isSigningIn = true;
+            const errBox = document.getElementById('loginError');
+            errBox.classList.add('hide');
+
             try {
                 modals.benefits.classList.add('hide');
                 sessionStorage.setItem(SESSION_FLAG_KEY, "1");
-                await setPersistence(auth, browserSessionPersistence);
                 await signInWithPopup(auth, provider);
             } catch (error) {
+                if (error.code === 'auth/popup-blocked' || error.code === 'auth/operation-not-supported-in-this-environment') {
+                    sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                    await signInWithRedirect(auth, provider);
+                    return;
+                }
                 sessionStorage.removeItem(SESSION_FLAG_KEY);
-                document.getElementById('loginError').textContent = `Login Error: ${error.message}`;
-                document.getElementById('loginError').classList.remove('hide');
+                if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+                    errBox.textContent = `Login Error: ${error.message}`;
+                    errBox.classList.remove('hide');
+                }
+            } finally {
+                isSigningIn = false;
             }
         }
 
@@ -1429,14 +1700,20 @@
         document.getElementById('benefitsGoogleBtn').addEventListener('click', triggerGoogleSignIn);
 
         document.getElementById('guestSignInBtn').addEventListener('click', async () => {
+            if (isSigningIn) return;
+            isSigningIn = true;
+            const errBox = document.getElementById('loginError');
+            errBox.classList.add('hide');
+
             try {
                 sessionStorage.setItem(SESSION_FLAG_KEY, "1");
-                await setPersistence(auth, browserSessionPersistence);
                 await signInAnonymously(auth);
             } catch (error) {
                 sessionStorage.removeItem(SESSION_FLAG_KEY);
-                document.getElementById('loginError').textContent = `Guest Login Error: ${error.message}`;
-                document.getElementById('loginError').classList.remove('hide');
+                errBox.textContent = `Guest Login Error: ${error.message}`;
+                errBox.classList.remove('hide');
+            } finally {
+                isSigningIn = false;
             }
         });
 
@@ -1467,7 +1744,7 @@
             } catch (error) {
                 if (error.code === 'auth/credential-already-in-use') {
                     await showNotice("Account Already Exists", "That Google account already has a Lintas profile. Sign out of Guest mode first, then sign in with Google.");
-                } else {
+                } else if (error.code !== 'auth/popup-closed-by-user') {
                     await showNotice("Unable to Link Account", error.message);
                 }
             }
@@ -1476,6 +1753,7 @@
         document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
             clearInactivityWatch();
             sessionStorage.removeItem(SESSION_FLAG_KEY);
+            localStorage.removeItem(BIO_CRED_KEY);
             modals.settings.classList.add('hide');
             currentTripId = null;
             await signOut(auth);
@@ -1496,6 +1774,7 @@
             try {
                 clearInactivityWatch();
                 sessionStorage.removeItem(SESSION_FLAG_KEY);
+                localStorage.removeItem(BIO_CRED_KEY);
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
                 currentTripId = null;
@@ -1510,6 +1789,15 @@
             } finally {
                 btn.disabled = false;
             }
+        });
+
+        document.getElementById('refreshTripsBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('refreshTripsBtn');
+            btn.textContent = "Syncing...";
+            btn.disabled = true;
+            await loadTrips();
+            btn.textContent = "↻ Sync";
+            btn.disabled = false;
         });
 
         async function loadTrips() {
@@ -1539,20 +1827,17 @@
                     const countdownStr = formatCountdownBadge(trip.travelDate);
 
                     let weatherText = trip.weatherSummary || '';
-                    if (trip.location && navigator.onLine) {
-                        const freshWx = await fetchDestinationWeather(trip.location, trip.travelDate);
-                        if (freshWx && freshWx.summary) weatherText = freshWx.summary;
-                    }
-
                     let metaParts = [];
                     if (trip.location) metaParts.push(`📍 ${trip.location}`);
                     if (countdownStr) metaParts.push(`📅 ${countdownStr}`);
                     if (weatherText) metaParts.push(weatherText);
 
+                    const metaElId = `trip_meta_${trip.id}`;
                     const sublineHTML = metaParts.length > 0
-                        ? `<p class="text-xs text-sky-300 font-medium mt-0.5">${metaParts.join(' • ')}</p>
+                        ? `<p id="${metaElId}" class="text-xs text-sky-300 font-medium mt-0.5">${metaParts.join(' • ')}</p>
                            <p style="color: #64748b;" class="text-[11px] mt-1">${storageTag} • <span class="text-amber-400">Auto-deletes in ${daysLeft}d</span></p>`
-                        : `<p style="color: #94a3b8;" class="text-xs mt-0.5">${storageTag} • <span class="text-amber-400">Auto-deletes in ${daysLeft}d</span></p>`;
+                        : `<p id="${metaElId}" class="hide text-xs text-sky-300 font-medium mt-0.5"></p>
+                           <p style="color: #94a3b8;" class="text-xs mt-0.5">${storageTag} • <span class="text-amber-400">Auto-deletes in ${daysLeft}d</span></p>`;
 
                     const el = document.createElement('div');
                     el.className = 'card-dark rounded-2xl p-4 flex items-center justify-between shadow-sm cursor-pointer active:opacity-80 gap-3';
@@ -1565,6 +1850,23 @@
                     `;
                     el.onclick = () => openTrip({ ...trip, weatherSummary: weatherText });
                     container.appendChild(el);
+
+                    if (trip.location && navigator.onLine) {
+                        fetchDestinationWeather(trip.location, trip.travelDate).then((freshWx) => {
+                            if (freshWx && freshWx.summary) {
+                                weatherText = freshWx.summary;
+                                const updatedParts = [];
+                                if (trip.location) updatedParts.push(`📍 ${trip.location}`);
+                                if (countdownStr) updatedParts.push(`📅 ${countdownStr}`);
+                                updatedParts.push(freshWx.summary);
+                                const targetMeta = document.getElementById(metaElId);
+                                if (targetMeta) {
+                                    targetMeta.textContent = updatedParts.join(' • ');
+                                    targetMeta.classList.remove('hide');
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -1842,7 +2144,7 @@
             }
         });
 
-        // --- GUIDED LIVE CAMERA VIEWFINDER CONTROLLER (CROPS TO ALIGNMENT BOX) ---
+        // --- GUIDED LIVE CAMERA VIEWFINDER CONTROLLER ---
         function stopLiveCamera() {
             if (activeCameraStream) {
                 activeCameraStream.getTracks().forEach(track => track.stop());
@@ -1863,8 +2165,8 @@
                 activeCameraStream = await navigator.mediaDevices.getUserMedia({
                     video: {
                         facingMode: { ideal: 'environment' },
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 }
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
                     },
                     audio: false
                 });
@@ -1891,7 +2193,6 @@
             const vw = videoEl.videoWidth;
             const vh = videoEl.videoHeight;
 
-            // Crop directly to the central alignment frame so the document fills the scan area
             const cropW = Math.round(vw * 0.84);
             const cropH = Math.round(vh * 0.64);
             const cropX = Math.round((vw - cropW) / 2);
@@ -1902,12 +2203,12 @@
             snapCanvas.height = cropH;
             snapCanvas.getContext('2d').drawImage(videoEl, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
-            const dataUrl = snapCanvas.toDataURL('image/jpeg', 0.94);
+            const dataUrl = snapCanvas.toDataURL('image/jpeg', 0.92);
             stopLiveCamera();
             processImageDataUrl(dataUrl);
         });
 
-        // --- UNIFIED FILE & CAMERA UPLOAD HANDLER (4-LAYER STRICT CHECK) ---
+        // --- UNIFIED FILE & CAMERA UPLOAD HANDLER ---
         async function rejectBlockedUpload(docCategory) {
             pendingImageData = null;
             document.getElementById('docFileInput').value = '';
@@ -1936,27 +2237,29 @@
             pendingImageData = null;
             saveBtn.disabled = true;
 
-            statusText.textContent = "Running deep privacy & QR scan...";
+            statusText.textContent = "Checking QR & privacy...";
             statusText.style.color = "#fbbf24";
-            subText.textContent = "Checking for faces, MRZ & Bruneian/foreign IDs...";
+            subText.textContent = "Scanning on-device...";
 
-            const img = new Image();
-            img.onload = async function() {
-                const { canvas, dataUrl, sizeKB } = compressForQR(img);
-                const scan = await detectSensitiveIDFromImage(img, canvas);
+            requestAnimationFrame(() => {
+                const img = new Image();
+                img.onload = async function() {
+                    const { canvas, dataUrl, sizeKB } = compressForQR(img);
+                    const scan = await detectSensitiveIDFromImage(img, canvas);
 
-                if (scan.blocked) {
-                    await rejectBlockedUpload(scan.type);
-                    return;
-                }
+                    if (scan.blocked) {
+                        await rejectBlockedUpload(scan.type);
+                        return;
+                    }
 
-                pendingImageData = dataUrl;
-                saveBtn.disabled = false;
-                statusText.textContent = `Pass verified & ready! (${sizeKB} KB) ✓`;
-                statusText.style.color = "#4ade80";
-                subText.textContent = scan.reason === 'qr_verified' ? "QR code verified • Compressed for fast sync" : "Travel document verified • Compressed for fast sync";
-            };
-            img.src = rawDataUrl;
+                    pendingImageData = dataUrl;
+                    saveBtn.disabled = false;
+                    statusText.textContent = `Pass verified & ready! (${sizeKB} KB) ✓`;
+                    statusText.style.color = "#4ade80";
+                    subText.textContent = scan.reason === 'qr_verified' ? "QR code verified • Compressed for fast sync" : "Travel document verified • Compressed for fast sync";
+                };
+                img.src = rawDataUrl;
+            });
         }
 
         function processSelectedPassFile(inputEl) {
@@ -2120,9 +2423,11 @@
             clearTimeout(arrowHideTimer);
             screens.viewer.classList.add('hide');
         };
+
+        // Initialize biometric button state immediately on load
+        updateBiometricUI();
     </script>
 
-    <!-- Service Worker Registration (Relative path for both GitHub Pages & Netlify) -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').catch(() => {});
