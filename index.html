@@ -99,15 +99,15 @@
             animation: slideFade 0.18s ease-out forwards;
         }
         .app-icon {
-            width: 104px;
-            height: 104px;
+            width: 108px;
+            height: 108px;
             background: linear-gradient(145deg, #38bdf8 0%, #2563eb 55%, #1e3a8a 100%);
             border-radius: 28px;
             box-shadow: 0 18px 38px -8px rgba(37, 99, 235, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.45);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 18px auto;
+            margin: 0 auto 20px auto;
             position: relative;
             overflow: hidden;
         }
@@ -122,8 +122,8 @@
             pointer-events: none;
         }
         .icon-svg {
-            width: 70px;
-            height: 70px;
+            width: 72px;
+            height: 72px;
             position: relative;
             z-index: 1;
             filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.35));
@@ -134,12 +134,7 @@
 
     <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="flex-1 flex flex-col justify-between p-6 text-center">
-        <!-- Minimal Single-Line Ambient Bar (Current City Weather & Next Solat Time) -->
-        <div class="pt-1 flex justify-center min-h-[28px]">
-            <div id="loginAmbientStrip" class="hide inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-800/75 border border-slate-700/70 text-[11px] font-medium text-slate-300 shadow-sm max-w-full truncate"></div>
-        </div>
-
-        <div class="flex-1 flex flex-col items-center justify-center my-4">
+        <div class="flex-1 flex flex-col items-center justify-center">
             <div class="app-icon">
                 <svg class="icon-svg" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="4" stroke-opacity="0.92"/>
@@ -153,7 +148,14 @@
             
             <h1 class="text-5xl font-extrabold tracking-tight mb-2 text-white">Lintas</h1>
             <p style="color: #cbd5e1;" class="text-lg font-medium mb-1">Breeze through borders.</p>
-            <p style="color: #64748b;" class="text-sm mb-8 max-w-xs">All your travel QR passes & receipts, synced and ready offline.</p>
+            <p style="color: #64748b;" class="text-sm mb-5 max-w-xs">All your travel QR passes & receipts, synced and ready offline.</p>
+
+            <!-- MINIMAL SINGLE-LINE LOCAL WEATHER & SOLAT PILL (OPT-IN, IN-MEMORY ONLY) -->
+            <div class="mb-6 max-w-sm w-full flex justify-center">
+                <button id="loginAmbientBtn" type="button" style="background: rgba(30, 41, 59, 0.72); border: 1px solid rgba(148, 163, 184, 0.2);" class="inline-flex items-center justify-center gap-1.5 text-[11px] font-medium text-slate-300 hover:text-white py-1.5 px-3.5 rounded-full truncate max-w-full transition-colors">
+                    <span id="loginAmbientText" class="truncate">📍 Check local weather & Solat times</span>
+                </button>
+            </div>
 
             <div class="w-full max-w-sm space-y-3">
                 <button id="googleSignInBtn" style="background-color: #ffffff; color: #0f172a;" class="w-full font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform">
@@ -184,9 +186,9 @@
             </div>
         </div>
 
-        <footer class="max-w-sm mx-auto pt-4 pb-2">
+        <footer class="max-w-sm mx-auto pt-6 pb-2">
             <p style="color: #64748b;" class="text-[11px] leading-relaxed">
-                For personal travel convenience only. Lintas is an independent utility not affiliated with any government or border agency. Zero GPS tracking • Passes auto-expire after 30 days.
+                For personal travel convenience only. Lintas is an independent utility not affiliated with any government or border agency. Location never stored • Passes auto-expire after 30 days.
             </p>
         </footer>
     </div>
@@ -218,4 +220,474 @@
 
         <div class="flex-1 overflow-y-auto p-4 pb-16 max-w-2xl w-full mx-auto flex flex-col justify-between">
             <div>
-                <div id="guestBanner" class="hide mb-5 p-3.5 rounded-2xl bg-amber-500/10
+                <div id="guestBanner" class="hide mb-5 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3">
+                    <div class="text-left">
+                        <p class="text-xs font-bold text-amber-300">Guest Mode • Local Device Only</p>
+                        <p style="color: #cbd5e1;" class="text-xs mt-0.5">Link Gmail to sync trips across phones.</p>
+                    </div>
+                    <button id="upgradeGuestBtn" style="background-color: #ffffff; color: #0f172a;" class="shrink-0 text-xs font-bold px-3.5 py-2.5 rounded-xl shadow active:scale-95 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        <span>Link Google</span>
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center mb-6 mt-2">
+                    <h2 class="text-2xl font-bold text-white">My Trips</h2>
+                    <button id="addTripBtn" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3.5 py-1.5 rounded-xl text-sm font-bold active:opacity-80">+ New Trip</button>
+                </div>
+
+                <div id="emptyTripsState" class="text-center py-14 card-dark rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-2 text-white">No Trips Yet</h3>
+                    <p style="color: #94a3b8;" class="text-sm">Tap <strong>+ New Trip</strong> to add your destination, travel date, and QR passes.</p>
+                </div>
+
+                <div id="tripsContainer" class="space-y-3"></div>
+            </div>
+
+            <div id="adBannerSlot" class="mt-8"></div>
+
+            <p style="color: #475569;" class="text-[11px] text-center leading-relaxed mt-6 px-4">
+                Independent travel utility • Weather via Open-Meteo • Trips auto-expire after 30 days.
+            </p>
+        </div>
+    </div>
+
+    <!-- TRIP DETAIL SCREEN -->
+    <div id="tripDetailScreen" style="background-color: #0f172a; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
+        <div class="glass px-4 py-3.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 overflow-hidden">
+                <button id="backToTripsBtn" type="button" class="p-2 -ml-2 text-blue-400 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="overflow-hidden">
+                    <h2 id="tripDetailTitle" class="text-lg font-bold text-white truncate leading-tight">Trip Name</h2>
+                    <p id="tripDetailMeta" class="text-xs text-sky-300 truncate"></p>
+                </div>
+            </div>
+            <button id="deleteTripBtn" type="button" class="shrink-0 text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30">Delete Trip</button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-4 pb-24 max-w-2xl w-full mx-auto">
+            <button id="addDocTopBtn" type="button" class="w-full btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
+                + Add QR Pass / Document
+            </button>
+
+            <div id="emptyDocsState" class="text-center py-14 card-dark rounded-2xl p-6">
+                <p style="color: #94a3b8;" class="text-sm mb-2">No passes added to this trip yet.</p>
+                <p style="color: #64748b;" class="text-xs">Upload EES QR, MDAC, ferry/flight passes, or booking receipts for instant offline access.</p>
+            </div>
+            <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN SWIPING GALLERY VIEWER -->
+    <div id="imageViewer" style="z-index: 9999;" class="hide fixed inset-0 bg-black flex flex-col select-none">
+        <div class="p-4 flex justify-between items-center bg-gradient-to-b from-black/95 via-black/75 to-transparent sticky top-0 w-full" style="z-index: 20;">
+            <button id="closeViewerBtn" type="button" class="p-2.5 text-white bg-gray-800/90 rounded-full active:scale-95">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="text-center px-3 overflow-hidden">
+                <h3 id="viewerTitle" class="text-white font-bold truncate text-base">Document</h3>
+                <p id="viewerCounter" style="color: #93c5fd;" class="text-xs font-semibold">1 of 1</p>
+            </div>
+            <button id="deleteDocBtn" type="button" class="text-red-400 text-xs font-bold px-3.5 py-2 bg-red-950/90 border border-red-500/40 rounded-full active:scale-95">Delete</button>
+        </div>
+
+        <div id="gallerySwipeArea" class="flex-1 relative flex items-center justify-center overflow-auto p-2">
+            <button id="prevDocBtn" type="button" aria-label="Previous pass" style="background: rgba(30, 41, 59, 0.8); z-index: 15;" class="hide nav-arrow-btn absolute left-3 p-2.5 rounded-full text-white border border-white/15 shadow-lg active:scale-90">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            <img id="viewerImage" src="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+
+            <button id="nextDocBtn" type="button" aria-label="Next pass" style="background: rgba(30, 41, 59, 0.8); z-index: 15;" class="hide nav-arrow-btn absolute right-3 p-2.5 rounded-full text-white border border-white/15 shadow-lg active:scale-90">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+
+        <div class="p-3.5 text-center bg-black/90 border-t border-white/10">
+            <div id="galleryDots" class="flex items-center justify-center gap-1.5 mb-2"></div>
+            <p id="viewerHint" style="color: #94a3b8;" class="text-xs">Swipe left/right • Tap screen to show arrows</p>
+        </div>
+    </div>
+
+    <!-- ADD DOCUMENT MODAL -->
+    <div id="newDocModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4 overflow-y-auto">
+        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-5 shadow-2xl my-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-white">Add Travel Pass</h3>
+                <button id="closeDocModalBtn" type="button" style="color: #94a3b8;" class="text-sm font-medium hover:text-white p-1">Close</button>
+            </div>
+
+            <div class="mb-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-left">
+                <p class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                    <span>⚠️ QR Passes & Receipts Only</span>
+                </p>
+                <p style="color: #cbd5e1;" class="text-[11px] leading-relaxed mt-1">
+                    For your privacy & data protection (PDPO), please <strong>do NOT upload</strong> passport biodata pages, national IDs (IC), or bank cards. Passports & IDs are automatically blocked.
+                </p>
+            </div>
+
+            <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">1. Pass Label</label>
+            <input type="text" id="docNameInput" placeholder="e.g., EES QR, MDAC, Boarding Pass" class="input-dark w-full rounded-xl px-4 py-3 mb-4 text-sm">
+            
+            <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">2. Select QR / Screenshot</label>
+            <div class="upload-box relative rounded-xl p-5 text-center mb-4">
+                <input type="file" id="docFileInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                <p class="text-sm font-semibold text-blue-400" id="fileStatusText">Tap to select photo or screenshot</p>
+                <p id="fileSubText" style="color: #64748b;" class="text-[11px] mt-1">Auto-compressed (~60 KB) & checked on device</p>
+            </div>
+
+            <label class="flex items-start gap-2.5 mb-5 cursor-pointer text-left">
+                <input type="checkbox" id="pdpoConfirmCheck" class="mt-0.5 w-4 h-4 rounded text-blue-600 focus:ring-0">
+                <span style="color: #cbd5e1;" class="text-xs leading-snug">
+                    I confirm this image is a travel QR/receipt and <strong>does not contain</strong> a passport biodata page or national ID.
+                </span>
+            </label>
+            
+            <button id="saveDocBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl disabled:opacity-50">Save Pass</button>
+        </div>
+    </div>
+
+    <!-- NEW TRIP MODAL -->
+    <div id="newTripModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5 overflow-y-auto">
+        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl my-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-white">Create New Trip</h3>
+                <button id="closeTripModalBtn" type="button" style="color: #94a3b8;" class="text-sm font-medium hover:text-white p-1">Close</button>
+            </div>
+
+            <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Trip Title *</label>
+            <input type="text" id="tripNameInput" placeholder="e.g., Weekend Getaway, Business Trip" class="input-dark w-full rounded-xl px-4 py-3 mb-3.5 text-sm">
+
+            <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Destination City (Optional)</label>
+            <input type="text" id="tripLocationInput" placeholder="e.g., Miri, Kota Kinabalu, Kuala Lumpur" class="input-dark w-full rounded-xl px-4 py-3 mb-3.5 text-sm">
+
+            <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Upcoming Travel Date (Optional)</label>
+            <input type="date" id="tripDateInput" class="input-dark w-full rounded-xl px-4 py-3 mb-3 text-sm">
+
+            <p style="color: #64748b;" class="text-xs mb-5">Checks destination forecast by city name & auto-cleans after 30 days.</p>
+            <button id="saveTripBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl">Create Trip</button>
+        </div>
+    </div>
+
+    <!-- GOOGLE VS GUEST POP-UP -->
+    <div id="benefitsModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
+        <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-5 shadow-2xl text-left">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-white">Google vs. Guest</h3>
+                <button id="closeBenefitsBtn" type="button" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="space-y-2.5 mb-5">
+                <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-blue-500/30">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-bold text-white">Google Sign-In</span>
+                        <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Best</span>
+                    </div>
+                    <ul style="color: #cbd5e1;" class="text-xs space-y-1.5">
+                        <li>✓ Syncs trips across all your phones</li>
+                        <li>✓ Cached offline for border crossings</li>
+                        <li>✓ Auto-cleans after 30 days</li>
+                    </ul>
+                </div>
+
+                <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-slate-700/70">
+                    <span class="text-sm font-bold text-slate-200 block mb-1">Guest Mode</span>
+                    <p style="color: #94a3b8;" class="text-xs">Instant offline access with no login needed. Passes stay strictly on this phone only.</p>
+                </div>
+            </div>
+
+            <button id="benefitsGoogleBtn" type="button" class="w-full btn-primary font-bold py-3 rounded-xl text-sm">Sign in with Google</button>
+        </div>
+    </div>
+
+    <!-- ACCOUNT, PRIVACY & DELETE DATA MODAL -->
+    <div id="settingsModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
+        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl text-left">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-white">Account & Privacy</h3>
+                <button id="closeSettingsBtn" type="button" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-slate-700/70 mb-4">
+                <p style="color: #94a3b8;" class="text-xs">Signed in as</p>
+                <p id="settingsUserLabel" class="text-sm font-bold text-white mt-0.5 truncate">Traveler</p>
+                <p id="settingsStorageMode" class="text-[11px] text-emerald-400 mt-1">✓ Cloud Sync + Offline Cache Active (30-Day Auto-Delete)</p>
+            </div>
+
+            <div class="space-y-2.5">
+                <button id="openPrivacyFromSettingsBtn" type="button" class="w-full btn-guest font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-between">
+                    <span>Read Privacy Policy & PDPO Notice</span>
+                    <span>→</span>
+                </button>
+
+                <button id="signOutSettingsBtn" type="button" class="w-full btn-guest font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-between">
+                    <span>Sign Out</span>
+                    <span>→</span>
+                </button>
+
+                <button id="deleteAccountBtn" type="button" class="w-full font-bold py-3 px-4 rounded-xl text-xs text-red-400 bg-red-950/50 border border-red-500/30 flex items-center justify-between">
+                    <span>Delete Account & Wipe All Data</span>
+                    <span>✕</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRIVACY POLICY & PDPO MODAL -->
+    <div id="privacyModal" style="z-index: 10000;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4">
+        <div class="modal-card animate-pop w-full max-w-md rounded-3xl p-6 shadow-2xl text-left max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between mb-3 shrink-0">
+                <h3 class="text-lg font-bold text-white">Privacy Policy & PDPO</h3>
+                <button id="closePrivacyBtn" type="button" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
+                <p><strong>1. Purpose & Independence:</strong> Lintas is an independent personal travel organizer designed to store non-sensitive QR codes (such as EES, MDAC, and boarding passes). Lintas is not affiliated with any government or immigration authority.</p>
+                <p><strong>2. Storage & Sync (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching, and automatically deletes trips and passes after 30 days.</p>
+                <p><strong>3. Location & Ambient Weather/Solat:</strong> Lintas never stores or uploads your location to any server. If you optionally tap <em>Check local weather & Solat times</em> on the login screen, coordinates are used once in browser memory to fetch Open-Meteo weather and Aladhan prayer times, then discarded.</p>
+                <p><strong>4. Prohibited Documents & Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs an on-device check before upload and blocks images resembling passports or IDs.</p>
+                <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account & Privacy → Delete Account & Wipe All Data</em>.</p>
+            </div>
+            <button id="ackPrivacyBtn" type="button" class="w-full btn-primary font-bold py-3 rounded-xl text-sm mt-4 shrink-0">Understood</button>
+        </div>
+    </div>
+
+    <!-- CUSTOM IN-APP CONFIRMATION DIALOG -->
+    <div id="confirmModal" style="z-index: 10001;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
+        <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center">
+            <h3 id="confirmTitle" class="text-lg font-bold text-white mb-2">Confirm Action</h3>
+            <p id="confirmMessage" style="color: #cbd5e1;" class="text-xs leading-relaxed mb-6">Are you sure?</p>
+            <div class="flex gap-2.5">
+                <button id="confirmCancelBtn" type="button" class="flex-1 btn-guest font-semibold py-3 rounded-xl text-xs">Cancel</button>
+                <button id="confirmProceedBtn" type="button" class="flex-1 font-bold py-3 rounded-xl text-xs text-white bg-red-600 hover:bg-red-500 active:scale-95">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Modules -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, signInAnonymously, linkWithPopup, GoogleAuthProvider, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, setDoc, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDiOHlvtLaEoB8JpBFZvQQREKpxg97xcuA",
+            authDomain: "lintas-26e22.firebaseapp.com",
+            projectId: "lintas-26e22",
+            storageBucket: "lintas-26e22.firebasestorage.app",
+            messagingSenderId: "685885154478",
+            appId: "1:685885154478:web:541e4f3a87fc439c40f93f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        const dbCloud = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
+
+        const RETENTION_DAYS = 30;
+        const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
+
+        // --- CUSTOM PROMISE-BASED CONFIRM MODAL ---
+        function askConfirm(title, message, proceedLabel = "Delete") {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmMessage').textContent = message;
+                const proceedBtn = document.getElementById('confirmProceedBtn');
+                const cancelBtn = document.getElementById('confirmCancelBtn');
+                proceedBtn.textContent = proceedLabel;
+
+                const cleanup = (result) => {
+                    modal.classList.add('hide');
+                    proceedBtn.onclick = null;
+                    cancelBtn.onclick = null;
+                    modal.onclick = null;
+                    resolve(result);
+                };
+
+                proceedBtn.onclick = () => cleanup(true);
+                cancelBtn.onclick = () => cleanup(false);
+                modal.onclick = (e) => { if (e.target === modal) cleanup(false); };
+                modal.classList.remove('hide');
+            });
+        }
+
+        // --- WEATHER HELPERS ---
+        function weatherCodeToEmoji(code) {
+            if (code === 0) return '☀️';
+            if (code >= 1 && code <= 3) return '⛅';
+            if (code === 45 || code === 48) return '🌫️';
+            if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return '🌧️';
+            if (code >= 71 && code <= 77) return '❄️';
+            if (code >= 95) return '⛈️';
+            return '🌤️';
+        }
+
+        // --- SINGLE-LINE LOGIN AMBIENT BAR (CURRENT PLACE WEATHER + NEXT SOLAT) ---
+        function formatTime12h(hhmm) {
+            if (!hhmm) return '';
+            const clean = hhmm.split(' ')[0];
+            const [hStr, mStr] = clean.split(':');
+            let h = parseInt(hStr, 10);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${mStr} ${ampm}`;
+        }
+
+        function getNextSolatLabel(timings) {
+            if (!timings) return '';
+            const now = new Date();
+            const curMins = now.getHours() * 60 + now.getMinutes();
+            const schedule = [
+                { name: 'Subuh', key: 'Fajr' },
+                { name: 'Zohor', key: 'Dhuhr' },
+                { name: 'Asar', key: 'Asr' },
+                { name: 'Maghrib', key: 'Maghrib' },
+                { name: 'Isyak', key: 'Isha' }
+            ];
+            for (const p of schedule) {
+                const raw = (timings[p.key] || '').split(' ')[0];
+                const [h, m] = raw.split(':').map(Number);
+                if (!isNaN(h) && (h * 60 + m) > curMins) {
+                    return `🕌 ${p.name} ${formatTime12h(raw)}`;
+                }
+            }
+            return `🕌 Subuh ${formatTime12h(timings.Fajr)}`;
+        }
+
+        async function loadLoginWeatherAndSolat() {
+            const labelEl = document.getElementById('loginAmbientText');
+            if (!navigator.geolocation) {
+                labelEl.textContent = "Location unavailable on this browser";
+                return;
+            }
+            labelEl.textContent = "Checking local weather & Solat...";
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                try {
+                    const [geoRes, wxRes, solatRes] = await Promise.all([
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`).then(r => r.json()).catch(() => null),
+                        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`).then(r => r.json()).catch(() => null),
+                        fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=11`).then(r => r.json()).catch(() => null)
+                    ]);
+
+                    const addr = (geoRes && geoRes.address) || {};
+                    const place = addr.city || addr.town || addr.suburb || addr.state || 'Here';
+
+                    let wxStr = '';
+                    if (wxRes && wxRes.current) {
+                        wxStr = `${weatherCodeToEmoji(wxRes.current.weather_code)} ${Math.round(wxRes.current.temperature_2m)}°C`;
+                    }
+
+                    let solatStr = '';
+                    if (solatRes && solatRes.data && solatRes.data.timings) {
+                        solatStr = getNextSolatLabel(solatRes.data.timings);
+                    }
+
+                    const parts = [`📍 ${place}`];
+                    if (wxStr) parts.push(wxStr);
+                    if (solatStr) parts.push(solatStr);
+                    labelEl.textContent = parts.join(' • ');
+                } catch (_) {
+                    labelEl.textContent = "📍 Tap to retry weather & Solat";
+                }
+            }, () => {
+                labelEl.textContent = "📍 Location permission declined";
+            }, { timeout: 8000, maximumAge: 300000 });
+        }
+
+        document.getElementById('loginAmbientBtn').addEventListener('click', loadLoginWeatherAndSolat);
+
+        // --- DESTINATION WEATHER FORECAST BY CITY NAME ---
+        async function fetchDestinationWeather(cityName, travelDate) {
+            if (!cityName) return null;
+            try {
+                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`);
+                const geoData = await geoRes.json();
+                if (!geoData.results || !geoData.results.length) return null;
+
+                const place = geoData.results[0];
+                const resolvedName = place.country_code ? `${place.name}, ${place.country_code}` : place.name;
+                const wxRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${place.latitude}&longitude=${place.longitude}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=16`);
+                const wxData = await wxRes.json();
+
+                let summary = '';
+                if (travelDate && wxData.daily && wxData.daily.time) {
+                    const idx = wxData.daily.time.indexOf(travelDate);
+                    if (idx !== -1) {
+                        const emoji = weatherCodeToEmoji(wxData.daily.weather_code[idx]);
+                        const minT = Math.round(wxData.daily.temperature_2m_min[idx]);
+                        const maxT = Math.round(wxData.daily.temperature_2m_max[idx]);
+                        summary = `${emoji} ${minT}°–${maxT}°C`;
+                    }
+                }
+                if (!summary && wxData.current) {
+                    const emoji = weatherCodeToEmoji(wxData.current.weather_code);
+                    const curT = Math.round(wxData.current.temperature_2m);
+                    summary = `${emoji} ${curT}°C`;
+                }
+                return { resolvedName, summary };
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function formatCountdownBadge(travelDate) {
+            if (!travelDate) return '';
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const target = new Date(travelDate + 'T00:00:00');
+            if (isNaN(target.getTime())) return travelDate;
+            const diffDays = Math.round((target - today) / (24 * 60 * 60 * 1000));
+            const prettyDate = target.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+            if (diffDays === 0) return `Today (${prettyDate})`;
+            if (diffDays === 1) return `Tomorrow (${prettyDate})`;
+            if (diffDays > 1) return `In ${diffDays}d (${prettyDate})`;
+            return prettyDate;
+        }
+
+        // --- LOCAL INDEXEDDB ENGINE ---
+        const DB_NAME = "LintasLocalWallet";
+        const DB_VERSION = 1;
+
+        function openLocalDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains("trips")) {
+                        const tripStore = db.createObjectStore("trips", { keyPath: "id" });
+                        tripStore.createIndex("userId", "userId", { unique: false });
+                    }
+                    if (!db.objectStoreNames.contains("documents")) {
+                        const docStore = db.createObjectStore("documents", { keyPath: "id" });
+                        docStore.createIndex("tripId", "tripId", { unique: false });
+                        docStore.createIndex("userId", "userId", { unique: false });
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function localPut(storeName, item) {
+            const db = await openLocalDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, "readwrite");
+                tx.objectStore
