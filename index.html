@@ -546,6 +546,18 @@
         </div>
     </div>
 
+    <!-- CUSTOM BRANDED LINTAS NOTICE MODAL (REPLACES RAW BROWSER ALERT POPUPS) -->
+    <div id="noticeModal" style="z-index: 10003;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
+        <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 mb-3">
+                <span id="noticeBadgeText" class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Lintas • Important Notice</span>
+            </div>
+            <h3 id="noticeTitle" class="text-base font-bold text-white mb-2">Important Notice</h3>
+            <p id="noticeMessage" style="color: #cbd5e1;" class="text-xs leading-relaxed mb-5"></p>
+            <button id="noticeOkBtn" type="button" class="w-full btn-primary font-bold py-3 rounded-xl text-xs">Understood</button>
+        </div>
+    </div>
+
     <!-- CUSTOM IN-APP CONFIRMATION DIALOG -->
     <div id="confirmModal" style="z-index: 10001;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
         <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center">
@@ -692,7 +704,28 @@
         document.getElementById('localContextPill').addEventListener('click', () => loadLocalWeatherAndSolat(true));
         loadLocalWeatherAndSolat(false);
 
-        // --- CUSTOM PROMISE-BASED CONFIRM MODAL ---
+        // --- BRANDED LINTAS NOTICE & CONFIRM MODALS ---
+        function showNotice(title, message, badge = "Lintas • Important Notice") {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('noticeModal');
+                document.getElementById('noticeBadgeText').textContent = badge;
+                document.getElementById('noticeTitle').textContent = title;
+                document.getElementById('noticeMessage').textContent = message;
+                const okBtn = document.getElementById('noticeOkBtn');
+
+                const close = () => {
+                    modal.classList.add('hide');
+                    okBtn.onclick = null;
+                    modal.onclick = null;
+                    resolve();
+                };
+
+                okBtn.onclick = close;
+                modal.onclick = (e) => { if (e.target === modal) close(); };
+                modal.classList.remove('hide');
+            });
+        }
+
         function askConfirm(title, message, proceedLabel = "Delete") {
             return new Promise((resolve) => {
                 const modal = document.getElementById('confirmModal');
@@ -987,17 +1020,14 @@
             const upper = (rawText || '').toUpperCase();
             const compact = upper.replace(/\s+/g, '');
 
-            // 1. Passport / ICAO Machine Readable Zone
             if (/P<[A-Z]{3}/.test(compact) || /I<[A-Z]{3}/.test(compact) || /<{4,}/.test(compact)) {
-                return { blocked: true, type: 'Passport / ICAO ID (MRZ detected)' };
+                return { blocked: true, type: 'Passport' };
             }
 
-            // 2. Brunei IC (00-123456 / 01-123456) or Malaysian MyKad (YYMMDD-PB-NNNN)
             if (/\b0[01]-\d{6}\b/.test(upper) || /\b\d{6}-\d{2}-\d{4}\b/.test(upper)) {
-                return { blocked: true, type: 'National ID Number (Brunei IC / MyKad)' };
+                return { blocked: true, type: 'National ID' };
             }
 
-            // 3. Strong single-match ID / Passport headers
             const strictSingleKeywords = [
                 'PASSPORT', 'PASPORT', 'IDENTITY CARD', 'KAD PENGENALAN',
                 'MYKAD', 'NEGARA BRUNEI DARUSSALAM', 'WARGANEGARA',
@@ -1006,11 +1036,10 @@
             ];
             for (const kw of strictSingleKeywords) {
                 if (upper.includes(kw)) {
-                    return { blocked: true, type: `National ID or Passport (${kw})` };
+                    return { blocked: true, type: 'National ID / Passport' };
                 }
             }
 
-            // 4. Secondary biodata field combinations
             const secondaryKeywords = [
                 'TARIKH LAHIR', 'DATE OF BIRTH', 'PLACE OF BIRTH',
                 'TEMPAT LAHIR', 'NATIONALITY', 'JANTINA', 'BANGSA',
@@ -1021,7 +1050,7 @@
                 if (upper.includes(kw)) hits++;
             }
             if (hits >= 2) {
-                return { blocked: true, type: 'Personal Biodata / ID Document' };
+                return { blocked: true, type: 'Identity Document' };
             }
 
             return { blocked: false, textLen: compact.length };
@@ -1193,12 +1222,12 @@
                 document.getElementById('settingsUserLabel').textContent = email;
                 document.getElementById('syncStatusBadge').textContent = "● Cloud Sync + Offline Ready";
                 await loadTrips();
-                alert("Google account linked! Your trips are now synced to the cloud.");
+                await showNotice("Account Linked", "Your trips are now synced across your devices.", "Lintas • Sync Active");
             } catch (error) {
                 if (error.code === 'auth/credential-already-in-use') {
-                    alert("That Google account already has a Lintas profile. Sign out of Guest mode first, then sign in with Google.");
+                    await showNotice("Account Already Exists", "That Google account already has a Lintas profile. Sign out of Guest mode first, then sign in with Google.");
                 } else {
-                    alert("Could not link account: " + error.message);
+                    await showNotice("Unable to Link Account", error.message);
                 }
             }
         });
@@ -1226,10 +1255,10 @@
                 modals.settings.classList.add('hide');
                 currentTripId = null;
                 await deleteUser(auth.currentUser);
-                alert("Your account and all data have been permanently deleted.");
+                await showNotice("Data Deleted", "Your account and all saved passes have been permanently removed.", "Lintas • Privacy");
             } catch (error) {
                 if (error.code === 'auth/requires-recent-login') {
-                    alert("For security, please sign out and sign back in once before deleting your account.");
+                    await showNotice("Re-Authentication Required", "For your security, please sign out and sign back in once before deleting your account.");
                 } else {
                     await signOut(auth);
                 }
@@ -1301,7 +1330,7 @@
             const travelDate = document.getElementById('tripDateInput').value;
             const activeUser = currentUser || auth.currentUser;
             if (!name || !activeUser) {
-                alert("Please enter a trip title.");
+                await showNotice("Trip Title Required", "Please enter a name for your trip before continuing.");
                 return;
             }
 
@@ -1377,7 +1406,7 @@
                 await loadTrips();
             } catch (err) {
                 console.error("Delete trip failed:", err);
-                alert("Could not delete trip: " + err.message);
+                await showNotice("Unable to Delete Trip", err.message);
             } finally {
                 btn.disabled = false;
                 btn.textContent = "Delete Trip";
@@ -1597,7 +1626,6 @@
                 videoEl.srcObject = activeCameraStream;
                 modals.camera.classList.remove('hide');
             } catch (err) {
-                // Seamless fallback to native device camera if permission or live stream is unavailable
                 document.getElementById('docCameraFallbackInput').click();
             }
         }
@@ -1624,7 +1652,7 @@
         });
 
         // --- UNIFIED FILE & CAMERA UPLOAD HANDLER (IMAGE-CONTENT ONLY CHECK) ---
-        function rejectBlockedUpload(reasonText) {
+        async function rejectBlockedUpload(docCategory) {
             pendingImageData = null;
             document.getElementById('docFileInput').value = '';
             document.getElementById('docCameraFallbackInput').value = '';
@@ -1633,7 +1661,12 @@
             statusText.textContent = "Blocked: Passport / National ID Detected";
             statusText.style.color = "#f87171";
             subText.textContent = "Only QR passes, boarding passes & receipts allowed.";
-            alert(`Upload Blocked (${reasonText}): For your PDPO privacy protection, Lintas does not allow Passport biodata pages or National IDs. Please select or capture a QR pass or receipt instead.`);
+
+            await showNotice(
+                `${docCategory} Detected`,
+                "To protect your personal data (PDPO), Lintas does not store passports, national IDs, or bank cards. Please upload a travel QR pass, boarding pass, or receipt instead.",
+                "Lintas • Privacy Notice"
+            );
         }
 
         function processImageDataUrl(rawDataUrl) {
@@ -1653,7 +1686,7 @@
                 const scan = await detectSensitiveIDFromImage(img, canvas);
 
                 if (scan.blocked) {
-                    rejectBlockedUpload(scan.type);
+                    await rejectBlockedUpload(scan.type);
                     return;
                 }
 
@@ -1689,25 +1722,25 @@
             const activeUser = currentUser || auth.currentUser;
 
             if (!name) {
-                alert("Please enter a pass label (e.g., EES QR, MDAC).");
+                await showNotice("Pass Label Required", "Please enter a label for this pass (e.g., EES QR, MDAC, or Boarding Pass).");
                 return;
             }
             if (!pendingImageData) {
-                alert("Please select a screenshot or take a photo of a valid QR code or receipt first.");
+                await showNotice("No Image Selected", "Please select a screenshot or take a photo of your travel QR pass or receipt first.");
                 return;
             }
             if (!pdpoChecked) {
-                alert("Please tick the confirmation box confirming this image does not contain a passport biodata page or national ID.");
+                await showNotice("Confirmation Required", "Please tick the confirmation box confirming this image is not a passport or national ID.");
                 return;
             }
             if (!activeUser) {
-                alert("Session expired. Please sign in again.");
+                await showNotice("Session Expired", "Please sign in again to save your travel pass.");
                 modals.newDoc.classList.add('hide');
                 showScreen('login');
                 return;
             }
             if (!currentTripId) {
-                alert("Trip context was reset when switching apps. Please reopen your trip and tap Save Pass again.");
+                await showNotice("Trip Not Selected", "Please reopen your trip and tap Save Pass again.");
                 modals.newDoc.classList.add('hide');
                 showScreen('dashboard');
                 return;
@@ -1743,7 +1776,7 @@
                 await loadDocuments(currentTripId);
             } catch (err) {
                 console.error("Save pass error:", err);
-                alert("Could not save pass: " + err.message);
+                await showNotice("Unable to Save Pass", err.message);
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "Save Pass";
@@ -1780,7 +1813,7 @@
                 }
             } catch (err) {
                 console.error("Delete pass failed:", err);
-                alert("Could not delete pass: " + err.message);
+                await showNotice("Unable to Delete Pass", err.message);
             } finally {
                 btn.disabled = false;
                 btn.textContent = "Delete";
