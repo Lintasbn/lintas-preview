@@ -12,6 +12,10 @@
     <title>Lintas — Travel QR & Border Pass Wallet</title>
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+    <!-- International Modern Display & UI Typography (Outfit + Plus Jakarta Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <!-- Lightweight On-Device QR & MRZ/ID Privacy Scanner -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
@@ -20,8 +24,47 @@
         body {
             background-color: #0f172a;
             color: #f8fafc;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
+        }
+        /* Commercial International Brand Wordmark */
+        .brand-wordmark {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 900;
+            letter-spacing: -0.045em;
+            line-height: 1;
+            background: linear-gradient(180deg, #ffffff 25%, #bae6fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 6px 20px rgba(56, 189, 248, 0.25));
+            display: inline-flex;
+            align-items: baseline;
+        }
+        .brand-wordmark-dot {
+            display: inline-block;
+            width: 0.17em;
+            height: 0.17em;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #fde047, #f59e0b);
+            margin-left: 0.05em;
+            box-shadow: 0 0 12px rgba(253, 224, 71, 0.7);
+            -webkit-text-fill-color: initial;
+        }
+        .brand-wordmark-sm {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            background: linear-gradient(180deg, #ffffff 30%, #bae6fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-flex;
+            align-items: baseline;
+        }
+        .brand-wordmark-sm .brand-wordmark-dot {
+            width: 0.19em;
+            height: 0.19em;
+            margin-left: 0.06em;
+            box-shadow: none;
         }
         .glass {
             background: rgba(30, 41, 59, 0.92);
@@ -182,9 +225,9 @@
                 </svg>
             </div>
             
-            <h1 class="text-5xl font-extrabold tracking-tight mb-2 text-white">Lintas</h1>
-            <p style="color: #cbd5e1;" class="text-lg font-medium mb-1">Breeze through borders.</p>
-            <p style="color: #64748b;" class="text-sm mb-8 max-w-xs">All your travel QR passes &amp; receipts, synced and ready offline.</p>
+            <h1 class="brand-wordmark text-5xl sm:text-6xl mb-2.5 select-none">Lintas<span class="brand-wordmark-dot"></span></h1>
+            <p style="color: #e2e8f0;" class="text-base font-semibold tracking-tight mb-1">Breeze through borders.</p>
+            <p style="color: #64748b;" class="text-xs sm:text-sm mb-8 max-w-xs leading-relaxed">All your travel QR passes &amp; receipts, synced and ready offline.</p>
 
             <div class="w-full max-w-sm space-y-3">
                 <button id="googleSignInBtn" style="background-color: #ffffff; color: #0f172a;" class="w-full font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform">
@@ -234,7 +277,7 @@
                     </svg>
                 </div>
                 <div>
-                    <span class="font-bold text-lg tracking-tight text-white block leading-none">Lintas</span>
+                    <span class="brand-wordmark-sm text-xl block leading-none">Lintas<span class="brand-wordmark-dot"></span></span>
                     <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium">● Sync &amp; Offline Ready</span>
                 </div>
             </div>
@@ -989,7 +1032,6 @@
             let w = srcW;
             let h = srcH;
             if (cropBottomMRZ && w < 1400) {
-                // Upscale MRZ strip for crisp chevron & alphanumeric recognition
                 const scale = Math.min(2.2, 1600 / w);
                 w = Math.round(w * scale);
                 h = Math.round(h * scale);
@@ -1064,7 +1106,6 @@
                 return { blocked: true, type: 'Passport / Smart ID (MRZ)' };
             }
 
-            // Check for dense 28+ character alphanumeric MRZ-style lines containing filler patterns
             for (const line of lines) {
                 if (line.length >= 24 && /^[A-Z0-9<]{24,}$/.test(line) && (line.includes('<') || /\d{6}[MF<]\d{6}/.test(line))) {
                     return { blocked: true, type: 'Passport / Smart ID (MRZ)' };
@@ -1072,9 +1113,6 @@
             }
 
             // 2. Bruneian & Foreign ID Number Patterns
-            // Brunei IC: 00-123456, 01-123456, 30-123456, 50-123456 (with optional spaces around dash)
-            // Malaysian MyKad: YYMMDD-PB-NNNN
-            // Singapore NRIC/FIN: S/T/F/G/M + 7 digits + letter
             if (
                 /\b\d{2}\s*-\s*\d{6}\b/.test(upper) ||
                 /\b\d{6}\s*-\s*\d{2}\s*-\s*\d{4}\b/.test(upper) ||
@@ -1085,15 +1123,12 @@
 
             // 3. Single-Match Authoritative ID / Passport Headers (Bruneian + Foreign)
             const strictSingleKeywords = [
-                // Bruneian (Yellow, Purple, Green ICs & Passports)
                 'NEGARA BRUNEI DARUSSALAM', 'BRUNEI DARUSSALAM', 'KAD PENGENALAN',
                 'PENDAFTARAN KEBANGSAAN', 'PENDAFTARAN NEGARA', 'PESURUHJAYA',
                 'TARIKH MANSUH', 'TARIKH DIKELUARKAN', 'JENIS DARAH', 'PASPORT',
-                // Malaysian / Singaporean / Indonesian / Philippine / Regional
                 'MYKAD', 'MYPR', 'MYKAS', 'MYKID', 'WARGANEGARA', 'KEWARGANEGARAAN',
                 'NO. K/P', 'REPUBLIC OF SINGAPORE', 'IDENTITY CARD', 'NRIC',
                 'KARTU TANDA PENDUDUK', 'REPUBLIK INDONESIA', 'PILIPINAS', 'PHILSYS',
-                // International Passports & Visas
                 'PASSPORT', 'PASAPORTE', 'PASSEPORT', 'REISEPASS', 'PASSAPORTO',
                 'SMART IDENTITY', 'PERMANENT RESIDENT', 'EMPLOYMENT PASS', 'WORK PERMIT',
                 'IMMIGRATION AND CHECKPOINTS', 'JABATAN IMIGRESEN', 'IMIGRESEN'
@@ -1120,7 +1155,6 @@
                 return { blocked: true, type: 'Identity Document' };
             }
 
-            // Check if image looks like an allowed travel pass / receipt
             const allowedPassKeywords = [
                 'BOARDING', 'FLIGHT', 'GATE', 'SEAT', 'E-TICKET', 'ITINERARY',
                 'BOOKING', 'RECEIPT', 'INVOICE', 'TOTAL', 'AMOUNT', 'PAID',
@@ -1168,28 +1202,25 @@
                 }
             } catch (_) {}
 
-            // Step B: Portrait Face Check (Front of Passport / IC always has a portrait photo; QR passes & receipts do not)
+            // Step B: Portrait Face Check
             const hasFace = await detectPortraitFace(img);
             if (hasFace) {
                 return { blocked: true, type: 'ID / Passport Photo' };
             }
 
-            // Step C: Multi-Pass On-Device OCR (Full Adaptive + Bottom MRZ Strip + Binary + Rotation)
+            // Step C: Multi-Pass On-Device OCR
             if (typeof Tesseract !== 'undefined') {
                 try {
-                    // Pass 1: Upright Adaptive Grayscale
                     const uprightCanvas = buildScanCanvas(img, 0, 'adaptive', false);
                     const res0 = await Tesseract.recognize(uprightCanvas, 'eng');
                     const check0 = evaluateOCRText(res0?.data?.text || '');
                     if (check0.blocked) return check0;
 
-                    // Pass 2: Dedicated Bottom MRZ Zoom Strip (catches back of Brunei Smart IC & bottom of Passports)
                     const mrzCanvas = buildScanCanvas(img, 0, 'binary', true);
                     const resMrz = await Tesseract.recognize(mrzCanvas, 'eng');
                     const checkMrz = evaluateOCRText(resMrz?.data?.text || '');
                     if (checkMrz.blocked) return checkMrz;
 
-                    // Pass 3: If very little readable text was found (tilted/sideways photo or glare), run 90° & 270° binary scans
                     if (check0.textLen < 35 && checkMrz.textLen < 20) {
                         const rot90 = buildScanCanvas(img, 90, 'binary', false);
                         const res90 = await Tesseract.recognize(rot90, 'eng');
@@ -1202,8 +1233,7 @@
                         if (check270.blocked) return check270;
                     }
 
-                    // Step D: Strict Fail-Safe — If NO QR/barcode was found AND NO travel receipt/boarding pass text was found,
-                    // block unverified card/photo uploads so unreadable/glared IDs never slip through.
+                    // Step D: Strict Fail-Safe
                     if (!hasQR && !check0.hasPassKeyword) {
                         return { blocked: true, type: 'Unverified Card / Non-QR' };
                     }
