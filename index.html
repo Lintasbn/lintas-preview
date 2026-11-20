@@ -269,12 +269,12 @@
 
             <!-- Approach B Glassmorphic Auth Card -->
             <div class="glass-auth-card w-full max-w-sm rounded-3xl p-5 space-y-3">
-                <!-- BIOMETRIC QUICK UNLOCK BUTTON (SHOWN WHEN REGISTERED FOR THIS SESSION; REMOVED ON SIGN OUT) -->
+                <!-- BIOMETRIC QUICK UNLOCK BUTTON (PERSISTS ACROSS APP CLOSES; REMOVED ON SIGN OUT) -->
                 <button id="biometricUnlockBtn" type="button" class="hide btn-biometric w-full font-bold py-4 px-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg text-sm">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path>
                     </svg>
-                    <span id="biometricBtnLabel" class="truncate">Unlock with Face ID / Biometrics</span>
+                    <span id="biometricBtnLabel" class="truncate">Unlock with Face ID / Fingerprint</span>
                 </button>
 
                 <button id="googleSignInBtn" style="background-color: #ffffff; color: #0f172a;" class="w-full font-bold py-3.5 px-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform text-sm">
@@ -666,7 +666,7 @@
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
                 <p><strong>1. Independence &amp; User Responsibility:</strong> Lintas is an independent personal travel organizer not affiliated with any government or border authority. All uploaded files remain under your sole control and responsibility; Lintas assumes no liability for user-stored content.</p>
-                <p><strong>2. Storage, Biometric Lock &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Sessions auto-lock after 5 minutes of inactivity (unlockable via Face ID / Fingerprint), completely remove biometric access when you tap Sign Out, and auto-delete trips and passes 30 days after your trip end date.</p>
+                <p><strong>2. Storage, Biometric Lock &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Sessions auto-lock after 5 minutes of inactivity or when closed (unlockable via Face ID / Fingerprint), completely remove biometric access when you tap Sign Out, and auto-delete trips and passes 30 days after your trip end date.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs a multi-layer on-device check before upload and blocks Bruneian or foreign passports and IDs.</p>
                 <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account &amp; Privacy → Delete Account &amp; Wipe All Data</em>.</p>
@@ -766,7 +766,7 @@
         }
 
         // =========================================================================
-        // BIOMETRIC UNLOCK ENGINE (REGISTERED AFTER GOOGLE SIGN-IN; REMOVED ON SIGN OUT)
+        // BIOMETRIC UNLOCK ENGINE (PERSISTS ACROSS APP CLOSES; REMOVED ON SIGN OUT)
         // =========================================================================
         function bufToBase64Url(buf) {
             const bytes = new Uint8Array(buf);
@@ -847,7 +847,7 @@
                         isAnonymous: !!user.isAnonymous
                     }));
                     await updateBiometricUI();
-                    await showNotice("Biometric Access Registered", "You can now unlock Lintas with Face ID or Fingerprint. Signing out will remove this biometric link.", "Lintas • Biometrics");
+                    await showNotice("Biometric Access Registered", "You can now unlock Lintas with Face ID or Fingerprint whenever you reopen the app. Signing out will remove this biometric link.", "Lintas • Biometrics");
                     return true;
                 }
             } catch (err) {
@@ -913,10 +913,7 @@
             const toggleStatus = document.getElementById('toggleBiometricStatus');
             const supported = await isBiometricHardwareAvailable();
 
-            // Show Face ID / Fingerprint unlock button ONLY if biometrics are registered AND an active Firebase user session is still present (not signed out)
-            const hasMatchingFirebaseSession = !!(bioProfile && auth.currentUser && auth.currentUser.uid === bioProfile.uid);
-
-            if (bioProfile && supported && hasMatchingFirebaseSession) {
+            if (bioProfile && supported) {
                 const nameTag = bioProfile.email ? ` (${bioProfile.email.split('@')[0]})` : "";
                 unlockLabel.textContent = `Unlock with Face ID / Fingerprint${nameTag}`;
                 unlockBtn.classList.remove('hide');
@@ -925,10 +922,6 @@
                 toggleStatus.textContent = "Active ✓";
                 toggleStatus.className = "text-emerald-400 font-bold";
             } else {
-                if (bioProfile && !auth.currentUser) {
-                    // Clean up stale biometric entry if Firebase session is already signed out
-                    localStorage.removeItem(BIO_CRED_KEY);
-                }
                 unlockBtn.classList.add('hide');
                 toggleLabel.textContent = "Register Face ID / Fingerprint Unlock";
                 toggleStatus.textContent = supported ? "Off" : "Unsupported";
@@ -1780,8 +1773,7 @@
                     currentTripId = null;
                     showScreen('login');
                     await updateBiometricUI();
-                    // Keep Firebase user warm ONLY if biometrics are actively registered for this user (e.g., after 5m lock);
-                    // otherwise sign out completely.
+                    // Keep Firebase user warm if biometrics are registered so reopening the app allows 1-tap Face ID unlock
                     if (!bioProfile || bioProfile.uid !== user.uid) {
                         await signOut(auth).catch(() => {});
                     }
@@ -1793,7 +1785,6 @@
             } else {
                 clearInactivityWatch();
                 setSessionAuthorized(false);
-                localStorage.removeItem(BIO_CRED_KEY);
                 currentUser = null;
                 currentTripId = null;
                 showScreen('login');
@@ -1801,18 +1792,17 @@
             }
         });
 
-        // Biometric Unlock Handler on Login Screen
+        // Biometric Unlock Handler on Login Screen (Persists across app closes; removed only on Sign Out)
         document.getElementById('biometricUnlockBtn').addEventListener('click', async () => {
             const bioProfile = getSavedBiometricProfile();
-            if (!bioProfile || !auth.currentUser || auth.currentUser.uid !== bioProfile.uid) {
-                localStorage.removeItem(BIO_CRED_KEY);
+            if (!bioProfile) {
                 await updateBiometricUI();
-                await showNotice("Sign In Required", "Please sign in with Google first to register biometric access.");
                 return;
             }
 
             const btn = document.getElementById('biometricUnlockBtn');
             const labelEl = document.getElementById('biometricBtnLabel');
+            const googleLabel = document.getElementById('googleSignInLabel');
             const originalText = labelEl.textContent;
             btn.disabled = true;
             labelEl.textContent = "Verifying Face ID / Fingerprint...";
@@ -1821,7 +1811,28 @@
                 const verified = await verifyBiometricPrompt(bioProfile.credId);
                 if (!verified) return;
 
-                await enterDashboardForUser(auth.currentUser, false);
+                // Wait briefly for Firebase Auth persistence if the app was just cold-started
+                let firebaseUser = auth.currentUser;
+                if (!firebaseUser && typeof auth.authStateReady === 'function') {
+                    await auth.authStateReady();
+                    firebaseUser = auth.currentUser;
+                }
+
+                if (firebaseUser && firebaseUser.uid === bioProfile.uid) {
+                    await enterDashboardForUser(firebaseUser, false);
+                } else if (bioProfile.isAnonymous) {
+                    setSessionAuthorized(true);
+                    const res = await signInAnonymously(auth);
+                    if (res?.user) await enterDashboardForUser(res.user, false);
+                } else {
+                    // If iOS Safari purged IndexedDB auth persistence after prolonged inactivity, guide a direct tap on Google Sign-In
+                    googleLabel.textContent = "Face ID Verified ✓ — Tap to Continue";
+                    await showNotice(
+                        "Face ID Verified",
+                        "Tap the white \"Sign in with Google\" button below to refresh your Google cloud session.",
+                        "Lintas • Biometrics"
+                    );
+                }
             } catch (err) {
                 setSessionAuthorized(false);
                 if (err.name !== 'NotAllowedError') {
@@ -1867,6 +1878,15 @@
                 setSessionAuthorized(true);
                 const result = await signInWithPopup(auth, provider);
                 if (result?.user) {
+                    const existingBio = getSavedBiometricProfile();
+                    if (existingBio) {
+                        localStorage.setItem(BIO_CRED_KEY, JSON.stringify({
+                            ...existingBio,
+                            uid: result.user.uid,
+                            email: result.user.email || existingBio.email,
+                            isAnonymous: false
+                        }));
+                    }
                     await enterDashboardForUser(result.user, true);
                 }
             } catch (error) {
