@@ -269,12 +269,20 @@
 
             <!-- Approach B Glassmorphic Auth Card -->
             <div class="glass-auth-card w-full max-w-sm rounded-3xl p-5 space-y-3">
-                <!-- BIOMETRIC QUICK UNLOCK BUTTON (PERSISTS ACROSS APP CLOSES; REMOVED ON SIGN OUT) -->
+                <!-- BIOMETRIC QUICK UNLOCK BUTTON (SHOWN AFTER 15-MIN GRACE TIMEOUT WHEN BIOMETRICS ARE REGISTERED) -->
                 <button id="biometricUnlockBtn" type="button" class="hide btn-biometric w-full font-bold py-4 px-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg text-sm">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path>
                     </svg>
                     <span id="biometricBtnLabel" class="truncate">Unlock with Face ID / Fingerprint</span>
+                </button>
+
+                <!-- 1-TAP RESUME BUTTON FOR NON-BIOMETRIC USERS AFTER 15-MIN GRACE WINDOW -->
+                <button id="quickResumeBtn" type="button" class="hide btn-biometric w-full font-bold py-4 px-5 rounded-2xl flex items-center justify-center gap-2.5 shadow-lg text-sm">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span id="quickResumeLabel" class="truncate">Continue to My Trips</span>
                 </button>
 
                 <button id="googleSignInBtn" style="background-color: #ffffff; color: #0f172a;" class="w-full font-bold py-3.5 px-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform text-sm">
@@ -356,14 +364,14 @@
                     </button>
                 </div>
 
-                <!-- BIOMETRIC OPT-IN BANNER (SHOWN IF DEVICE SUPPORTS FACE ID / FINGERPRINT AND NOT YET ENABLED) -->
+                <!-- BIOMETRIC OPT-IN BANNER (OPTIONAL — USERS WHO SKIP STILL GET 15-MIN GRACE PERSISTENCE) -->
                 <div id="biometricSetupBanner" class="hide mb-4 p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-between gap-3">
                     <div class="text-left">
-                        <p class="text-xs font-bold text-sky-300">Fast Biometric Unlock</p>
-                        <p style="color: #cbd5e1;" class="text-xs mt-0.5">Register Face ID / Fingerprint for quick unlock (cleared on Sign Out).</p>
+                        <p class="text-xs font-bold text-sky-300">Optional: Face ID / Fingerprint</p>
+                        <p style="color: #cbd5e1;" class="text-xs mt-0.5">Unlock instantly after the 15-minute auto-lock window.</p>
                     </div>
                     <button id="enableBiometricBannerBtn" type="button" class="shrink-0 btn-primary text-xs font-bold px-3.5 py-2.5 rounded-xl shadow">
-                        Register
+                        Enable
                     </button>
                 </div>
 
@@ -600,7 +608,7 @@
                     </div>
                     <ul style="color: #cbd5e1;" class="text-xs space-y-1.5">
                         <li>✓ Syncs trips across iPhone &amp; Android</li>
-                        <li>✓ Cached offline for border crossings</li>
+                        <li>✓ Stays signed in for 15m across app closes</li>
                         <li>✓ Auto-cleans 30d after trip end date</li>
                     </ul>
                 </div>
@@ -628,7 +636,7 @@
             <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-slate-700/70 mb-4">
                 <p style="color: #94a3b8;" class="text-xs">Signed in as</p>
                 <p id="settingsUserLabel" class="text-sm font-bold text-white mt-0.5 truncate">Traveler</p>
-                <p id="settingsStorageMode" class="text-[11px] text-emerald-400 mt-1">✓ Cloud Sync + Offline Cache Active (30-Day Auto-Delete)</p>
+                <p id="settingsStorageMode" class="text-[11px] text-emerald-400 mt-1">✓ Cloud Sync + 15m Session Grace Active</p>
             </div>
 
             <div class="space-y-2.5">
@@ -643,7 +651,7 @@
                 </button>
 
                 <button id="signOutSettingsBtn" type="button" class="w-full btn-guest font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-between">
-                    <span>Sign Out (Removes Biometric Access)</span>
+                    <span>Sign Out (Clears Session &amp; Biometrics)</span>
                     <span>→</span>
                 </button>
 
@@ -666,7 +674,7 @@
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
                 <p><strong>1. Independence &amp; User Responsibility:</strong> Lintas is an independent personal travel organizer not affiliated with any government or border authority. All uploaded files remain under your sole control and responsibility; Lintas assumes no liability for user-stored content.</p>
-                <p><strong>2. Storage, Biometric Lock &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Sessions auto-lock after 5 minutes of inactivity or when closed (unlockable via Face ID / Fingerprint), completely remove biometric access when you tap Sign Out, and auto-delete trips and passes 30 days after your trip end date.</p>
+                <p><strong>2. Storage, Session Grace &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Active sessions remain unlocked for 15 minutes across app closes for border convenience, then lock automatically (unlockable via Face ID / Fingerprint or 1-tap resume). Tapping Sign Out immediately clears your session and removes biometric access. Trips and passes auto-delete 30 days after your trip end date.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs a multi-layer on-device check before upload and blocks Bruneian or foreign passports and IDs.</p>
                 <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account &amp; Privacy → Delete Account &amp; Wipe All Data</em>.</p>
@@ -675,7 +683,7 @@
         </div>
     </div>
 
-    <!-- BIOMETRIC ENROLLMENT CONFIRMATION MODAL (PROMPTED AFTER GOOGLE SIGN-IN) -->
+    <!-- BIOMETRIC ENROLLMENT CONFIRMATION MODAL (OPTIONAL AFTER GOOGLE SIGN-IN) -->
     <div id="bioPromptModal" style="z-index: 10004;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
         <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center">
             <div class="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center mx-auto mb-3 text-sky-300">
@@ -685,10 +693,10 @@
             </div>
             <h3 class="text-base font-bold text-white mb-1.5">Register Biometric Access?</h3>
             <p style="color: #cbd5e1;" class="text-xs leading-relaxed mb-5">
-                Enable Face ID or Fingerprint to unlock Lintas quickly on this device. For your security, biometric access is automatically removed when you Sign Out.
+                Optional: Use Face ID or Fingerprint to unlock after the 15-minute auto-lock window. If you skip, your session still stays signed in for 15 minutes across app closes.
             </p>
             <div class="flex gap-2.5">
-                <button id="bioPromptSkipBtn" type="button" class="flex-1 btn-guest font-semibold py-3 rounded-xl text-xs">Not Now</button>
+                <button id="bioPromptSkipBtn" type="button" class="flex-1 btn-guest font-semibold py-3 rounded-xl text-xs">Skip</button>
                 <button id="bioPromptConfirmBtn" type="button" class="flex-1 btn-primary font-bold py-3 rounded-xl text-xs">Register</button>
             </div>
         </div>
@@ -749,24 +757,26 @@
 
         const RETENTION_DAYS = 30;
         const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
-        const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
-        const SESSION_FLAG_KEY = "lintas_active_session";
+        const SESSION_GRACE_MS = 15 * 60 * 1000; // 15-minute grace window across app closes & inactivity
+        const LAST_ACTIVE_KEY = "lintas_last_active_ts";
         const BIO_CRED_KEY = "lintas_biometric_cred_v1";
 
-        function setSessionAuthorized(authorized) {
-            if (authorized) {
-                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
-            } else {
-                sessionStorage.removeItem(SESSION_FLAG_KEY);
-            }
+        function touchSessionActivity() {
+            localStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
         }
 
-        function isSessionAuthorized() {
-            return sessionStorage.getItem(SESSION_FLAG_KEY) === "1";
+        function clearSessionActivity() {
+            localStorage.removeItem(LAST_ACTIVE_KEY);
+        }
+
+        function isWithinGraceWindow() {
+            const lastTs = Number(localStorage.getItem(LAST_ACTIVE_KEY) || 0);
+            if (!lastTs) return false;
+            return (Date.now() - lastTs) < SESSION_GRACE_MS;
         }
 
         // =========================================================================
-        // BIOMETRIC UNLOCK ENGINE (PERSISTS ACROSS APP CLOSES; REMOVED ON SIGN OUT)
+        // BIOMETRIC UNLOCK ENGINE (OPTIONAL; REMOVED ON EXPLICIT SIGN OUT)
         // =========================================================================
         function bufToBase64Url(buf) {
             const bytes = new Uint8Array(buf);
@@ -847,7 +857,7 @@
                         isAnonymous: !!user.isAnonymous
                     }));
                     await updateBiometricUI();
-                    await showNotice("Biometric Access Registered", "You can now unlock Lintas with Face ID or Fingerprint whenever you reopen the app. Signing out will remove this biometric link.", "Lintas • Biometrics");
+                    await showNotice("Biometric Access Registered", "You can now unlock Lintas with Face ID or Fingerprint after the 15-minute auto-lock. Signing out will remove this biometric link.", "Lintas • Biometrics");
                     return true;
                 }
             } catch (err) {
@@ -908,6 +918,8 @@
             const bioProfile = getSavedBiometricProfile();
             const unlockBtn = document.getElementById('biometricUnlockBtn');
             const unlockLabel = document.getElementById('biometricBtnLabel');
+            const quickResumeBtn = document.getElementById('quickResumeBtn');
+            const quickResumeLabel = document.getElementById('quickResumeLabel');
             const setupBanner = document.getElementById('biometricSetupBanner');
             const toggleLabel = document.getElementById('toggleBiometricLabel');
             const toggleStatus = document.getElementById('toggleBiometricStatus');
@@ -917,6 +929,7 @@
                 const nameTag = bioProfile.email ? ` (${bioProfile.email.split('@')[0]})` : "";
                 unlockLabel.textContent = `Unlock with Face ID / Fingerprint${nameTag}`;
                 unlockBtn.classList.remove('hide');
+                quickResumeBtn.classList.add('hide');
                 setupBanner.classList.add('hide');
                 toggleLabel.textContent = "Disable Face ID / Biometric Unlock";
                 toggleStatus.textContent = "Active ✓";
@@ -926,6 +939,19 @@
                 toggleLabel.textContent = "Register Face ID / Fingerprint Unlock";
                 toggleStatus.textContent = supported ? "Off" : "Unsupported";
                 toggleStatus.className = "text-slate-400";
+
+                // If user has NO biometrics registered but Firebase still has an active account after the 15-min timeout,
+                // show a 1-tap "Continue as [Name]" button so they don't have to re-type their Google password!
+                if (auth.currentUser) {
+                    const display = auth.currentUser.isAnonymous
+                        ? "Guest"
+                        : (auth.currentUser.email ? auth.currentUser.email.split('@')[0] : "Traveler");
+                    quickResumeLabel.textContent = `Continue as ${display}`;
+                    quickResumeBtn.classList.remove('hide');
+                } else {
+                    quickResumeBtn.classList.add('hide');
+                }
+
                 if (supported && currentUser) {
                     setupBanner.classList.remove('hide');
                 } else {
@@ -1637,7 +1663,6 @@
         let arrowHideTimer = null;
         let activeCameraStream = null;
         let inactivityTimer = null;
-        let lastActivityAt = Date.now();
         let isAutoLoggingOut = false;
         let isSigningIn = false;
         let isLoadingTrips = false;
@@ -1658,7 +1683,7 @@
             privacy: document.getElementById('privacyModal')
         };
 
-        // --- PDPO INACTIVITY AUTO-LOCK CONTROLLER (LOCKS UI WITHOUT DESTROYING BIOMETRIC LINK) ---
+        // --- PDPO 15-MINUTE GRACE / INACTIVITY AUTO-LOCK CONTROLLER ---
         function clearInactivityWatch() {
             if (inactivityTimer) {
                 clearTimeout(inactivityTimer);
@@ -1666,7 +1691,7 @@
             }
         }
 
-        async function triggerInactivityLogout() {
+        async function triggerInactivityLock() {
             if (isAutoLoggingOut) return;
             const activeUser = currentUser || auth.currentUser;
             if (!activeUser) return;
@@ -1675,7 +1700,7 @@
             clearInactivityWatch();
             clearTimeout(arrowHideTimer);
             stopLiveCamera();
-            setSessionAuthorized(false);
+            clearSessionActivity();
 
             Object.values(modals).forEach(m => m.classList.add('hide'));
             document.getElementById('confirmModal').classList.add('hide');
@@ -1683,32 +1708,29 @@
             pendingImageData = null;
             currentTripId = null;
             currentTripDocs = [];
+            currentUser = null;
             showScreen('login');
             await updateBiometricUI();
 
-            const bioProfile = getSavedBiometricProfile();
-            if (!bioProfile || bioProfile.uid !== activeUser.uid) {
-                try { await signOut(auth); } catch (_) {}
-            }
-
             isAutoLoggingOut = false;
+            const bioProfile = getSavedBiometricProfile();
             await showNotice(
                 "Session Locked for Privacy",
                 bioProfile
-                    ? "Locked after 5 minutes of inactivity. Tap Unlock with Face ID / Fingerprint to resume."
-                    : "You were automatically signed out after 5 minutes of inactivity to protect your travel passes.",
+                    ? "Locked after 15 minutes of inactivity. Tap Unlock with Face ID / Fingerprint to resume."
+                    : "Locked after 15 minutes of inactivity. Tap Continue below to resume your session.",
                 "Lintas • Security Lock"
             );
         }
 
         function resetInactivityTimer() {
             const activeUser = currentUser || auth.currentUser;
-            if (!activeUser || isAutoLoggingOut || !isSessionAuthorized()) return;
-            lastActivityAt = Date.now();
+            if (!activeUser || isAutoLoggingOut || !isWithinGraceWindow()) return;
+            touchSessionActivity();
             clearInactivityWatch();
             inactivityTimer = setTimeout(() => {
-                triggerInactivityLogout();
-            }, INACTIVITY_TIMEOUT_MS);
+                triggerInactivityLock();
+            }, SESSION_GRACE_MS);
         }
 
         ['touchstart', 'click', 'keydown', 'scroll'].forEach((evt) => {
@@ -1717,9 +1739,9 @@
 
         document.addEventListener('visibilitychange', () => {
             const activeUser = currentUser || auth.currentUser;
-            if (document.visibilityState === 'visible' && activeUser && !isAutoLoggingOut && isSessionAuthorized()) {
-                if (Date.now() - lastActivityAt >= INACTIVITY_TIMEOUT_MS) {
-                    triggerInactivityLogout();
+            if (document.visibilityState === 'visible' && activeUser && !isAutoLoggingOut) {
+                if (!isWithinGraceWindow()) {
+                    triggerInactivityLock();
                 } else {
                     resetInactivityTimer();
                 }
@@ -1728,7 +1750,7 @@
 
         async function enterDashboardForUser(user, offerBiometricRegistration = false) {
             currentUser = user;
-            setSessionAuthorized(true);
+            touchSessionActivity();
             resetInactivityTimer();
 
             const guestBanner = document.getElementById('guestBanner');
@@ -1739,14 +1761,14 @@
                 document.getElementById('userEmailDisplay').textContent = "Guest";
                 document.getElementById('settingsUserLabel').textContent = "Guest (Local Device)";
                 syncBadge.textContent = "● Offline Local Mode";
-                settingsMode.textContent = "✓ Local-Only Storage • 5m Auto-Lock Active";
+                settingsMode.textContent = "✓ Local-Only Storage • 15m Grace Active";
                 guestBanner.classList.remove('hide');
             } else {
                 const label = user.email ? user.email.split('@')[0] : "Traveler";
                 document.getElementById('userEmailDisplay').textContent = label;
                 document.getElementById('settingsUserLabel').textContent = user.email || "Google Account";
                 syncBadge.textContent = "● Cloud Sync + Offline Ready";
-                settingsMode.textContent = "✓ Cloud Sync • 5m Auto-Lock • 30d Auto-Delete";
+                settingsMode.textContent = "✓ Cloud Sync • 15m Grace • 30d Auto-Delete";
                 guestBanner.classList.add('hide');
             }
             if (!currentTripId) showScreen('dashboard');
@@ -1754,7 +1776,7 @@
             cleanupExpiredItems(user.uid);
             await loadTrips();
 
-            // Prompt biometric registration right after Google Sign-In if supported and not yet registered
+            // Optional biometric registration prompt after Google Sign-In
             if (offerBiometricRegistration && !user.isAnonymous) {
                 const supported = await isBiometricHardwareAvailable();
                 const bioProfile = getSavedBiometricProfile();
@@ -1766,25 +1788,24 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const bioProfile = getSavedBiometricProfile();
-                if (!isSessionAuthorized()) {
-                    clearInactivityWatch();
-                    currentUser = null;
-                    currentTripId = null;
-                    showScreen('login');
-                    await updateBiometricUI();
-                    // Keep Firebase user warm if biometrics are registered so reopening the app allows 1-tap Face ID unlock
-                    if (!bioProfile || bioProfile.uid !== user.uid) {
-                        await signOut(auth).catch(() => {});
+                // If user closed & reopened the app within the 15-minute grace window,
+                // automatically resume into My Trips without requiring Google or Biometric click!
+                if (isWithinGraceWindow()) {
+                    if (!currentUser || currentUser.uid !== user.uid) {
+                        await enterDashboardForUser(user, false);
                     }
                     return;
                 }
-                if (!currentUser || currentUser.uid !== user.uid) {
-                    await enterDashboardForUser(user, false);
-                }
+
+                // Outside the 15-minute grace window: show login screen with Face ID or 1-tap Continue
+                clearInactivityWatch();
+                currentUser = null;
+                currentTripId = null;
+                showScreen('login');
+                await updateBiometricUI();
             } else {
                 clearInactivityWatch();
-                setSessionAuthorized(false);
+                clearSessionActivity();
                 currentUser = null;
                 currentTripId = null;
                 showScreen('login');
@@ -1792,7 +1813,16 @@
             }
         });
 
-        // Biometric Unlock Handler on Login Screen (Persists across app closes; removed only on Sign Out)
+        // 1-Tap Resume Button for Non-Biometric Users after 15-Minute Grace Window
+        document.getElementById('quickResumeBtn').addEventListener('click', async () => {
+            if (auth.currentUser) {
+                await enterDashboardForUser(auth.currentUser, false);
+            } else {
+                await updateBiometricUI();
+            }
+        });
+
+        // Biometric Unlock Handler on Login Screen (After 15-Minute Grace Window)
         document.getElementById('biometricUnlockBtn').addEventListener('click', async () => {
             const bioProfile = getSavedBiometricProfile();
             if (!bioProfile) {
@@ -1811,7 +1841,6 @@
                 const verified = await verifyBiometricPrompt(bioProfile.credId);
                 if (!verified) return;
 
-                // Wait briefly for Firebase Auth persistence if the app was just cold-started
                 let firebaseUser = auth.currentUser;
                 if (!firebaseUser && typeof auth.authStateReady === 'function') {
                     await auth.authStateReady();
@@ -1821,11 +1850,10 @@
                 if (firebaseUser && firebaseUser.uid === bioProfile.uid) {
                     await enterDashboardForUser(firebaseUser, false);
                 } else if (bioProfile.isAnonymous) {
-                    setSessionAuthorized(true);
+                    touchSessionActivity();
                     const res = await signInAnonymously(auth);
                     if (res?.user) await enterDashboardForUser(res.user, false);
                 } else {
-                    // If iOS Safari purged IndexedDB auth persistence after prolonged inactivity, guide a direct tap on Google Sign-In
                     googleLabel.textContent = "Face ID Verified ✓ — Tap to Continue";
                     await showNotice(
                         "Face ID Verified",
@@ -1834,7 +1862,6 @@
                     );
                 }
             } catch (err) {
-                setSessionAuthorized(false);
                 if (err.name !== 'NotAllowedError') {
                     await showNotice("Biometric Verification Failed", "Please try Face ID / Fingerprint again or sign in with Google.");
                 }
@@ -1862,7 +1889,7 @@
             }
         });
 
-        // Seamless Google Sign-In (Uses direct user-initiated popup; avoids iOS ITP redirect failure)
+        // Seamless Google Sign-In
         async function triggerGoogleSignIn() {
             if (isSigningIn) return;
             isSigningIn = true;
@@ -1875,7 +1902,7 @@
 
             try {
                 modals.benefits.classList.add('hide');
-                setSessionAuthorized(true);
+                touchSessionActivity();
                 const result = await signInWithPopup(auth, provider);
                 if (result?.user) {
                     const existingBio = getSavedBiometricProfile();
@@ -1890,7 +1917,7 @@
                     await enterDashboardForUser(result.user, true);
                 }
             } catch (error) {
-                setSessionAuthorized(false);
+                clearSessionActivity();
                 if (error.code === 'auth/popup-blocked') {
                     errBox.textContent = "Popup blocked by browser. Please allow popups for lintasbn.github.io in Safari Settings and tap Sign in with Google again.";
                     errBox.classList.remove('hide');
@@ -1915,13 +1942,13 @@
             errBox.classList.add('hide');
 
             try {
-                setSessionAuthorized(true);
+                touchSessionActivity();
                 const res = await signInAnonymously(auth);
                 if (res?.user) {
                     await enterDashboardForUser(res.user, false);
                 }
             } catch (error) {
-                setSessionAuthorized(false);
+                clearSessionActivity();
                 errBox.textContent = `Guest Login Error: ${error.message}`;
                 errBox.classList.remove('hide');
             } finally {
@@ -1962,10 +1989,10 @@
             }
         });
 
-        // SIGN OUT: COMPLETELY REMOVES BIOMETRIC ACCESS & SIGNS OUT OF FIREBASE!
+        // SIGN OUT: COMPLETELY CLEARS SESSION, GRACE WINDOW, AND BIOMETRIC ACCESS!
         document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
             clearInactivityWatch();
-            setSessionAuthorized(false);
+            clearSessionActivity();
             localStorage.removeItem(BIO_CRED_KEY);
             modals.settings.classList.add('hide');
             currentTripId = null;
@@ -1988,7 +2015,7 @@
             btn.disabled = true;
             try {
                 clearInactivityWatch();
-                setSessionAuthorized(false);
+                clearSessionActivity();
                 localStorage.removeItem(BIO_CRED_KEY);
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
