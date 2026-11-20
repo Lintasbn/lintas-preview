@@ -277,14 +277,6 @@
                     <span id="biometricBtnLabel" class="truncate">Unlock with Face ID / Fingerprint</span>
                 </button>
 
-                <!-- 1-TAP RESUME BUTTON FOR NON-BIOMETRIC USERS AFTER 15-MIN GRACE WINDOW -->
-                <button id="quickResumeBtn" type="button" class="hide btn-biometric w-full font-bold py-4 px-5 rounded-2xl flex items-center justify-center gap-2.5 shadow-lg text-sm">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span id="quickResumeLabel" class="truncate">Continue to My Trips</span>
-                </button>
-
                 <button id="googleSignInBtn" style="background-color: #ffffff; color: #0f172a;" class="w-full font-bold py-3.5 px-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-transform text-sm">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -674,7 +666,7 @@
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
                 <p><strong>1. Independence &amp; User Responsibility:</strong> Lintas is an independent personal travel organizer not affiliated with any government or border authority. All uploaded files remain under your sole control and responsibility; Lintas assumes no liability for user-stored content.</p>
-                <p><strong>2. Storage, Session Grace &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Active sessions remain unlocked for 15 minutes across app closes for border convenience, then lock automatically (unlockable via Face ID / Fingerprint or 1-tap resume). Tapping Sign Out immediately clears your session and removes biometric access. Trips and passes auto-delete 30 days after your trip end date.</p>
+                <p><strong>2. Storage, Session Grace &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Active sessions remain unlocked for 15 minutes across app closes for border convenience, then lock automatically (requiring Face ID / Fingerprint or Google Sign-In). Tapping Sign Out immediately clears your session and removes biometric access. Trips and passes auto-delete 30 days after your trip end date.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs a multi-layer on-device check before upload and blocks Bruneian or foreign passports and IDs.</p>
                 <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account &amp; Privacy → Delete Account &amp; Wipe All Data</em>.</p>
@@ -918,8 +910,6 @@
             const bioProfile = getSavedBiometricProfile();
             const unlockBtn = document.getElementById('biometricUnlockBtn');
             const unlockLabel = document.getElementById('biometricBtnLabel');
-            const quickResumeBtn = document.getElementById('quickResumeBtn');
-            const quickResumeLabel = document.getElementById('quickResumeLabel');
             const setupBanner = document.getElementById('biometricSetupBanner');
             const toggleLabel = document.getElementById('toggleBiometricLabel');
             const toggleStatus = document.getElementById('toggleBiometricStatus');
@@ -929,7 +919,6 @@
                 const nameTag = bioProfile.email ? ` (${bioProfile.email.split('@')[0]})` : "";
                 unlockLabel.textContent = `Unlock with Face ID / Fingerprint${nameTag}`;
                 unlockBtn.classList.remove('hide');
-                quickResumeBtn.classList.add('hide');
                 setupBanner.classList.add('hide');
                 toggleLabel.textContent = "Disable Face ID / Biometric Unlock";
                 toggleStatus.textContent = "Active ✓";
@@ -939,18 +928,6 @@
                 toggleLabel.textContent = "Register Face ID / Fingerprint Unlock";
                 toggleStatus.textContent = supported ? "Off" : "Unsupported";
                 toggleStatus.className = "text-slate-400";
-
-                // If user has NO biometrics registered but Firebase still has an active account after the 15-min timeout,
-                // show a 1-tap "Continue as [Name]" button so they don't have to re-type their Google password!
-                if (auth.currentUser) {
-                    const display = auth.currentUser.isAnonymous
-                        ? "Guest"
-                        : (auth.currentUser.email ? auth.currentUser.email.split('@')[0] : "Traveler");
-                    quickResumeLabel.textContent = `Continue as ${display}`;
-                    quickResumeBtn.classList.remove('hide');
-                } else {
-                    quickResumeBtn.classList.add('hide');
-                }
 
                 if (supported && currentUser) {
                     setupBanner.classList.remove('hide');
@@ -1718,7 +1695,7 @@
                 "Session Locked for Privacy",
                 bioProfile
                     ? "Locked after 15 minutes of inactivity. Tap Unlock with Face ID / Fingerprint to resume."
-                    : "Locked after 15 minutes of inactivity. Tap Continue below to resume your session.",
+                    : "Locked after 15 minutes of inactivity. Tap Sign in with Google to continue.",
                 "Lintas • Security Lock"
             );
         }
@@ -1788,8 +1765,7 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // If user closed & reopened the app within the 15-minute grace window,
-                // automatically resume into My Trips without requiring Google or Biometric click!
+                // Within the 15-minute grace window: auto-enter My Trips seamlessly across app closes
                 if (isWithinGraceWindow()) {
                     if (!currentUser || currentUser.uid !== user.uid) {
                         await enterDashboardForUser(user, false);
@@ -1797,7 +1773,7 @@
                     return;
                 }
 
-                // Outside the 15-minute grace window: show login screen with Face ID or 1-tap Continue
+                // Outside the 15-minute grace window: enforce lock screen (requires Biometric or Google Sign-In)
                 clearInactivityWatch();
                 currentUser = null;
                 currentTripId = null;
@@ -1809,15 +1785,6 @@
                 currentUser = null;
                 currentTripId = null;
                 showScreen('login');
-                await updateBiometricUI();
-            }
-        });
-
-        // 1-Tap Resume Button for Non-Biometric Users after 15-Minute Grace Window
-        document.getElementById('quickResumeBtn').addEventListener('click', async () => {
-            if (auth.currentUser) {
-                await enterDashboardForUser(auth.currentUser, false);
-            } else {
                 await updateBiometricUI();
             }
         });
