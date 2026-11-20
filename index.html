@@ -1583,6 +1583,7 @@
         let lastActivityAt = Date.now();
         let isAutoLoggingOut = false;
         let isSigningIn = false;
+        let isLoadingTrips = false;
         let currentTripFilter = 'all';
 
         const screens = {
@@ -1789,7 +1790,6 @@
                 modals.benefits.classList.add('hide');
                 sessionStorage.setItem(SESSION_FLAG_KEY, "1");
                 const result = await signInWithPopup(auth, provider);
-                // Keep existing biometric enrollment synced to this user if present
                 const existingBio = getSavedBiometricProfile();
                 if (existingBio && result?.user) {
                     localStorage.setItem(BIO_CRED_KEY, JSON.stringify({
@@ -1945,157 +1945,171 @@
         });
 
         async function loadTrips() {
+            if (isLoadingTrips) return;
             const activeUser = currentUser || auth.currentUser;
             if (!activeUser) return;
-            const container = document.getElementById('tripsContainer');
-            const spotlightSection = document.getElementById('spotlightSection');
-            const spotlightSlot = document.getElementById('spotlightCardSlot');
-            container.innerHTML = '';
-            spotlightSlot.innerHTML = '';
+            isLoadingTrips = true;
 
-            let trips = [];
             try {
-                trips = await fetchUserTrips(activeUser.uid);
-            } catch (err) {
-                console.error("Error loading trips:", err);
-            }
-
-            if (trips.length === 0) {
-                spotlightSection.classList.add('hide');
-                document.getElementById('emptyTripsState').classList.remove('hide');
-                return;
-            }
-
-            const enriched = trips.map((trip) => ({
-                trip,
-                timeline: getTripTimeline(trip)
-            }));
-
-            // Approach B: Spotlight Card for nearest Active or Upcoming Trip
-            const upcomingOrActive = enriched
-                .filter((item) => item.timeline.category === 'active' || item.timeline.category === 'upcoming')
-                .sort((a, b) => a.timeline.sortKey - b.timeline.sortKey);
-
-            if (upcomingOrActive.length > 0 && currentTripFilter !== 'past') {
-                const hero = upcomingOrActive[0];
-                const t = hero.trip;
-                const tl = hero.timeline;
-                spotlightSection.classList.remove('hide');
-                document.getElementById('spotlightHeading').textContent =
-                    tl.category === 'active' ? '● Active Trip Right Now' : '● Next Upcoming Trip';
-
-                const heroWxId = `hero_wx_${t.id}`;
-                const heroCard = document.createElement('div');
-                heroCard.className = 'spotlight-card rounded-3xl p-4 cursor-pointer';
-                heroCard.innerHTML = `
-                    <div class="flex items-start justify-between gap-2 mb-3">
-                        <div class="overflow-hidden">
-                            <h3 class="font-bold text-lg text-white truncate">${t.name}</h3>
-                            <p class="text-xs text-slate-300 truncate mt-0.5">${t.location ? `📍 ${t.location}` : '🌍 Personal Travel Folder'}</p>
-                        </div>
-                        <span style="${tl.badgeStyle}" class="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full">
-                            ${tl.statusLabel}
-                        </span>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2 mb-3">
-                        ${tl.dateRange ? `<span style="background-color: #0f172a; border: 1px solid #334155;" class="text-xs font-medium text-slate-200 px-2.5 py-1 rounded-xl">📅 ${tl.dateRange}</span>` : ''}
-                        <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
-                    </div>
-                    <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-2.5 flex items-center justify-between text-xs font-bold text-sky-400">
-                        <span>Open Border QRs &amp; Passes</span>
-                        <span>View Documents →</span>
-                    </div>
-                `;
-                heroCard.onclick = () => openTrip(t);
-                spotlightSlot.appendChild(heroCard);
-
-                if (t.location && navigator.onLine) {
-                    fetchDestinationWeather(t.location, t.startDate || t.travelDate).then((freshWx) => {
-                        if (freshWx && freshWx.summary) {
-                            t.weatherSummary = freshWx.summary;
-                            const el = document.getElementById(heroWxId);
-                            if (el) {
-                                el.textContent = freshWx.summary;
-                                el.classList.remove('hide');
-                            }
-                        }
-                    });
+                let trips = [];
+                try {
+                    trips = await fetchUserTrips(activeUser.uid);
+                } catch (err) {
+                    console.error("Error loading trips:", err);
                 }
-            } else {
-                spotlightSection.classList.add('hide');
-            }
 
-            // Filter list for All / Upcoming / Past
-            const filtered = enriched
-                .filter((item) => {
-                    if (currentTripFilter === 'upcoming') {
-                        return item.timeline.category === 'upcoming' || item.timeline.category === 'active';
-                    }
-                    if (currentTripFilter === 'past') {
-                        return item.timeline.category === 'past';
-                    }
-                    return true;
-                })
-                .sort((a, b) => (b.trip.createdAt || 0) - (a.trip.createdAt || 0));
-
-            if (filtered.length === 0) {
-                document.getElementById('emptyTripsState').classList.remove('hide');
-                return;
-            }
-
-            document.getElementById('emptyTripsState').classList.add('hide');
-            const now = Date.now();
-
-            for (const { trip, timeline } of filtered) {
-                const endStr = trip.endDate || trip.startDate || trip.travelDate;
-                const endBaseMs = endStr ? new Date(endStr + 'T23:59:59').getTime() : (trip.createdAt || now);
-                const exp = trip.expiresAt || (endBaseMs + RETENTION_MS);
-                const daysLeft = Math.max(1, Math.ceil((exp - now) / (24 * 60 * 60 * 1000)));
-                const storageTag = isCloudUser() ? "Cloud Synced" : "Device Only";
-
-                let weatherText = trip.weatherSummary || '';
-                let metaParts = [];
-                if (trip.location) metaParts.push(`📍 ${trip.location}`);
-                if (timeline.dateRange) metaParts.push(`📅 ${timeline.dateRange}`);
-                if (weatherText) metaParts.push(weatherText);
-
-                const metaElId = `trip_meta_${trip.id}`;
-                const el = document.createElement('div');
-                el.className = 'card-dark rounded-2xl p-4 shadow-sm cursor-pointer active:opacity-80 space-y-2';
-                el.innerHTML = `
-                    <div class="flex items-start justify-between gap-2">
-                        <div class="overflow-hidden">
-                            <h3 class="font-bold text-base text-white truncate">${trip.name}</h3>
-                            <p id="${metaElId}" class="${metaParts.length > 0 ? '' : 'hide'} text-xs text-sky-300 font-medium mt-0.5 truncate">${metaParts.join(' • ')}</p>
-                        </div>
-                        <span style="${timeline.badgeStyle}" class="shrink-0 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-                            ${timeline.statusLabel}
-                        </span>
-                    </div>
-                    <div style="border-top: 1px solid rgba(148, 163, 184, 0.1);" class="pt-2 flex items-center justify-between text-[11px]">
-                        <span style="color: #94a3b8;">${storageTag} • <span class="text-amber-400">Auto-deletes in ${daysLeft}d</span></span>
-                        <span class="text-sky-400 font-semibold">Open →</span>
-                    </div>
-                `;
-                el.onclick = () => openTrip({ ...trip, weatherSummary: weatherText });
-                container.appendChild(el);
-
-                if (trip.location && navigator.onLine) {
-                    fetchDestinationWeather(trip.location, trip.startDate || trip.travelDate).then((freshWx) => {
-                        if (freshWx && freshWx.summary) {
-                            weatherText = freshWx.summary;
-                            const updatedParts = [];
-                            if (trip.location) updatedParts.push(`📍 ${trip.location}`);
-                            if (timeline.dateRange) updatedParts.push(`📅 ${timeline.dateRange}`);
-                            updatedParts.push(freshWx.summary);
-                            const targetMeta = document.getElementById(metaElId);
-                            if (targetMeta) {
-                                targetMeta.textContent = updatedParts.join(' • ');
-                                targetMeta.classList.remove('hide');
-                            }
-                        }
-                    });
+                // Deduplicate by trip.id to prevent race-condition duplicates
+                const uniqueMap = new Map();
+                for (const t of trips) {
+                    if (t && t.id) uniqueMap.set(t.id, t);
                 }
+                trips = Array.from(uniqueMap.values());
+
+                const container = document.getElementById('tripsContainer');
+                const spotlightSection = document.getElementById('spotlightSection');
+                const spotlightSlot = document.getElementById('spotlightCardSlot');
+                container.innerHTML = '';
+                spotlightSlot.innerHTML = '';
+
+                if (trips.length === 0) {
+                    spotlightSection.classList.add('hide');
+                    document.getElementById('emptyTripsState').classList.remove('hide');
+                    return;
+                }
+
+                const enriched = trips.map((trip) => ({
+                    trip,
+                    timeline: getTripTimeline(trip)
+                }));
+
+                // Approach B: Spotlight Card for nearest Active or Upcoming Trip
+                const upcomingOrActive = enriched
+                    .filter((item) => item.timeline.category === 'active' || item.timeline.category === 'upcoming')
+                    .sort((a, b) => a.timeline.sortKey - b.timeline.sortKey);
+
+                if (upcomingOrActive.length > 0 && currentTripFilter !== 'past') {
+                    const hero = upcomingOrActive[0];
+                    const t = hero.trip;
+                    const tl = hero.timeline;
+                    spotlightSection.classList.remove('hide');
+                    document.getElementById('spotlightHeading').textContent =
+                        tl.category === 'active' ? '● Active Trip Right Now' : '● Next Upcoming Trip';
+
+                    const heroWxId = `hero_wx_${t.id}`;
+                    const heroCard = document.createElement('div');
+                    heroCard.className = 'spotlight-card rounded-3xl p-4 cursor-pointer';
+                    heroCard.innerHTML = `
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <div class="overflow-hidden">
+                                <h3 class="font-bold text-lg text-white truncate">${t.name}</h3>
+                                <p class="text-xs text-slate-300 truncate mt-0.5">${t.location ? `📍 ${t.location}` : '🌍 Personal Travel Folder'}</p>
+                            </div>
+                            <span style="${tl.badgeStyle}" class="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full">
+                                ${tl.statusLabel}
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            ${tl.dateRange ? `<span style="background-color: #0f172a; border: 1px solid #334155;" class="text-xs font-medium text-slate-200 px-2.5 py-1 rounded-xl">📅 ${tl.dateRange}</span>` : ''}
+                            <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
+                        </div>
+                        <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-2.5 flex items-center justify-between text-xs font-bold text-sky-400">
+                            <span>Open Border QRs &amp; Passes</span>
+                            <span>View Documents →</span>
+                        </div>
+                    `;
+                    heroCard.onclick = () => openTrip(t);
+                    spotlightSlot.appendChild(heroCard);
+
+                    if (t.location && navigator.onLine) {
+                        fetchDestinationWeather(t.location, t.startDate || t.travelDate).then((freshWx) => {
+                            if (freshWx && freshWx.summary) {
+                                t.weatherSummary = freshWx.summary;
+                                const el = document.getElementById(heroWxId);
+                                if (el) {
+                                    el.textContent = freshWx.summary;
+                                    el.classList.remove('hide');
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    spotlightSection.classList.add('hide');
+                }
+
+                // Filter list for All / Upcoming / Past
+                const filtered = enriched
+                    .filter((item) => {
+                        if (currentTripFilter === 'upcoming') {
+                            return item.timeline.category === 'upcoming' || item.timeline.category === 'active';
+                        }
+                        if (currentTripFilter === 'past') {
+                            return item.timeline.category === 'past';
+                        }
+                        return true;
+                    })
+                    .sort((a, b) => (b.trip.createdAt || 0) - (a.trip.createdAt || 0));
+
+                if (filtered.length === 0) {
+                    document.getElementById('emptyTripsState').classList.remove('hide');
+                    return;
+                }
+
+                document.getElementById('emptyTripsState').classList.add('hide');
+                const now = Date.now();
+
+                for (const { trip, timeline } of filtered) {
+                    const endStr = trip.endDate || trip.startDate || trip.travelDate;
+                    const endBaseMs = endStr ? new Date(endStr + 'T23:59:59').getTime() : (trip.createdAt || now);
+                    const exp = trip.expiresAt || (endBaseMs + RETENTION_MS);
+                    const daysLeft = Math.max(1, Math.ceil((exp - now) / (24 * 60 * 60 * 1000)));
+                    const storageTag = isCloudUser() ? "Cloud Synced" : "Device Only";
+
+                    let weatherText = trip.weatherSummary || '';
+                    let metaParts = [];
+                    if (trip.location) metaParts.push(`📍 ${trip.location}`);
+                    if (timeline.dateRange) metaParts.push(`📅 ${timeline.dateRange}`);
+                    if (weatherText) metaParts.push(weatherText);
+
+                    const metaElId = `trip_meta_${trip.id}`;
+                    const el = document.createElement('div');
+                    el.className = 'card-dark rounded-2xl p-4 shadow-sm cursor-pointer active:opacity-80 space-y-2';
+                    el.innerHTML = `
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="overflow-hidden">
+                                <h3 class="font-bold text-base text-white truncate">${trip.name}</h3>
+                                <p id="${metaElId}" class="${metaParts.length > 0 ? '' : 'hide'} text-xs text-sky-300 font-medium mt-0.5 truncate">${metaParts.join(' • ')}</p>
+                            </div>
+                            <span style="${timeline.badgeStyle}" class="shrink-0 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+                                ${timeline.statusLabel}
+                            </span>
+                        </div>
+                        <div style="border-top: 1px solid rgba(148, 163, 184, 0.1);" class="pt-2 flex items-center justify-between text-[11px]">
+                            <span style="color: #94a3b8;">${storageTag} • <span class="text-amber-400">Auto-deletes in ${daysLeft}d</span></span>
+                            <span class="text-sky-400 font-semibold">Open →</span>
+                        </div>
+                    `;
+                    el.onclick = () => openTrip({ ...trip, weatherSummary: weatherText });
+                    container.appendChild(el);
+
+                    if (trip.location && navigator.onLine) {
+                        fetchDestinationWeather(trip.location, trip.startDate || trip.travelDate).then((freshWx) => {
+                            if (freshWx && freshWx.summary) {
+                                weatherText = freshWx.summary;
+                                const updatedParts = [];
+                                if (trip.location) updatedParts.push(`📍 ${trip.location}`);
+                                if (timeline.dateRange) updatedParts.push(`📅 ${timeline.dateRange}`);
+                                updatedParts.push(freshWx.summary);
+                                const targetMeta = document.getElementById(metaElId);
+                                if (targetMeta) {
+                                    targetMeta.textContent = updatedParts.join(' • ');
+                                    targetMeta.classList.remove('hide');
+                                }
+                            }
+                        });
+                    }
+                }
+            } finally {
+                isLoadingTrips = false;
             }
         }
 
