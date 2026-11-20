@@ -284,7 +284,7 @@
                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                     </svg>
-                    <span>Sign in with Google</span>
+                    <span id="googleSignInLabel">Sign in with Google</span>
                 </button>
 
                 <button id="guestSignInBtn" class="btn-guest w-full font-semibold py-3.5 px-5 rounded-2xl flex items-center justify-center gap-2 text-sm">
@@ -732,7 +732,28 @@
         const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
         const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
         const SESSION_FLAG_KEY = "lintas_active_session";
+        const PENDING_REDIRECT_KEY = "lintas_pending_redirect";
         const BIO_CRED_KEY = "lintas_biometric_cred_v1";
+
+        function setSessionAuthorized(authorized) {
+            if (authorized) {
+                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                localStorage.setItem(PENDING_REDIRECT_KEY, String(Date.now()));
+            } else {
+                sessionStorage.removeItem(SESSION_FLAG_KEY);
+                localStorage.removeItem(PENDING_REDIRECT_KEY);
+            }
+        }
+
+        function hasValidSessionOrRedirect() {
+            if (sessionStorage.getItem(SESSION_FLAG_KEY) === "1") return true;
+            const pendingTs = Number(localStorage.getItem(PENDING_REDIRECT_KEY) || 0);
+            if (pendingTs && (Date.now() - pendingTs) < 120000) {
+                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                return true;
+            }
+            return false;
+        }
 
         // =========================================================================
         // BIOMETRIC UNLOCK ENGINE (PERSISTS ACROSS SIGN-OUTS UNTIL EXPLICITLY DISABLED)
@@ -1618,7 +1639,7 @@
             clearInactivityWatch();
             clearTimeout(arrowHideTimer);
             stopLiveCamera();
-            sessionStorage.removeItem(SESSION_FLAG_KEY);
+            setSessionAuthorized(false);
 
             Object.values(modals).forEach(m => m.classList.add('hide'));
             document.getElementById('confirmModal').classList.add('hide');
@@ -1645,7 +1666,7 @@
 
         function resetInactivityTimer() {
             const activeUser = currentUser || auth.currentUser;
-            if (!activeUser || isAutoLoggingOut || !sessionStorage.getItem(SESSION_FLAG_KEY)) return;
+            if (!activeUser || isAutoLoggingOut || !hasValidSessionOrRedirect()) return;
             lastActivityAt = Date.now();
             clearInactivityWatch();
             inactivityTimer = setTimeout(() => {
@@ -1659,7 +1680,7 @@
 
         document.addEventListener('visibilitychange', () => {
             const activeUser = currentUser || auth.currentUser;
-            if (document.visibilityState === 'visible' && activeUser && !isAutoLoggingOut && sessionStorage.getItem(SESSION_FLAG_KEY)) {
+            if (document.visibilityState === 'visible' && activeUser && !isAutoLoggingOut && hasValidSessionOrRedirect()) {
                 if (Date.now() - lastActivityAt >= INACTIVITY_TIMEOUT_MS) {
                     triggerInactivityLogout();
                 } else {
@@ -1668,12 +1689,24 @@
             }
         });
 
-        // Handle redirect result if iOS fell back to signInWithRedirect
+        // Handle redirect result cleanly on iOS Safari / PWA
         getRedirectResult(auth).then((res) => {
             if (res && res.user) {
-                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                setSessionAuthorized(true);
+                const existingBio = getSavedBiometricProfile();
+                if (existingBio) {
+                    localStorage.setItem(BIO_CRED_KEY, JSON.stringify({
+                        ...existingBio,
+                        uid: res.user.uid,
+                        email: res.user.email || existingBio.email,
+                        isAnonymous: false
+                    }));
+                }
+            } else {
+                localStorage.removeItem(PENDING_REDIRECT_KEY);
             }
         }).catch((err) => {
+            localStorage.removeItem(PENDING_REDIRECT_KEY);
             if (err && err.code !== 'auth/popup-closed-by-user') {
                 const errBox = document.getElementById('loginError');
                 errBox.textContent = `Login Error: ${err.message}`;
@@ -1683,7 +1716,10 @@
 
         async function enterDashboardForUser(user) {
             currentUser = user;
+            localStorage.removeItem(PENDING_REDIRECT_KEY);
+            sessionStorage.setItem(SESSION_FLAG_KEY, "1");
             resetInactivityTimer();
+
             const guestBanner = document.getElementById('guestBanner');
             const syncBadge = document.getElementById('syncStatusBadge');
             const settingsMode = document.getElementById('settingsStorageMode');
@@ -1711,7 +1747,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const bioProfile = getSavedBiometricProfile();
-                if (!sessionStorage.getItem(SESSION_FLAG_KEY)) {
+                if (!hasValidSessionOrRedirect()) {
                     clearInactivityWatch();
                     currentUser = null;
                     currentTripId = null;
@@ -1738,27 +1774,33 @@
             const bioProfile = getSavedBiometricProfile();
             if (!bioProfile) return;
             const btn = document.getElementById('biometricUnlockBtn');
+            const labelEl = document.getElementById('biometricBtnLabel');
+            const originalText = labelEl.textContent;
             btn.disabled = true;
+            labelEl.textContent = "Verifying Face ID / Biometrics...";
 
             try {
                 const verified = await verifyBiometricPrompt(bioProfile.credId);
                 if (!verified) return;
 
-                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                setSessionAuthorized(true);
                 if (auth.currentUser && auth.currentUser.uid === bioProfile.uid) {
                     await enterDashboardForUser(auth.currentUser);
                 } else if (bioProfile.isAnonymous) {
+                    labelEl.textContent = "Opening Guest Wallet...";
                     await signInAnonymously(auth);
                 } else {
+                    labelEl.textContent = "Signing into Google...";
                     await triggerGoogleSignIn();
                 }
             } catch (err) {
-                sessionStorage.removeItem(SESSION_FLAG_KEY);
+                setSessionAuthorized(false);
                 if (err.name !== 'NotAllowedError') {
                     await showNotice("Biometric Verification Failed", "Please sign in with Google or try Face ID / Fingerprint again.");
                 }
             } finally {
                 btn.disabled = false;
+                labelEl.textContent = originalText;
             }
         });
 
@@ -1784,11 +1826,15 @@
             if (isSigningIn) return;
             isSigningIn = true;
             const errBox = document.getElementById('loginError');
+            const googleBtn = document.getElementById('googleSignInBtn');
+            const googleLabel = document.getElementById('googleSignInLabel');
             errBox.classList.add('hide');
+            googleBtn.disabled = true;
+            googleLabel.textContent = "Signing in...";
 
             try {
                 modals.benefits.classList.add('hide');
-                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                setSessionAuthorized(true);
                 const result = await signInWithPopup(auth, provider);
                 const existingBio = getSavedBiometricProfile();
                 if (existingBio && result?.user) {
@@ -1799,19 +1845,24 @@
                         isAnonymous: false
                     }));
                 }
+                if (result?.user) {
+                    await enterDashboardForUser(result.user);
+                }
             } catch (error) {
                 if (error.code === 'auth/popup-blocked' || error.code === 'auth/operation-not-supported-in-this-environment') {
-                    sessionStorage.setItem(SESSION_FLAG_KEY, "1");
+                    setSessionAuthorized(true);
                     await signInWithRedirect(auth, provider);
                     return;
                 }
-                sessionStorage.removeItem(SESSION_FLAG_KEY);
+                setSessionAuthorized(false);
                 if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
                     errBox.textContent = `Login Error: ${error.message}`;
                     errBox.classList.remove('hide');
                 }
             } finally {
                 isSigningIn = false;
+                googleBtn.disabled = false;
+                googleLabel.textContent = "Sign in with Google";
             }
         }
 
@@ -1825,10 +1876,13 @@
             errBox.classList.add('hide');
 
             try {
-                sessionStorage.setItem(SESSION_FLAG_KEY, "1");
-                await signInAnonymously(auth);
+                setSessionAuthorized(true);
+                const res = await signInAnonymously(auth);
+                if (res?.user) {
+                    await enterDashboardForUser(res.user);
+                }
             } catch (error) {
-                sessionStorage.removeItem(SESSION_FLAG_KEY);
+                setSessionAuthorized(false);
                 errBox.textContent = `Guest Login Error: ${error.message}`;
                 errBox.classList.remove('hide');
             } finally {
@@ -1882,7 +1936,7 @@
         // SIGN OUT: PRESERVES BIO_CRED_KEY SO FACE ID / FINGERPRINT REMAINS AVAILABLE!
         document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
             clearInactivityWatch();
-            sessionStorage.removeItem(SESSION_FLAG_KEY);
+            setSessionAuthorized(false);
             modals.settings.classList.add('hide');
             currentTripId = null;
             await signOut(auth);
@@ -1902,7 +1956,7 @@
             btn.disabled = true;
             try {
                 clearInactivityWatch();
-                sessionStorage.removeItem(SESSION_FLAG_KEY);
+                setSessionAuthorized(false);
                 localStorage.removeItem(BIO_CRED_KEY);
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
