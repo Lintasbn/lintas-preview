@@ -1753,6 +1753,7 @@
                     currentTripId = null;
                     showScreen('login');
                     await updateBiometricUI();
+                    // Keep Firebase user warm if biometric unlock is enrolled for this user!
                     if (!bioProfile || bioProfile.uid !== user.uid) {
                         await signOut(auth).catch(() => {});
                     }
@@ -1769,13 +1770,17 @@
             }
         });
 
-        // Biometric Unlock Handler on Login Screen (Works even after explicit Sign Out!)
+        // Biometric Unlock Handler on Login Screen
+        // Works instantaneously when Firebase session is kept warm; avoids iOS popup blocking if session expired
         document.getElementById('biometricUnlockBtn').addEventListener('click', async () => {
             const bioProfile = getSavedBiometricProfile();
             if (!bioProfile) return;
             const btn = document.getElementById('biometricUnlockBtn');
             const labelEl = document.getElementById('biometricBtnLabel');
+            const googleLabel = document.getElementById('googleSignInLabel');
+            const errBox = document.getElementById('loginError');
             const originalText = labelEl.textContent;
+            errBox.classList.add('hide');
             btn.disabled = true;
             labelEl.textContent = "Verifying Face ID / Biometrics...";
 
@@ -1784,15 +1789,30 @@
                 if (!verified) return;
 
                 setSessionAuthorized(true);
+
+                // Fast path: Firebase session is still warm on this device
                 if (auth.currentUser && auth.currentUser.uid === bioProfile.uid) {
                     await enterDashboardForUser(auth.currentUser);
-                } else if (bioProfile.isAnonymous) {
-                    labelEl.textContent = "Opening Guest Wallet...";
-                    await signInAnonymously(auth);
-                } else {
-                    labelEl.textContent = "Signing into Google...";
-                    await triggerGoogleSignIn();
+                    return;
                 }
+
+                // Guest path
+                if (bioProfile.isAnonymous) {
+                    labelEl.textContent = "Opening Guest Wallet...";
+                    const res = await signInAnonymously(auth);
+                    if (res?.user) await enterDashboardForUser(res.user);
+                    return;
+                }
+
+                // If Firebase session was previously fully signed out on iOS Safari,
+                // iOS blocks popups after an async biometric prompt. Guide a single direct tap on Google Sign-In:
+                setSessionAuthorized(false);
+                googleLabel.textContent = "Face ID Verified ✓ — Tap to Open Google";
+                await showNotice(
+                    "Face ID Verified",
+                    "Tap the white \"Sign in with Google\" button right below to finish connecting your Google cloud session.",
+                    "Lintas • Biometrics"
+                );
             } catch (err) {
                 setSessionAuthorized(false);
                 if (err.name !== 'NotAllowedError') {
@@ -1835,7 +1855,13 @@
             try {
                 modals.benefits.classList.add('hide');
                 setSessionAuthorized(true);
-                const result = await signInWithPopup(auth, provider);
+
+                // Race signInWithPopup with a 12s timeout so iOS Safari never hangs indefinitely
+                const result = await Promise.race([
+                    signInWithPopup(auth, provider),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error("POPUP_TIMEOUT")), 12000))
+                ]);
+
                 const existingBio = getSavedBiometricProfile();
                 if (existingBio && result?.user) {
                     localStorage.setItem(BIO_CRED_KEY, JSON.stringify({
@@ -1849,7 +1875,11 @@
                     await enterDashboardForUser(result.user);
                 }
             } catch (error) {
-                if (error.code === 'auth/popup-blocked' || error.code === 'auth/operation-not-supported-in-this-environment') {
+                if (
+                    error.message === 'POPUP_TIMEOUT' ||
+                    error.code === 'auth/popup-blocked' ||
+                    error.code === 'auth/operation-not-supported-in-this-environment'
+                ) {
                     setSessionAuthorized(true);
                     await signInWithRedirect(auth, provider);
                     return;
@@ -1933,13 +1963,23 @@
             }
         });
 
-        // SIGN OUT: PRESERVES BIO_CRED_KEY SO FACE ID / FINGERPRINT REMAINS AVAILABLE!
+        // SIGN OUT: LOCKS SESSION WHILE KEEPING FIREBASE TOKEN WARM IF BIOMETRICS ARE ENROLLED!
         document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
+            const activeUser = currentUser || auth.currentUser;
+            const bioProfile = getSavedBiometricProfile();
             clearInactivityWatch();
             setSessionAuthorized(false);
             modals.settings.classList.add('hide');
             currentTripId = null;
-            await signOut(auth);
+
+            if (bioProfile && activeUser && bioProfile.uid === activeUser.uid) {
+                // Keep auth.currentUser warm so Face ID unlocks instantaneously next time
+                currentUser = null;
+                showScreen('login');
+                await updateBiometricUI();
+            } else {
+                await signOut(auth);
+            }
         });
 
         document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
