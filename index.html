@@ -2545,7 +2545,7 @@
         }
 
         // =========================================================================
-        // BIOMETRIC UNLOCK ENGINE
+        // BIOMETRIC UNLOCK ENGINE (WITH STALE / DELETED PASSKEY AUTO-HEAL)
         // =========================================================================
         function bufToBase64Url(buf) {
             const bytes = new Uint8Array(buf);
@@ -2570,6 +2570,11 @@
             } catch (_) {
                 return null;
             }
+        }
+
+        function clearStaleBiometricProfile() {
+            localStorage.removeItem(BIO_CRED_KEY);
+            sessionStorage.removeItem(TAB_UNLOCKED_KEY);
         }
 
         async function isBiometricHardwareAvailable() {
@@ -2621,6 +2626,7 @@
                 if (cred && cred.rawId) {
                     localStorage.setItem(BIO_CRED_KEY, JSON.stringify({
                         credId: bufToBase64Url(cred.rawId),
+                        rpId: window.location.hostname,
                         uid: user.uid,
                         email: user.email || "",
                         isAnonymous: !!user.isAnonymous
@@ -2700,8 +2706,14 @@
             const toggleStatus = document.getElementById('toggleBiometricStatus');
             const supported = await isBiometricHardwareAvailable();
 
-            if (bioProfile && supported) {
-                const nameTag = bioProfile.email ? ` (${bioProfile.email.split('@')[0]})` : "";
+            // Auto-heal if passkey was saved on a different domain or missing credId
+            if (bioProfile && (!bioProfile.credId || (bioProfile.rpId && bioProfile.rpId !== window.location.hostname))) {
+                clearStaleBiometricProfile();
+            }
+
+            const validProfile = getSavedBiometricProfile();
+            if (validProfile && supported) {
+                const nameTag = validProfile.email ? ` (${validProfile.email.split('@')[0]})` : "";
                 unlockLabel.textContent = `Unlock with Face ID / Fingerprint${nameTag}`;
                 unlockBtn.classList.remove('hide');
                 setupBanner.classList.add('hide');
@@ -3677,8 +3689,26 @@
                     );
                 }
             } catch (err) {
-                if (err.name !== 'NotAllowedError') {
-                    await showNotice("Biometric Verification Failed", "Please try Face ID / Fingerprint again or sign in with Google.");
+                const errMsg = String(err?.message || '').toLowerCase();
+                const isMissingOrStalePasskey =
+                    err?.name === 'InvalidStateError' ||
+                    err?.name === 'NotFoundError' ||
+                    err?.name === 'NotAllowedError' ||
+                    err?.name === 'SecurityError' ||
+                    errMsg.includes('no matching') ||
+                    errMsg.includes('not found') ||
+                    errMsg.includes('rpid');
+
+                if (isMissingOrStalePasskey) {
+                    clearStaleBiometricProfile();
+                    await updateBiometricUI();
+                    await showNotice(
+                        "Passkey Reset",
+                        "No saved passkey was found on this device. Please sign in once with Google (or Guest) to re-register Face ID / Fingerprint.",
+                        "Lintas • Biometrics"
+                    );
+                } else {
+                    await showNotice("Biometric Verification Failed", "Please sign in with Google to refresh your biometric access.");
                 }
             } finally {
                 btn.disabled = false;
@@ -3694,7 +3724,7 @@
         document.getElementById('toggleBiometricBtn').addEventListener('click', async () => {
             const bioProfile = getSavedBiometricProfile();
             if (bioProfile) {
-                localStorage.removeItem(BIO_CRED_KEY);
+                clearStaleBiometricProfile();
                 await updateBiometricUI();
                 await showNotice("Biometrics Disabled", "Face ID / Fingerprint quick unlock has been removed from this device.", "Lintas • Security");
             } else {
@@ -3805,7 +3835,7 @@
         document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
             clearInactivityWatch();
             clearSessionActivity();
-            localStorage.removeItem(BIO_CRED_KEY);
+            clearStaleBiometricProfile();
             modals.settings.classList.add('hide');
             closeTrafficPip();
             closeProviderInfoPip();
@@ -3830,7 +3860,7 @@
             try {
                 clearInactivityWatch();
                 clearSessionActivity();
-                localStorage.removeItem(BIO_CRED_KEY);
+                clearStaleBiometricProfile();
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
                 closeTrafficPip();
