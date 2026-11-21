@@ -26,6 +26,14 @@
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
+        /* Hide bulky scrollbars across mobile & desktop views */
+        .no-scrollbar {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
         #brandSplash {
             position: fixed;
             inset: 0;
@@ -113,9 +121,9 @@
         .copilot-hero-card {
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, rgba(14, 116, 144, 0.45) 0%, rgba(15, 23, 42, 0.96) 52%, rgba(6, 95, 70, 0.42) 100%);
-            border: 1px solid rgba(56, 189, 248, 0.45);
-            box-shadow: 0 16px 36px -10px rgba(14, 165, 233, 0.3);
+            background: linear-gradient(135deg, rgba(14, 116, 144, 0.42) 0%, rgba(15, 23, 42, 0.96) 55%, rgba(6, 95, 70, 0.38) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.42);
+            box-shadow: 0 14px 32px -10px rgba(14, 165, 233, 0.28);
         }
         .copilot-tab-active {
             background: linear-gradient(135deg, #0ea5e9, #10b981);
@@ -147,45 +155,71 @@
             background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(88, 28, 135, 0.22) 100%);
             border: 1px solid rgba(192, 132, 252, 0.28);
         }
-        .promo-partner-card {
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, rgba(6, 78, 59, 0.42) 0%, rgba(15, 23, 42, 0.96) 55%, rgba(14, 116, 144, 0.32) 100%);
-            border: 1px solid rgba(52, 211, 153, 0.42);
-            box-shadow: 0 12px 30px -8px rgba(16, 185, 129, 0.25);
-            transition: transform 0.12s ease, border-color 0.2s ease;
+        /* Minimalist Sponsored Ad Strip — intentionally distinct from trip cards */
+        .sponsored-strip {
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px dashed rgba(148, 163, 184, 0.28);
+            border-radius: 16px;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
         }
-        .promo-partner-card:active {
-            transform: scale(0.985);
+        .sponsored-strip:hover {
+            border-color: rgba(52, 211, 153, 0.45);
+            background: rgba(30, 41, 59, 0.55);
+        }
+        .sponsored-pill-btn {
+            background-color: rgba(16, 185, 129, 0.16);
+            color: #6ee7b7;
+            border: 1px solid rgba(52, 211, 153, 0.38);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .promo-cta-btn {
-            position: relative;
-            overflow: hidden;
             background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff;
-            box-shadow: 0 6px 18px -4px rgba(16, 185, 129, 0.6);
+            box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.45);
         }
-        .promo-cta-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -120%;
-            width: 70%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.38), transparent);
-            transform: skewX(-20deg);
-            animation: ctaShimmer 3.6s infinite;
-        }
-        @keyframes ctaShimmer {
-            0%, 55% { left: -120%; }
-            100% { left: 160%; }
-        }
-        @keyframes tickerFade {
-            0% { opacity: 0; transform: translateY(4px); }
+        /* Interactive Tool Deck Transition */
+        @keyframes deckPanelIn {
+            0% { opacity: 0; transform: translateY(6px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-        .promo-ticker-anim {
-            animation: tickerFade 0.28s ease-out forwards;
+        .deck-panel-anim {
+            animation: deckPanelIn 0.2s ease-out forwards;
+        }
+        .tool-tab-chip {
+            flex-shrink: 0;
+            background-color: rgba(15, 23, 42, 0.85);
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 7px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            white-space: nowrap;
+            touch-action: manipulation;
+        }
+        .tool-tab-chip.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(16, 185, 129, 0.22));
+            color: #ffffff;
+            border-color: #38bdf8;
+            box-shadow: 0 4px 12px -2px rgba(56, 189, 248, 0.35);
+        }
+        /* Floating PiP Live Traffic Window */
+        .pip-traffic-window {
+            position: fixed;
+            bottom: 18px;
+            right: 16px;
+            left: 16px;
+            max-width: 440px;
+            margin: 0 auto;
+            z-index: 10006;
+            background-color: #0f172a;
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px -10px rgba(2, 6, 23, 0.92), 0 0 0 1px rgba(255, 255, 255, 0.06);
+            overflow: hidden;
         }
         .modal-card {
             background-color: #1e293b;
@@ -484,7 +518,7 @@
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-4 pb-24 max-w-2xl w-full mx-auto flex flex-col justify-between">
+        <div class="flex-1 overflow-y-auto no-scrollbar p-4 pb-24 max-w-2xl w-full mx-auto flex flex-col justify-between">
             <div>
                 <div id="guestBanner" class="hide mb-4 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3">
                     <div class="text-left">
@@ -539,10 +573,10 @@
                 <div id="tripsContainer" class="space-y-3"></div>
             </div>
 
-            <!-- FIRESTORE-POWERED TRAVEL PARTNER / AFFILIATE BANNER SLOT -->
-            <div id="adBannerSlot" class="mt-7"></div>
+            <!-- MINIMALIST SPONSORED PARTNER AD STRIP (SEPARATE FROM TRIP CARDS) -->
+            <div id="adBannerSlot" class="mt-6"></div>
 
-            <p style="color: #475569;" class="text-[11px] text-center leading-relaxed mt-6 px-4">
+            <p style="color: #475569;" class="text-[11px] text-center leading-relaxed mt-5 px-4">
                 Independent personal travel utility • User-uploaded files remain your sole responsibility • Auto-expires 30 days after trip end date.
             </p>
         </div>
@@ -554,7 +588,7 @@
         </button>
     </div>
 
-    <!-- TRIP DETAIL SCREEN (BORDER WALLET + LIVE CITY CO-PILOT) -->
+    <!-- TRIP DETAIL SCREEN (BORDER WALLET + INTERACTIVE CITY CO-PILOT DECK) -->
     <div id="tripDetailScreen" style="background-color: #0f172a; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
         <div class="glass px-4 py-3 flex items-center justify-between gap-2" style="position: relative; z-index: 50;">
             <div class="flex items-center gap-2 overflow-hidden">
@@ -583,7 +617,7 @@
             </div>
         </div>
         
-        <div id="tripDetailScrollArea" class="flex-1 overflow-y-auto p-4 pb-24 max-w-2xl w-full mx-auto">
+        <div id="tripDetailScrollArea" class="flex-1 overflow-y-auto no-scrollbar p-4 pb-24 max-w-2xl w-full mx-auto">
             <!-- TAB 1: BORDER WALLET (PASSES & QRs) -->
             <div id="tripPassesTab">
                 <button id="addDocTopBtn" type="button" class="w-full btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
@@ -597,18 +631,18 @@
                 <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- TAB 2: LIVE CITY CO-PILOT & POCKET CONCIERGE -->
-            <div id="tripGuideTab" class="hide space-y-4">
-                <!-- HERO: DESTINATION PULSE LIVE COCKPIT + TRAVEL MODE TOGGLE -->
+            <!-- TAB 2: INTERACTIVE CITY CO-PILOT DECK (NO LONG SCROLLING) -->
+            <div id="tripGuideTab" class="hide space-y-3.5">
+                <!-- COMPACT DESTINATION COCKPIT + INTERACTIVE TOOL DECK TABS -->
                 <div class="copilot-hero-card rounded-3xl p-4 shadow-xl">
                     <div class="flex items-start justify-between gap-3">
                         <div class="overflow-hidden">
-                            <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-300 mb-1">
+                            <div class="flex items-center gap-2 mb-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                Pocket City Co-Pilot
-                            </span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">City Co-Pilot</span>
+                            </div>
                             <h3 id="copilotHeroCity" class="text-xl font-black text-white leading-tight truncate">Destination</h3>
-                            <p id="copilotHeroSub" style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">Live local time, currency &amp; border intelligence</p>
+                            <p id="copilotHeroSub" style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">Live local time &amp; border intelligence</p>
                         </div>
                         <div style="background: rgba(15, 23, 42, 0.78); border: 1px solid rgba(56, 189, 248, 0.35);" class="rounded-2xl px-3 py-2 text-right shrink-0">
                             <span style="color: #94a3b8;" class="block text-[9px] font-bold uppercase tracking-wider">Local Time</span>
@@ -616,7 +650,7 @@
                         </div>
                     </div>
 
-                    <!-- INSTANT TRAVEL MODE SWITCHER (DRIVE / BORDER vs. FLIGHT) -->
+                    <!-- TRAVEL MODE SWITCHER + LIVE RATE -->
                     <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
                         <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.22);" class="inline-flex p-1 rounded-xl gap-1">
                             <button id="modeDriveBtn" type="button" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all whitespace-nowrap">🚗 Drive / Border</button>
@@ -627,20 +661,20 @@
                         </span>
                     </div>
 
-                    <!-- QUICK-JUMP SECTION PILLS -->
+                    <!-- INTERACTIVE TOOL DECK SELECTOR (SWITCHES ACTIVE CARD WITHOUT LONG SCROLL) -->
                     <div class="dest-chip-strip mt-3 pt-3" style="border-top: 1px solid rgba(148, 163, 184, 0.16);">
-                        <button id="jumpRadarChip" type="button" data-jump="secRadar" class="dest-chip">🚦 Traffic / Flight</button>
-                        <button type="button" data-jump="secFx" class="dest-chip">💱 Money</button>
-                        <button type="button" data-jump="secTransit" class="dest-chip">⛴️ Ferry &amp; Bus</button>
-                        <button type="button" data-jump="secFood" class="dest-chip">🍜 Halal Eats</button>
-                        <button type="button" data-jump="secPhrases" class="dest-chip">🗣️ Speak Local</button>
-                        <button type="button" data-jump="secChecklist" class="dest-chip">✅ Checklist</button>
-                        <button type="button" data-jump="secDriver" class="dest-chip">🚕 Taxi Card</button>
+                        <button id="deckTabRadar" type="button" data-deck="secRadar" class="tool-tab-chip active">🚦 Border Traffic</button>
+                        <button type="button" data-deck="secFx" class="tool-tab-chip">💱 Money</button>
+                        <button type="button" data-deck="secFood" class="tool-tab-chip">🍜 Halal Eats</button>
+                        <button type="button" data-deck="secTransit" class="tool-tab-chip">⛴️ Ferry &amp; Bus</button>
+                        <button type="button" data-deck="secPhrases" class="tool-tab-chip">🗣️ Speak Local</button>
+                        <button type="button" data-deck="secChecklist" class="tool-tab-chip">✅ Checklist</button>
+                        <button type="button" data-deck="secDriver" class="tool-tab-chip">🚕 Taxi &amp; SOS</button>
                     </div>
                 </div>
 
-                <!-- 1. DYNAMIC RADAR: LIVE LAND BORDER TRAFFIC TRACKER OR FLIGHT RADAR -->
-                <div id="secRadar">
+                <!-- DECK PANEL 1: LIVE LAND BORDER TRAFFIC (WITH FLOATING PiP PREVIEW) OR FLIGHT RADAR -->
+                <div id="secRadar" class="copilot-deck-panel deck-panel-anim">
                     <!-- DRIVE / LAND BORDER TRAFFIC CARD -->
                     <div id="driveBorderCard" class="card-border-traffic rounded-3xl p-4 shadow-lg">
                         <div class="flex items-center justify-between gap-2 mb-2">
@@ -652,16 +686,24 @@
                         </div>
                         <p id="borderPostTitle" class="text-xs font-extrabold text-white leading-snug"></p>
                         <p id="borderPostDesc" style="color: #cbd5e1;" class="text-xs mt-1 leading-relaxed"></p>
-                        <div class="grid grid-cols-2 gap-2 mt-3">
-                            <a id="googleTrafficLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer"
-                               class="btn-primary py-2.5 px-3 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-1 whitespace-nowrap">
-                                <span>🗺️ Google Traffic</span><span>↗</span>
-                            </a>
-                            <a id="wazeTrafficLink" href="https://waze.com/ul" target="_blank" rel="noopener noreferrer"
-                               style="background-color: #0f172a; border: 1px solid rgba(56, 189, 248, 0.4);"
-                               class="py-2.5 px-3 rounded-xl text-xs font-extrabold text-sky-300 inline-flex items-center justify-center gap-1 whitespace-nowrap active:scale-95">
-                                <span>🚗 Waze Live</span><span>↗</span>
-                            </a>
+
+                        <!-- PiP At-a-Glance Traffic Preview Buttons -->
+                        <div class="grid grid-cols-2 gap-2 mt-3.5">
+                            <button id="openGooglePipBtn" type="button"
+                               class="btn-primary py-2.5 px-3 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                <span>🗺️ Google PiP</span>
+                            </button>
+                            <button id="openWazePipBtn" type="button"
+                               style="background-color: #0f172a; border: 1px solid rgba(56, 189, 248, 0.45);"
+                               class="py-2.5 px-3 rounded-xl text-xs font-extrabold text-sky-300 inline-flex items-center justify-center gap-1.5 whitespace-nowrap active:scale-95">
+                                <span>🚗 Waze PiP</span>
+                            </button>
+                        </div>
+
+                        <!-- Direct Full App Redirect Links -->
+                        <div class="flex items-center justify-between gap-2 mt-2.5 pt-2.5 text-[11px]" style="border-top: 1px solid rgba(148, 163, 184, 0.14);">
+                            <a id="googleTrafficLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-white font-semibold">Full Google Maps ↗</a>
+                            <a id="wazeTrafficLink" href="https://waze.com/ul" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-white font-semibold">Full Waze App ↗</a>
                         </div>
                     </div>
 
@@ -688,8 +730,8 @@
                     </div>
                 </div>
 
-                <!-- 2. OFFLINE-READY CURRENCY CONVERTER WITH 1-TAP PRESETS -->
-                <div id="secFx" class="card-fx rounded-3xl p-4 shadow-lg">
+                <!-- DECK PANEL 2: OFFLINE-READY CURRENCY CONVERTER -->
+                <div id="secFx" class="hide copilot-deck-panel deck-panel-anim card-fx rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-3">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">💱</span>
@@ -729,8 +771,20 @@
                     </p>
                 </div>
 
-                <!-- 3. LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
-                <div id="secTransit" class="card-dark rounded-3xl p-4 shadow-lg">
+                <!-- DECK PANEL 3: RECOMMENDED SPOTS TO EAT -->
+                <div id="secFood" class="hide copilot-deck-panel deck-panel-anim card-food rounded-3xl p-4 shadow-lg">
+                    <div class="flex items-center justify-between gap-2 mb-2.5">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-base shrink-0">🍜</span>
+                            <h3 class="text-sm font-extrabold text-white truncate">Recommended Spots to Eat</h3>
+                        </div>
+                        <span class="shrink-0 whitespace-nowrap text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">Halal &amp; Local</span>
+                    </div>
+                    <div id="guideFoodList" class="space-y-2.5"></div>
+                </div>
+
+                <!-- DECK PANEL 4: LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
+                <div id="secTransit" class="hide copilot-deck-panel deck-panel-anim card-dark rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">⛴️</span>
@@ -743,20 +797,8 @@
                     <div id="guideTransitBody" class="space-y-2.5 text-xs"></div>
                 </div>
 
-                <!-- 4. RECOMMENDED SPOTS TO EAT (HALAL & LOCAL FAVORITES) -->
-                <div id="secFood" class="card-food rounded-3xl p-4 shadow-lg">
-                    <div class="flex items-center justify-between gap-2 mb-2.5">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <span class="text-base shrink-0">🍜</span>
-                            <h3 class="text-sm font-extrabold text-white truncate">Must-Try Halal Eats</h3>
-                        </div>
-                        <span class="shrink-0 whitespace-nowrap text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">Halal &amp; Local</span>
-                    </div>
-                    <div id="guideFoodList" class="space-y-2.5"></div>
-                </div>
-
-                <!-- 5. TAP-TO-SPEAK LOCAL PHRASEBOOK -->
-                <div id="secPhrases" class="card-phrase rounded-3xl p-4 shadow-lg">
+                <!-- DECK PANEL 5: TAP-TO-SPEAK LOCAL PHRASEBOOK -->
+                <div id="secPhrases" class="hide copilot-deck-panel deck-panel-anim card-phrase rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🗣️</span>
@@ -767,8 +809,8 @@
                     <div id="guidePhrasesList" class="space-y-2"></div>
                 </div>
 
-                <!-- 6. PRE-DEPARTURE BORDER & PACKING CHECKLIST WITH PROGRESS BAR -->
-                <div id="secChecklist" class="card-dark rounded-3xl p-4 shadow-lg">
+                <!-- DECK PANEL 6: PRE-DEPARTURE BORDER & PACKING CHECKLIST -->
+                <div id="secChecklist" class="hide copilot-deck-panel deck-panel-anim card-dark rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">✅</span>
@@ -782,8 +824,8 @@
                     <div id="guideChecklistItems" class="space-y-2"></div>
                 </div>
 
-                <!-- 7. STAY ADDRESS ("SHOW TAXI DRIVER") & EMERGENCY CONTACTS -->
-                <div id="secDriver" class="card-dark rounded-3xl p-4 space-y-3 shadow-lg">
+                <!-- DECK PANEL 7: STAY ADDRESS & EMERGENCY CONTACTS -->
+                <div id="secDriver" class="hide copilot-deck-panel deck-panel-anim card-dark rounded-3xl p-4 space-y-3 shadow-lg">
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🚕</span>
@@ -802,6 +844,25 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- FLOATING PiP AT-A-GLANCE TRAFFIC WINDOW (GOOGLE TRAFFIC / WAZE LIVE) -->
+    <div id="pipTrafficModal" class="hide pip-traffic-window animate-pop">
+        <div class="px-3.5 py-2.5 flex items-center justify-between gap-2 bg-slate-900 border-b border-slate-800">
+            <div class="flex items-center gap-1.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                <span id="pipWindowTitle" class="text-xs font-extrabold text-white truncate">Live Traffic PiP</span>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button id="pipSwitchGoogleBtn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-blue-600 text-white">Google</button>
+                <button id="pipSwitchWazeBtn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300">Waze</button>
+                <a id="pipFullOpenLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/35 whitespace-nowrap">Full ↗</a>
+                <button id="closePipTrafficBtn" type="button" class="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-bold">✕</button>
+            </div>
+        </div>
+        <div class="relative w-full h-60 bg-slate-950">
+            <iframe id="pipTrafficIframe" src="" class="w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Live Border Traffic Map"></iframe>
         </div>
     </div>
 
@@ -936,7 +997,7 @@
         </div>
     </div>
 
-    <!-- NEW TRIP MODAL (WITH TRAVEL MODE SELECTOR: DRIVE/BORDER vs FLIGHT) -->
+    <!-- NEW TRIP MODAL -->
     <div id="newTripModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5 overflow-y-auto">
         <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
@@ -1363,7 +1424,7 @@
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
                 langLabel: "Sarawak",
-                borderPost: "Tebedu / Pan Borneo",
+                borderPost: "Pan Borneo / Kuching",
                 borderTitle: "Pan Borneo Highway & Kuching Route Traffic",
                 borderDesc: "Driving from Brunei via Miri–Bintulu–Sibu–Kuching (~11–12 hrs on Pan Borneo Highway) or direct 1h 15m flight from BWN.",
                 borderLat: 1.5533,
@@ -1741,15 +1802,83 @@
             recalcCurrency();
         });
 
-        // Quick-jump chips inside City Co-Pilot
-        document.querySelectorAll('[data-jump]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const target = document.getElementById(btn.dataset.jump);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Interactive Tool Deck Switcher (Switches active card in place — no long scroll)
+        function activateCopilotDeck(panelId) {
+            document.querySelectorAll('.copilot-deck-panel').forEach((panel) => {
+                if (panel.id === panelId) {
+                    panel.classList.remove('hide');
+                    panel.classList.remove('deck-panel-anim');
+                    void panel.offsetWidth;
+                    panel.classList.add('deck-panel-anim');
+                } else {
+                    panel.classList.add('hide');
                 }
             });
+
+            document.querySelectorAll('[data-deck]').forEach((chip) => {
+                chip.classList.toggle('active', chip.dataset.deck === panelId);
+            });
+        }
+
+        document.querySelectorAll('[data-deck]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                activateCopilotDeck(btn.dataset.deck);
+            });
         });
+
+        // Floating PiP Traffic Window Controller (Google Traffic & Waze Live)
+        let currentPipGuide = null;
+
+        function openTrafficPip(providerName) {
+            if (!currentPipGuide) return;
+            const modal = document.getElementById('pipTrafficModal');
+            const iframe = document.getElementById('pipTrafficIframe');
+            const titleEl = document.getElementById('pipWindowTitle');
+            const fullLink = document.getElementById('pipFullOpenLink');
+            const gBtn = document.getElementById('pipSwitchGoogleBtn');
+            const wBtn = document.getElementById('pipSwitchWazeBtn');
+
+            const lat = currentPipGuide.borderLat;
+            const lng = currentPipGuide.borderLng;
+            const q = encodeURIComponent(currentPipGuide.borderPost);
+
+            if (providerName === 'waze') {
+                titleEl.textContent = `Waze Live • ${currentPipGuide.borderPost}`;
+                iframe.src = (lat && lng)
+                    ? `https://embed.waze.com/iframe?zoom=14&lat=${lat}&lon=${lng}&pin=1`
+                    : `https://embed.waze.com/iframe?zoom=13&lat=4.5878&lon=114.0736&pin=1`;
+                fullLink.href = (lat && lng)
+                    ? `https://www.waze.com/ul?ll=${lat}%2C${lng}&navigate=yes`
+                    : `https://www.waze.com/ul?q=${q}`;
+                wBtn.className = 'px-2 py-1 rounded-lg text-[10px] font-extrabold bg-sky-500 text-slate-950';
+                gBtn.className = 'px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300';
+            } else {
+                titleEl.textContent = `Google Traffic • ${currentPipGuide.borderPost}`;
+                iframe.src = (lat && lng)
+                    ? `https://maps.google.com/maps?q=${lat},${lng}&z=14&layer=t&output=embed`
+                    : `https://maps.google.com/maps?q=${q}&z=13&layer=t&output=embed`;
+                fullLink.href = (lat && lng)
+                    ? `https://www.google.com/maps/@${lat},${lng},14z/data=!5m1!1e1`
+                    : `https://www.google.com/maps/search/?api=1&query=${q}`;
+                gBtn.className = 'px-2 py-1 rounded-lg text-[10px] font-extrabold bg-blue-600 text-white';
+                wBtn.className = 'px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300';
+            }
+
+            modal.classList.remove('hide');
+        }
+
+        function closeTrafficPip() {
+            const modal = document.getElementById('pipTrafficModal');
+            const iframe = document.getElementById('pipTrafficIframe');
+            modal.classList.add('hide');
+            if (iframe) iframe.src = '';
+        }
+
+        document.getElementById('openGooglePipBtn').addEventListener('click', () => openTrafficPip('google'));
+        document.getElementById('openWazePipBtn').addEventListener('click', () => openTrafficPip('waze'));
+        document.getElementById('pipSwitchGoogleBtn').addEventListener('click', () => openTrafficPip('google'));
+        document.getElementById('pipSwitchWazeBtn').addEventListener('click', () => openTrafficPip('waze'));
+        document.getElementById('closePipTrafficBtn').addEventListener('click', closeTrafficPip);
 
         // Travel Mode Switcher inside City Co-Pilot (Drive/Border vs Flight)
         let activeOpenTrip = null;
@@ -1759,20 +1888,21 @@
             const flightCard = document.getElementById('flightRadarCard');
             const driveBtn = document.getElementById('modeDriveBtn');
             const flightBtn = document.getElementById('modeFlightBtn');
-            const jumpChip = document.getElementById('jumpRadarChip');
+            const deckRadarTab = document.getElementById('deckTabRadar');
 
             if (isDrive) {
                 driveCard.classList.remove('hide');
                 flightCard.classList.add('hide');
                 driveBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-amber-500 text-slate-950 transition-all whitespace-nowrap';
                 flightBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap';
-                if (jumpChip) jumpChip.textContent = '🚦 Border Traffic';
+                if (deckRadarTab) deckRadarTab.textContent = '🚦 Border Traffic';
             } else {
+                closeTrafficPip();
                 flightCard.classList.remove('hide');
                 driveCard.classList.add('hide');
                 flightBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-sky-500 text-slate-950 transition-all whitespace-nowrap';
                 driveBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap';
-                if (jumpChip) jumpChip.textContent = '✈️ Flight Radar';
+                if (deckRadarTab) deckRadarTab.textContent = '✈️ Flight Radar';
             }
 
             if (activeOpenTrip && activeOpenTrip.id) {
@@ -1780,14 +1910,21 @@
             }
         }
 
-        document.getElementById('modeDriveBtn').addEventListener('click', () => applyTripTravelMode('drive'));
-        document.getElementById('modeFlightBtn').addEventListener('click', () => applyTripTravelMode('flight'));
+        document.getElementById('modeDriveBtn').addEventListener('click', () => {
+            applyTripTravelMode('drive');
+            activateCopilotDeck('secRadar');
+        });
+        document.getElementById('modeFlightBtn').addEventListener('click', () => {
+            applyTripTravelMode('flight');
+            activateCopilotDeck('secRadar');
+        });
 
         let copilotClockTimer = null;
 
         function renderTripGuideForTrip(trip) {
             activeOpenTrip = trip;
             const guide = getDestinationGuide(trip.location || trip.name);
+            currentPipGuide = guide;
 
             document.getElementById('copilotBadgePill').textContent = guide.airportCode;
             document.getElementById('copilotHeroCity').textContent = guide.cityTitle;
@@ -1795,13 +1932,12 @@
                 ? `Forecast ${trip.weatherSummary} • ${guide.currency} • ${guide.langLabel}`
                 : `${guide.currency} • ${guide.langLabel} • Offline Ready`;
 
-            // Smart auto-detection: saved override -> trip.travelMode -> title keyword ("road trip"/"drive"/"border") -> destination default
             const savedOverride = localStorage.getItem(`lintas_mode_${trip.id}`);
             const titleImpliesDrive = /road\s*trip|drive|driving|overland|border|ciq/i.test(trip.name || '');
             const resolvedMode = savedOverride || trip.travelMode || (titleImpliesDrive ? 'drive' : guide.defaultMode) || 'flight';
             applyTripTravelMode(resolvedMode);
+            activateCopilotDeck('secRadar');
 
-            // Populate Live Border Traffic & CIQ Card
             document.getElementById('borderPostBadge').textContent = guide.borderPost.toUpperCase();
             document.getElementById('borderPostTitle').textContent = guide.borderTitle;
             document.getElementById('borderPostDesc').textContent = guide.borderDesc;
@@ -1968,6 +2104,7 @@
                 guideBtn.className = 'copilot-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0';
                 passesBtn.className = 'py-2.5 px-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5 min-w-0';
             } else {
+                closeTrafficPip();
                 passesTab.classList.remove('hide');
                 guideTab.classList.add('hide');
                 passesBtn.className = 'wallet-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0';
@@ -1996,10 +2133,9 @@
         });
 
         // =========================================================================
-        // DYNAMIC FIRESTORE AFFILIATE / SPONSOR BANNER
+        // MINIMALIST SPONSORED AD STRIP (CLEARLY DISTINGUISHED FROM APP CARDS)
         // =========================================================================
         let bannerLoaded = false;
-        let promoTickerTimer = null;
         let nextUpcomingDestination = '';
 
         async function loadPromoBanner(forceRefresh = false) {
@@ -2020,79 +2156,38 @@
                     ? nextUpcomingDestination.split(',')[0].trim()
                     : '';
 
-                const badgeText = escapeHtml(
-                    destCity
-                        ? `Travel Data • ${destCity}`
-                        : (data.badge || "Travel Partner • eSIM")
-                );
                 const titleText = escapeHtml(
                     destCity
-                        ? `Heading to ${destCity}? Get Travel Data`
-                        : (data.title || "Stay Connected Worldwide")
+                        ? `${destCity} Travel eSIM Data`
+                        : (data.title || "Global Travel eSIM")
                 );
                 const subtitleText = escapeHtml(
-                    data.subtitle || "Fast 4G/5G travel data (5G where available) for SEA, South Korea, Japan, UK & Europe — activate in 1 minute."
+                    data.subtitle || "Instant QR activation • 4G/5G where available • No roaming shock"
                 );
                 const ctaText = escapeHtml(data.ctaText || "Get eSIM");
-
-                const perks = [
-                    "⚡ Activate via QR in 1 min before takeoff",
-                    "📶 Fast travel data (5G where available)",
-                    "💬 Keep your WhatsApp & home SIM active",
-                    "🌍 200+ destinations • No roaming bill shock"
-                ];
-                let perkIdx = 0;
 
                 bannerLoaded = true;
                 slot.innerHTML = `
                     <a href="${escapeHtml(cleanUrl)}" target="_blank" rel="noopener noreferrer sponsored"
-                       class="promo-partner-card block rounded-3xl p-4 text-left">
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="flex items-start gap-3 overflow-hidden">
-                                <div style="background: rgba(16, 185, 129, 0.16); border: 1px solid rgba(52, 211, 153, 0.35);" class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 mt-0.5 text-emerald-300">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
-                                    </svg>
-                                </div>
-                                <div class="overflow-hidden">
-                                    <div class="flex items-center gap-1.5 mb-1">
-                                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-300 truncate">
-                                            ${badgeText}
-                                        </span>
-                                    </div>
-                                    <h4 class="text-sm font-extrabold text-white truncate">
-                                        ${titleText}
-                                    </h4>
-                                    <p style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">
-                                        ${subtitleText}
-                                    </p>
-                                    <p id="promoPerkTicker" class="promo-ticker-anim text-[11px] font-semibold text-amber-300 mt-1.5 truncate">
-                                        ${perks[0]}
-                                    </p>
-                                </div>
+                       class="sponsored-strip px-3.5 py-3 flex items-center justify-between gap-3 text-left">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 mb-0.5">
+                                <span style="background: rgba(148, 163, 184, 0.15); color: #94a3b8;" class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded">
+                                    Sponsored
+                                </span>
+                                <span class="text-xs font-bold text-slate-200 truncate">
+                                    ${titleText}
+                                </span>
                             </div>
-                            <span class="shrink-0 whitespace-nowrap promo-cta-btn text-xs font-extrabold px-3.5 py-2.5 rounded-xl">
-                                ${ctaText}
-                            </span>
+                            <p style="color: #94a3b8;" class="text-[11px] leading-snug truncate">
+                                ${subtitleText}
+                            </p>
                         </div>
+                        <span class="sponsored-pill-btn text-[11px] font-extrabold px-3 py-1.5 rounded-xl">
+                            ${ctaText} ↗
+                        </span>
                     </a>
                 `;
-
-                if (promoTickerTimer) clearInterval(promoTickerTimer);
-                promoTickerTimer = setInterval(() => {
-                    const tickerEl = document.getElementById('promoPerkTicker');
-                    if (!tickerEl) {
-                        clearInterval(promoTickerTimer);
-                        promoTickerTimer = null;
-                        return;
-                    }
-                    perkIdx = (perkIdx + 1) % perks.length;
-                    tickerEl.classList.remove('promo-ticker-anim');
-                    void tickerEl.offsetWidth;
-                    tickerEl.textContent = perks[perkIdx];
-                    tickerEl.classList.add('promo-ticker-anim');
-                }, 4200);
             } catch (err) {
                 console.warn("Promo banner skipped:", err);
             }
@@ -3062,6 +3157,7 @@
             isAutoLoggingOut = true;
             clearInactivityWatch();
             clearTimeout(arrowHideTimer);
+            closeTrafficPip();
             if (copilotClockTimer) {
                 clearInterval(copilotClockTimer);
                 copilotClockTimer = null;
@@ -3359,6 +3455,7 @@
             clearSessionActivity();
             localStorage.removeItem(BIO_CRED_KEY);
             modals.settings.classList.add('hide');
+            closeTrafficPip();
             currentTripId = null;
             currentUser = null;
             await signOut(auth);
@@ -3383,6 +3480,7 @@
                 localStorage.removeItem(BIO_CRED_KEY);
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
+                closeTrafficPip();
                 currentTripId = null;
                 await deleteUser(auth.currentUser);
                 await showNotice("Data Deleted", "Your account and all saved passes have been permanently removed.", "Lintas • Privacy");
@@ -3696,6 +3794,7 @@
                     await localDelete("trips", targetTripId);
                 } catch (_) {}
 
+                closeTrafficPip();
                 if (copilotClockTimer) {
                     clearInterval(copilotClockTimer);
                     copilotClockTimer = null;
@@ -4174,6 +4273,7 @@
             modals.newDoc.classList.add('hide');
         };
         document.getElementById('backToTripsBtn').onclick = () => {
+            closeTrafficPip();
             if (copilotClockTimer) {
                 clearInterval(copilotClockTimer);
                 copilotClockTimer = null;
