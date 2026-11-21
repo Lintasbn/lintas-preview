@@ -14,16 +14,34 @@
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        body {
+        html, body {
             background-color: #0f172a;
             color: #f8fafc;
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
+        }
+        /* Instant Branded Splash Overlay matching WebAPK + Outfit Wordmark */
+        #brandSplash {
+            position: fixed;
+            inset: 0;
+            background-color: #0f172a;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.28s ease, visibility 0.28s ease;
+        }
+        #brandSplash.splash-done {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
         .brand-wordmark {
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -92,6 +110,35 @@
         }
         .spotlight-card:active {
             transform: scale(0.985);
+        }
+        .copilot-hero-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(14, 116, 144, 0.45) 0%, rgba(15, 23, 42, 0.96) 52%, rgba(6, 95, 70, 0.42) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.45);
+            box-shadow: 0 16px 36px -10px rgba(14, 165, 233, 0.3);
+        }
+        .copilot-tab-active {
+            background: linear-gradient(135deg, #0ea5e9, #10b981);
+            color: #ffffff;
+            box-shadow: 0 6px 18px -4px rgba(16, 185, 129, 0.55);
+        }
+        .wallet-tab-active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            box-shadow: 0 6px 18px -4px rgba(37, 99, 235, 0.55);
+        }
+        .card-fx {
+            background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(15, 23, 42, 0.98) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+        }
+        .card-food {
+            background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(6, 78, 59, 0.22) 100%);
+            border: 1px solid rgba(52, 211, 153, 0.28);
+        }
+        .card-phrase {
+            background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(88, 28, 135, 0.22) 100%);
+            border: 1px solid rgba(192, 132, 252, 0.28);
         }
         .promo-partner-card {
             position: relative;
@@ -280,11 +327,12 @@
         .gallery-slide-anim {
             animation: slideFade 0.18s ease-out forwards;
         }
+        /* Unified App Icon matching icon-512.png */
         .app-icon {
             width: 104px;
             height: 104px;
             background: linear-gradient(145deg, #38bdf8 0%, #2563eb 55%, #1e3a8a 100%);
-            border-radius: 28px;
+            border-radius: 26px;
             box-shadow: 0 18px 38px -8px rgba(37, 99, 235, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.45);
             display: flex;
             align-items: center;
@@ -304,8 +352,8 @@
             pointer-events: none;
         }
         .icon-svg {
-            width: 70px;
-            height: 70px;
+            width: 72px;
+            height: 72px;
             position: relative;
             z-index: 1;
             filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.35));
@@ -313,6 +361,21 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- UNIFIED BRAND SPLASH OVERLAY (MATCHES APP ICON + OUTFIT WORDMARK UNTIL FONTS & AUTH ARE READY) -->
+    <div id="brandSplash" aria-hidden="true">
+        <div class="app-icon" style="margin-bottom: 16px;">
+            <svg class="icon-svg" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="4.5" stroke-opacity="0.95"/>
+                <ellipse cx="60" cy="60" rx="16" ry="34" fill="none" stroke="white" stroke-width="3" stroke-opacity="0.8"/>
+                <line x1="26" y1="60" x2="94" y2="60" stroke="white" stroke-width="3" stroke-opacity="0.8"/>
+                <path d="M28 77 C48 49, 72 41, 96 30" fill="none" stroke="#fde047" stroke-width="6" stroke-linecap="round"/>
+                <path d="M83 27 L97 29 L91 42" fill="none" stroke="#fde047" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="28" cy="77" r="4.5" fill="#fde047"/>
+            </svg>
+        </div>
+        <span class="brand-wordmark text-4xl select-none">Lintas<span class="brand-wordmark-dot"></span></span>
+    </div>
 
     <!-- Subtle Ambient Background Glow -->
     <div class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index: 0;">
@@ -330,18 +393,18 @@
         <div class="flex-1 flex flex-col items-center justify-center my-4">
             <div class="app-icon">
                 <svg class="icon-svg" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="4" stroke-opacity="0.92"/>
-                    <ellipse cx="60" cy="60" rx="16" ry="34" fill="none" stroke="white" stroke-width="2.8" stroke-opacity="0.72"/>
-                    <line x1="26" y1="60" x2="94" y2="60" stroke="white" stroke-width="2.8" stroke-opacity="0.72"/>
-                    <path d="M30 76 C50 50, 72 42, 95 31" fill="none" stroke="#fde047" stroke-width="5.5" stroke-linecap="round"/>
-                    <path d="M83 28 L96 30 L90 42" fill="none" stroke="#fde047" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="30" cy="76" r="4.5" fill="#fde047"/>
+                    <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="4.5" stroke-opacity="0.95"/>
+                    <ellipse cx="60" cy="60" rx="16" ry="34" fill="none" stroke="white" stroke-width="3" stroke-opacity="0.8"/>
+                    <line x1="26" y1="60" x2="94" y2="60" stroke="white" stroke-width="3" stroke-opacity="0.8"/>
+                    <path d="M28 77 C48 49, 72 41, 96 30" fill="none" stroke="#fde047" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M83 27 L97 29 L91 42" fill="none" stroke="#fde047" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="28" cy="77" r="4.5" fill="#fde047"/>
                 </svg>
             </div>
             
             <h1 class="brand-wordmark text-5xl sm:text-6xl mb-2 select-none">Lintas<span class="brand-wordmark-dot"></span></h1>
             <p style="color: #e2e8f0;" class="text-base font-semibold tracking-tight mb-1">Breeze through borders.</p>
-            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-xs leading-relaxed">All your travel QR passes, transit guides &amp; tools, synced and ready offline.</p>
+            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-xs leading-relaxed">Border QR wallet, live city co-pilot, Halal eats &amp; offline currency tools in one place.</p>
 
             <!-- Glassmorphic Auth Card -->
             <div class="glass-auth-card w-full max-w-sm rounded-3xl p-5 space-y-3">
@@ -393,9 +456,11 @@
             <div class="flex items-center gap-2.5 shrink-0">
                 <div style="background: linear-gradient(145deg, #38bdf8, #2563eb);" class="w-8 h-8 rounded-lg flex items-center justify-center shadow">
                     <svg class="w-5 h-5" viewBox="0 0 120 120">
-                        <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="6"/>
-                        <path d="M30 76 C50 50, 72 42, 95 31" fill="none" stroke="#fde047" stroke-width="8" stroke-linecap="round"/>
-                        <path d="M81 27 L96 30 L89 44" fill="none" stroke="#fde047" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="5.5"/>
+                        <ellipse cx="60" cy="60" rx="16" ry="34" fill="none" stroke="white" stroke-width="3.5" stroke-opacity="0.85"/>
+                        <line x1="26" y1="60" x2="94" y2="60" stroke="white" stroke-width="3.5" stroke-opacity="0.85"/>
+                        <path d="M28 77 C48 49, 72 41, 96 30" fill="none" stroke="#fde047" stroke-width="7.5" stroke-linecap="round"/>
+                        <path d="M82 26 L97 29 L90 43" fill="none" stroke="#fde047" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
                 <div>
@@ -483,7 +548,7 @@
         </button>
     </div>
 
-    <!-- TRIP DETAIL SCREEN (PASSES & QRs + ALL-IN-ONE DESTINATION HUB) -->
+    <!-- TRIP DETAIL SCREEN (BORDER WALLET + LIVE CITY CO-PILOT) -->
     <div id="tripDetailScreen" style="background-color: #0f172a; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
         <div class="glass px-4 py-3 flex items-center justify-between gap-2" style="position: relative; z-index: 50;">
             <div class="flex items-center gap-2 overflow-hidden">
@@ -498,20 +563,22 @@
             <button id="deleteTripBtn" type="button" class="shrink-0 text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30" style="touch-action: manipulation;">Delete Trip</button>
         </div>
 
-        <!-- TRIP DETAIL SUB-TABS: PASSES vs DESTINATION HUB -->
-        <div style="background-color: #0f172a; border-bottom: 1px solid rgba(148, 163, 184, 0.12);" class="px-4 py-2.5 max-w-2xl w-full mx-auto shrink-0">
-            <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.16);" class="grid grid-cols-2 p-1 rounded-2xl gap-1">
-                <button id="tabPassesBtn" type="button" class="py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white transition-all">
-                    🎫 Passes &amp; QRs
+        <!-- ENRICHING GLASSMORPHIC DUAL-PILL SWITCHER -->
+        <div style="background-color: #0f172a; border-bottom: 1px solid rgba(148, 163, 184, 0.14);" class="px-4 py-2.5 max-w-2xl w-full mx-auto shrink-0">
+            <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.18);" class="grid grid-cols-2 p-1 rounded-2xl gap-1.5 shadow-inner">
+                <button id="tabPassesBtn" type="button" class="wallet-tab-active py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5">
+                    <span>🎫 Border Wallet</span>
+                    <span id="walletCountPill" class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white">0</span>
                 </button>
-                <button id="tabGuideBtn" type="button" class="py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all">
-                    🧭 Trip Guide &amp; Tools
+                <button id="tabGuideBtn" type="button" class="py-2.5 px-3 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                    <span>✨ City Co-Pilot</span>
+                    <span id="copilotBadgePill" class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">LIVE</span>
                 </button>
             </div>
         </div>
         
-        <div class="flex-1 overflow-y-auto p-4 pb-24 max-w-2xl w-full mx-auto">
-            <!-- TAB 1: PASSES & QRs -->
+        <div id="tripDetailScrollArea" class="flex-1 overflow-y-auto p-4 pb-24 max-w-2xl w-full mx-auto">
+            <!-- TAB 1: BORDER WALLET (PASSES & QRs) -->
             <div id="tripPassesTab">
                 <button id="addDocTopBtn" type="button" class="w-full btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
                     + Add QR Pass / Document
@@ -524,17 +591,64 @@
                 <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- TAB 2: ALL-IN-ONE DESTINATION HUB & TRAVEL TOOLS -->
+            <!-- TAB 2: LIVE CITY CO-PILOT & POCKET CONCIERGE -->
             <div id="tripGuideTab" class="hide space-y-4">
-                <!-- 1. OFFLINE-READY CURRENCY CONVERTER -->
-                <div class="card-dark rounded-2xl p-4">
+                <!-- HERO: DESTINATION PULSE LIVE COCKPIT -->
+                <div class="copilot-hero-card rounded-3xl p-4 shadow-xl">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-300 mb-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                Pocket City Co-Pilot
+                            </span>
+                            <h3 id="copilotHeroCity" class="text-xl font-black text-white leading-tight">Destination</h3>
+                            <p id="copilotHeroSub" style="color: #cbd5e1;" class="text-xs mt-0.5">Live local time, currency &amp; border intelligence</p>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.78); border: 1px solid rgba(56, 189, 248, 0.35);" class="rounded-2xl px-3 py-2 text-right shrink-0">
+                            <span style="color: #94a3b8;" class="block text-[9px] font-bold uppercase tracking-wider">Local Time</span>
+                            <span id="copilotLiveClock" class="text-sm font-black text-sky-300 tabular-nums">--:--</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 mt-3">
+                        <span id="copilotRateChip" style="background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(52, 211, 153, 0.35);" class="text-[11px] font-bold text-emerald-300 px-2.5 py-1 rounded-xl">
+                            💱 1 BND = —
+                        </span>
+                        <span id="copilotStatusChip" style="background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(148, 163, 184, 0.25);" class="text-[11px] font-bold text-amber-200 px-2.5 py-1 rounded-xl">
+                            📅 Ready
+                        </span>
+                    </div>
+
+                    <!-- QUICK-JUMP SECTION PILLS -->
+                    <div class="dest-chip-strip mt-3.5 pt-3" style="border-top: 1px solid rgba(148, 163, 184, 0.16);">
+                        <button type="button" data-jump="secFx" class="dest-chip">💱 Money</button>
+                        <button type="button" data-jump="secAirport" class="dest-chip">✈️ Airport</button>
+                        <button type="button" data-jump="secTransit" class="dest-chip">⛴️ Ferry &amp; Bus</button>
+                        <button type="button" data-jump="secFood" class="dest-chip">🍜 Halal Eats</button>
+                        <button type="button" data-jump="secPhrases" class="dest-chip">🗣️ Speak Local</button>
+                        <button type="button" data-jump="secChecklist" class="dest-chip">✅ Checklist</button>
+                        <button type="button" data-jump="secDriver" class="dest-chip">🚕 Taxi Card</button>
+                    </div>
+                </div>
+
+                <!-- 1. OFFLINE-READY CURRENCY CONVERTER WITH 1-TAP PRESETS -->
+                <div id="secFx" class="card-fx rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2">
                             <span class="text-base">💱</span>
-                            <h3 class="text-sm font-bold text-white">Quick Currency Converter</h3>
+                            <h3 class="text-sm font-extrabold text-white">Instant Market Converter</h3>
                         </div>
-                        <span id="fxRateBadge" class="text-[10px] font-semibold text-emerald-400">Offline Ready</span>
+                        <span id="fxRateBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Offline Ready</span>
                     </div>
+
+                    <div class="flex items-center gap-1.5 mb-2.5">
+                        <span style="color: #94a3b8;" class="text-[10px] font-bold uppercase mr-1">Quick:</span>
+                        <button type="button" data-fx-preset="10" class="fx-preset-btn px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold text-slate-200 active:scale-95">10</button>
+                        <button type="button" data-fx-preset="50" class="fx-preset-btn px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold text-slate-200 active:scale-95">50</button>
+                        <button type="button" data-fx-preset="100" class="fx-preset-btn px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold text-slate-200 active:scale-95">100</button>
+                        <button type="button" data-fx-preset="500" class="fx-preset-btn px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-bold text-slate-200 active:scale-95">500</button>
+                    </div>
+
                     <div class="grid grid-cols-12 gap-2 items-center">
                         <div class="col-span-5">
                             <input type="number" id="fxAmountInput" value="100" min="0" step="any" class="input-dark w-full rounded-xl px-3 py-2 text-sm font-bold" placeholder="Amount">
@@ -549,83 +663,98 @@
                             <select id="fxToSelect" class="input-dark w-full rounded-xl px-2 py-2 text-xs font-bold text-center"></select>
                         </div>
                     </div>
-                    <div style="background-color: #0f172a; border: 1px solid #334155;" class="mt-3 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
-                        <span style="color: #94a3b8;" class="text-xs">Converted Total</span>
-                        <span id="fxResultText" class="text-base font-extrabold text-sky-300">—</span>
+                    <div style="background-color: #0f172a; border: 1px solid rgba(56, 189, 248, 0.35);" class="mt-3 rounded-2xl px-3.5 py-3 flex items-center justify-between">
+                        <span style="color: #94a3b8;" class="text-xs font-medium">Converted Total</span>
+                        <span id="fxResultText" class="text-lg font-black text-sky-300">—</span>
                     </div>
                     <p style="color: #64748b;" class="text-[10px] mt-1.5 text-right">
-                        <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-400">Rates By Exchange Rate API</a> • Cached for offline use
+                        <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-400">Rates By Exchange Rate API</a> • Cached offline
                     </p>
                 </div>
 
                 <!-- 2. NEAREST AIRPORT & LIVE FLIGHT TRACKER -->
-                <div class="card-dark rounded-2xl p-4">
+                <div id="secAirport" class="card-dark rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center gap-2">
                             <span class="text-base">✈️</span>
-                            <h3 class="text-sm font-bold text-white">Airport &amp; Flight Status</h3>
+                            <h3 class="text-sm font-extrabold text-white">Airport &amp; Live Flight Radar</h3>
                         </div>
-                        <span id="guideAirportCode" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">AIRPORT</span>
+                        <span id="guideAirportCode" class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/35">AIRPORT</span>
                     </div>
-                    <p id="guideAirportName" class="text-xs font-semibold text-white"></p>
+                    <p id="guideAirportName" class="text-xs font-bold text-white"></p>
                     <p id="guideAirportTransfer" style="color: #94a3b8;" class="text-xs mt-1 leading-relaxed"></p>
                     <div class="mt-3 flex gap-2">
-                        <input type="text" id="flightCodeInput" placeholder="Flight No. (e.g., BI873, AK510)" class="input-dark flex-1 rounded-xl px-3 py-2 text-xs uppercase">
-                        <button id="checkFlightBtn" type="button" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-bold shrink-0">Track Flight ↗</button>
+                        <input type="text" id="flightCodeInput" placeholder="Flight No. (e.g., BI873, AK510)" class="input-dark flex-1 rounded-xl px-3 py-2 text-xs uppercase font-bold">
+                        <button id="checkFlightBtn" type="button" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-extrabold shrink-0">Track Flight ↗</button>
                     </div>
                 </div>
 
                 <!-- 3. LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
-                <div class="card-dark rounded-2xl p-4">
+                <div id="secTransit" class="card-dark rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between mb-2.5">
                         <div class="flex items-center gap-2">
                             <span class="text-base">⛴️</span>
-                            <h3 class="text-sm font-bold text-white">Ferry, Public Bus &amp; Transit</h3>
+                            <h3 class="text-sm font-extrabold text-white">Ferry, Public Bus &amp; Ride-Hailing</h3>
                         </div>
-                        <a id="guideTransitMapLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-400">Transit Map ↗</a>
+                        <a id="guideTransitMapLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="text-xs font-extrabold text-sky-400">Transit Map ↗</a>
                     </div>
                     <div id="guideTransitBody" class="space-y-2.5 text-xs"></div>
                 </div>
 
                 <!-- 4. RECOMMENDED SPOTS TO EAT (HALAL & LOCAL FAVORITES) -->
-                <div class="card-dark rounded-2xl p-4">
+                <div id="secFood" class="card-food rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between mb-2.5">
                         <div class="flex items-center gap-2">
                             <span class="text-base">🍜</span>
-                            <h3 class="text-sm font-bold text-white">Recommended Spots to Eat</h3>
+                            <h3 class="text-sm font-extrabold text-white">Must-Try Halal &amp; Local Eats</h3>
                         </div>
-                        <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Halal &amp; Local</span>
+                        <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">Curated</span>
                     </div>
                     <div id="guideFoodList" class="space-y-2.5"></div>
                 </div>
 
-                <!-- 5. PRE-DEPARTURE BORDER & PACKING CHECKLIST -->
-                <div class="card-dark rounded-2xl p-4">
+                <!-- 5. TAP-TO-SPEAK LOCAL PHRASEBOOK -->
+                <div id="secPhrases" class="card-phrase rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between mb-2.5">
                         <div class="flex items-center gap-2">
-                            <span class="text-base">✅</span>
-                            <h3 class="text-sm font-bold text-white">Border &amp; Packing Checklist</h3>
+                            <span class="text-base">🗣️</span>
+                            <h3 class="text-sm font-extrabold text-white">Tap-to-Speak Local Phrases</h3>
                         </div>
-                        <span id="checklistProgressText" class="text-[11px] font-bold text-sky-400">0/0 Done</span>
+                        <span id="phraseLangBadge" class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/35">Audio Ready</span>
+                    </div>
+                    <div id="guidePhrasesList" class="space-y-2"></div>
+                </div>
+
+                <!-- 6. PRE-DEPARTURE BORDER & PACKING CHECKLIST WITH PROGRESS BAR -->
+                <div id="secChecklist" class="card-dark rounded-3xl p-4 shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">✅</span>
+                            <h3 class="text-sm font-extrabold text-white">Border Readiness Checklist</h3>
+                        </div>
+                        <span id="checklistProgressText" class="text-[11px] font-extrabold text-sky-400">0/0 Done</span>
+                    </div>
+                    <div style="background-color: #0f172a;" class="w-full h-2 rounded-full overflow-hidden mb-3">
+                        <div id="checklistProgressBar" style="width: 0%; background: linear-gradient(90deg, #38bdf8, #10b981); transition: width 0.25s ease;" class="h-full rounded-full"></div>
                     </div>
                     <div id="guideChecklistItems" class="space-y-2"></div>
                 </div>
 
-                <!-- 6. STAY ADDRESS ("SHOW TAXI DRIVER") & EMERGENCY CONTACTS -->
-                <div class="card-dark rounded-2xl p-4 space-y-3">
+                <!-- 7. STAY ADDRESS ("SHOW TAXI DRIVER") & EMERGENCY CONTACTS -->
+                <div id="secDriver" class="card-dark rounded-3xl p-4 space-y-3 shadow-lg">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="text-base">🏨</span>
-                            <h3 class="text-sm font-bold text-white">Hotel / Stay Address Card</h3>
+                            <span class="text-base">🚕</span>
+                            <h3 class="text-sm font-extrabold text-white">Hotel / Show Taxi Driver</h3>
                         </div>
-                        <button id="showDriverBtn" type="button" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/35">Show Driver ⛶</button>
+                        <button id="showDriverBtn" type="button" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 active:scale-95">Full-Screen Card ⛶</button>
                     </div>
                     <input type="text" id="hotelNameInput" placeholder="Hotel / Airbnb Name" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
                     <input type="text" id="hotelAddrInput" placeholder="Full Street Address (for taxi / Grab)" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
 
                     <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-3">
-                        <p class="text-xs font-bold text-red-300 mb-1.5">🚨 Local Emergency &amp; Brunei Mission</p>
-                        <div id="guideEmergencyBox" style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl p-3 text-xs space-y-1"></div>
+                        <p class="text-xs font-extrabold text-red-300 mb-1.5">🚨 Local SOS &amp; Brunei Diplomatic Hotline</p>
+                        <div id="guideEmergencyBox" style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-2xl p-3 text-xs space-y-1"></div>
                     </div>
                 </div>
             </div>
@@ -814,7 +943,7 @@
                 </div>
             </div>
 
-            <p style="color: #64748b;" class="text-xs mb-5">Unlocks destination guide, weather forecast &amp; auto-cleans 30 days after Trip End Date.</p>
+            <p style="color: #64748b;" class="text-xs mb-5">Unlocks City Co-Pilot, weather forecast &amp; auto-cleans 30 days after Trip End Date.</p>
             <button id="saveTripBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl">Create Trip</button>
         </div>
     </div>
@@ -955,6 +1084,25 @@
         </div>
     </div>
 
+    <!-- Hide Brand Splash once Outfit font & DOM are ready -->
+    <script>
+        (function () {
+            const hideSplash = () => {
+                const el = document.getElementById('brandSplash');
+                if (el) el.classList.add('splash-done');
+            };
+            if (document.fonts && document.fonts.ready) {
+                Promise.race([
+                    document.fonts.ready,
+                    new Promise(r => setTimeout(r, 900))
+                ]).then(() => requestAnimationFrame(hideSplash));
+            } else {
+                window.addEventListener('load', hideSplash);
+                setTimeout(hideSplash, 900);
+            }
+        })();
+    </script>
+
     <!-- Firebase SDK Modules -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -1015,11 +1163,14 @@
         }
 
         // =========================================================================
-        // DESTINATION INTELLIGENCE DATABASE (AIRPORT, FERRY, BUS, FOOD, EMBASSY)
+        // DESTINATION INTELLIGENCE DATABASE (WITH TIMEZONE + TAP-TO-SPEAK PHRASES)
         // =========================================================================
         const DESTINATION_GUIDES = {
             "miri": {
                 currency: "MYR",
+                timeZone: "Asia/Kuching",
+                langCode: "ms-MY",
+                langLabel: "Bahasa Melayu",
                 airportCode: "MYY",
                 airportName: "Miri Airport (MYY)",
                 airportTransfer: "~15 mins (10 km) to Miri City Centre via Grab (~RM12–18) or airport taxi.",
@@ -1027,14 +1178,22 @@
                 busInfo: "Miri City Bus (Line 33/34) serves Boulevard, Bintang Megamall & Permyjaya. Grab is the fastest way around town.",
                 entryChecklist: ["Submit MDAC (Malaysia Digital Arrival Card) within 3 days before arrival", "Save MDAC PIN & QR screenshot in Lintas", "Ensure vehicle VEP / EES pass is ready for Sungai Tujoh border"],
                 emergency: "Emergency: 999 • Brunei Consulate General in Kuching (Sarawak): +60 10-950 1143",
+                phrases: [
+                    { en: "Is this Halal certified?", local: "Ini ada sijil Halal?", phonetic: "Ee-nee ah-dah see-jil Ha-lal?" },
+                    { en: "How much is this?", local: "Berapa harga ini?", phonetic: "Be-ra-pa har-ga ee-nee?" },
+                    { en: "Please drop me here", local: "Tolong turunkan saya di sini", phonetic: "To-long tu-run-kan sa-ya dee see-nee" }
+                ],
                 food: [
-                    { name: "Selera Rasa Segar (Miri Waterfront)", tag: "Halal • Local Seafood", note: "Famous grilled ikan bakar, butter prawns & local Sarawak dishes by the river." },
-                    { name: "Nasi Katok & Lalapan Miri Central", tag: "Halal • Budget Favorite", note: "Crispy ayam penyet & sambal lalapan popular with Brunei weekenders." },
-                    { name: "Muara Restaurant (Jalan North Yu Seng)", tag: "Halal • Brunei-Malay", note: "Authentic ambuyat, kelupis & traditional Borneo-Malay sets." }
+                    { name: "Selera Rasa Segar (Miri Waterfront)", tag: "Halal • Local Seafood", price: "$$", note: "Famous grilled ikan bakar, butter prawns & local Sarawak dishes by the river." },
+                    { name: "Nasi Katok & Lalapan Miri Central", tag: "Halal • Budget Favorite", price: "$", note: "Crispy ayam penyet & sambal lalapan popular with Brunei weekenders." },
+                    { name: "Muara Restaurant (Jalan North Yu Seng)", tag: "Halal • Brunei-Malay", price: "$", note: "Authentic ambuyat, kelupis & traditional Borneo-Malay sets." }
                 ]
             },
             "kota kinabalu": {
                 currency: "MYR",
+                timeZone: "Asia/Kuching",
+                langCode: "ms-MY",
+                langLabel: "Sabah Malay",
                 airportCode: "BKI",
                 airportName: "Kota Kinabalu International Airport (BKI)",
                 airportTransfer: "~15 mins (8 km) to KK City / Gaya Street via Grab (~RM10–16) or Airport Bus (RM5).",
@@ -1042,14 +1201,22 @@
                 busInfo: "City Bus (green/blue) loops KK Sentral, Wawasan Plaza & 1Borneo. Grab covers all city & Kundasang day trips.",
                 entryChecklist: ["Submit MDAC (Malaysia Digital Arrival Card) within 3 days before arrival", "Save MDAC & return flight QR passes in Lintas", "Pack light jacket if heading up to Kundasang / Ranau"],
                 emergency: "Emergency: 999 • Brunei Consulate General in Kota Kinabalu (Sabah): +60 10-241 6112",
+                phrases: [
+                    { en: "Where is the jetty to the islands?", local: "Di mana jeti ke pulau?", phonetic: "Dee ma-na je-tee ke pu-lau?" },
+                    { en: "Is this Halal?", local: "Makanan ini Halal?", phonetic: "Ma-ka-nan ee-nee Ha-lal?" },
+                    { en: "Thank you very much", local: "Terima kasih banyak", phonetic: "Te-ree-ma ka-sih ba-nyak" }
+                ],
                 food: [
-                    { name: "Welcome Seafood Restaurant (Asia City)", tag: "Halal-Certified • Seafood", note: "Live tanks with salted egg crab, wet butter tiger prawns & Sabah veggie." },
-                    { name: "Restoran Sri Melaka (Kampung Air)", tag: "Halal • Nyonya & Local", note: "Classic Sabah-Nyonya dishes, asam pedas & sotong goreng tepung." },
-                    { name: "Todak Waterfront Hawker Stalls", tag: "Muslim-Friendly • Night Market", note: "Fresh grilled lobster, stingray & coconut pudding right by the sea." }
+                    { name: "Welcome Seafood Restaurant (Asia City)", tag: "Halal-Certified • Seafood", price: "$$", note: "Live tanks with salted egg crab, wet butter tiger prawns & Sabah veggie." },
+                    { name: "Restoran Sri Melaka (Kampung Air)", tag: "Halal • Nyonya & Local", price: "$$", note: "Classic Sabah-Nyonya dishes, asam pedas & sotong goreng tepung." },
+                    { name: "Todak Waterfront Hawker Stalls", tag: "Muslim-Friendly • Night Market", price: "$", note: "Fresh grilled lobster, stingray & coconut pudding right by the sea." }
                 ]
             },
             "kuala lumpur": {
                 currency: "MYR",
+                timeZone: "Asia/Kuala_Lumpur",
+                langCode: "ms-MY",
+                langLabel: "Bahasa Melayu",
                 airportCode: "KUL",
                 airportName: "Kuala Lumpur International Airport (KLIA T1 / T2)",
                 airportTransfer: "28 mins to KL Sentral via KLIA Ekspres train (RM55), ~55 mins via Airport Coach (RM15), or ~50 mins via Grab (~RM65–85).",
@@ -1057,14 +1224,22 @@
                 busInfo: "RapidKL MRT, LRT & Monorail connect Bukit Bintang, KLCC & KL Sentral using Touch 'n Go card. Free GoKL city buses run green/purple loops.",
                 entryChecklist: ["Submit MDAC within 3 days before arrival", "Save KLIA Ekspres / flight QR pass in Lintas", "Top up Touch 'n Go eWallet / card for MRT & tolls"],
                 emergency: "Emergency: 999 • Brunei High Commission in Kuala Lumpur: +60 19-212 0114",
+                phrases: [
+                    { en: "Which train goes to KLCC?", local: "Tren mana ke KLCC?", phonetic: "Tren ma-na ke KLCC?" },
+                    { en: "Can I pay by card / QR?", local: "Boleh bayar guna kad atau QR?", phonetic: "Bo-leh ba-yar gu-na kad?" },
+                    { en: "Thank you", local: "Terima kasih", phonetic: "Te-ree-ma ka-sih" }
+                ],
                 food: [
-                    { name: "Village Park Restaurant (Damansara Uptown)", tag: "Halal • Iconic Nasi Lemak", note: "Legendary crispy ayam goreng berempah nasi lemak — arrive before 11 AM." },
-                    { name: "Jalan Alor & Bukit Bintang Halal Spots", tag: "Halal Options • Street Food", note: "Try Damascus Bukit Bintang (shawarma) or Halab Gate nearby." },
-                    { name: "Sambal Hijau (Sungai Penchala)", tag: "Halal • Kampung Buffet", note: "Over 60 traditional Malay dishes, masak lemak & grilled fish." }
+                    { name: "Village Park Restaurant (Damansara Uptown)", tag: "Halal • Iconic Nasi Lemak", price: "$", note: "Legendary crispy ayam goreng berempah nasi lemak — arrive before 11 AM." },
+                    { name: "Halab Gate / Damascus (Bukit Bintang)", tag: "Halal • Middle Eastern", price: "$$", note: "Famous chicken/lamb shawarma & charcoal grills in Bukit Bintang." },
+                    { name: "Sambal Hijau (Sungai Penchala)", tag: "Halal • Kampung Buffet", price: "$$", note: "Over 60 traditional Malay dishes, masak lemak & grilled fish." }
                 ]
             },
             "kuching": {
                 currency: "MYR",
+                timeZone: "Asia/Kuching",
+                langCode: "ms-MY",
+                langLabel: "Bahasa Sarawak",
                 airportCode: "KCH",
                 airportName: "Kuching International Airport (KCH)",
                 airportTransfer: "~20 mins (11 km) to Kuching Waterfront via Grab (~RM14–20).",
@@ -1072,14 +1247,21 @@
                 busInfo: "Kuching Metro electric buses (free city routes) & Grab serve Waterfront, VivaCity & Semenggoh.",
                 entryChecklist: ["Submit MDAC within 3 days before arrival", "Save flight & hotel confirmations in Lintas"],
                 emergency: "Emergency: 999 • Brunei Consulate General in Kuching: +60 10-950 1143",
+                phrases: [
+                    { en: "Cross the river by boat", local: "Seberang sungai naik perahu", phonetic: "Se-be-rang su-ngai na-ik pe-ra-hu" },
+                    { en: "Is this Halal?", local: "Ini Halal?", phonetic: "Ee-nee Ha-lal?" }
+                ],
                 food: [
-                    { name: "Topspot Food Court (Bukit Mata)", tag: "Halal Seafood Stalls", note: "Rooftop seafood institution — order midin belacan, oyster omelette & grilled fish." },
-                    { name: "Mom's Laksa (Jalan Haji Taha)", tag: "Halal • Sarawak Laksa", note: "Rich, aromatic Halal Sarawak Laksa & kolo mee." },
-                    { name: "Mira Cake House (Kampung Boyan)", tag: "Halal • Kek Lapis", note: "Take the RM1 river sampan across the Waterfront to sample Sarawak layer cakes." }
+                    { name: "Topspot Food Court (Bukit Mata)", tag: "Halal Seafood Stalls", price: "$$", note: "Rooftop seafood institution — order midin belacan, oyster omelette & grilled fish." },
+                    { name: "Mom's Laksa (Jalan Haji Taha)", tag: "Halal • Sarawak Laksa", price: "$", note: "Rich, aromatic Halal Sarawak Laksa & kolo mee." },
+                    { name: "Mira Cake House (Kampung Boyan)", tag: "Halal • Kek Lapis", price: "$", note: "Take the RM1 river sampan across the Waterfront to sample Sarawak layer cakes." }
                 ]
             },
             "singapore": {
                 currency: "SGD",
+                timeZone: "Asia/Singapore",
+                langCode: "en-SG",
+                langLabel: "English / Malay",
                 airportCode: "SIN",
                 airportName: "Singapore Changi Airport (SIN)",
                 airportTransfer: "~30 mins to City Hall / Orchard via MRT East-West Line (change at Tanah Merah) or ~20 mins via Grab / Taxi (~SGD 22–32).",
@@ -1087,14 +1269,21 @@
                 busInfo: "Tap Visa/Mastercard directly on any MRT gate or SBS/SMRT public bus (no EZ-Link purchase needed). Use Grab, Gojek, or Zig.",
                 entryChecklist: ["Submit SG Arrival Card (SGAC) within 3 days before arrival", "Save SGAC & Changi Jewel / attraction QRs in Lintas", "Bring Visa/Mastercard contactless card for MRT & buses"],
                 emergency: "Police: 999 • Ambulance/Fire: 995 • Brunei High Commission in Singapore: +65 9673 0300",
+                phrases: [
+                    { en: "Does this stall have MUIS Halal cert?", local: "Kedai ini ada sijil Halal MUIS?", phonetic: "Ke-dai ee-nee a-da see-jil Ha-lal MUIS?" },
+                    { en: "Where is the nearest MRT?", local: "Di mana stesen MRT terdekat?", phonetic: "Dee ma-na ste-sen MRT ter-de-kat?" }
+                ],
                 food: [
-                    { name: "Zam Zam Restaurant (North Bridge Rd)", tag: "Halal • Heritage Murtabak", note: "Iconic deer/chicken murtabak & briyani opposite Sultan Mosque." },
-                    { name: "Hajjah Maimunah (Jalan Pisang)", tag: "Halal • Michelin Bib Gourmand", note: "Famous Nasi Padang, siput sedut & beef rendang." },
-                    { name: "Lau Pa Sat / Maxwell Halal Stalls", tag: "Halal Stalls • Hawker", note: "Satay Street at night (Stalls 7 & 8 are Halal-certified)." }
+                    { name: "Zam Zam Restaurant (North Bridge Rd)", tag: "Halal • Heritage Murtabak", price: "$", note: "Iconic deer/chicken murtabak & briyani opposite Sultan Mosque." },
+                    { name: "Hajjah Maimunah (Jalan Pisang)", tag: "Halal • Michelin Bib Gourmand", price: "$$", note: "Famous Nasi Padang, siput sedut & beef rendang." },
+                    { name: "Lau Pa Sat Satay Street (Stalls 7 & 8)", tag: "Halal-Certified • Hawker", price: "$", note: "Open-air charcoal satay & king prawns under the city skyline." }
                 ]
             },
             "seoul": {
                 currency: "KRW",
+                timeZone: "Asia/Seoul",
+                langCode: "ko-KR",
+                langLabel: "Korean (한국어)",
                 airportCode: "ICN",
                 airportName: "Incheon International Airport (ICN T1 / T2)",
                 airportTransfer: "43 mins nonstop to Seoul Station via AREX Express Train (~₩11,000), or 60–75 mins via Airport Limousine Bus (~₩17,000).",
@@ -1102,14 +1291,23 @@
                 busInfo: "Buy a T-money card at any GS25/CU convenience store for Seoul Subway & blue/green buses. Use Naver Map or KakaoMap (Google Maps walking is limited in Korea) and Kakao T for taxis.",
                 entryChecklist: ["Check K-ETA / Q-Code health declaration requirements before flight", "Install Naver Map & Kakao T before landing", "Save AREX train QR & Nami/Everland tickets in Lintas"],
                 emergency: "Police: 112 • Fire/Ambulance: 119 • Brunei Embassy in Seoul: +82 10-4406-3808",
+                phrases: [
+                    { en: "No pork or alcohol, please", local: "돼지고기랑 술 빼주세요", phonetic: "Dwae-ji-go-gi-rang sul ppae-ju-se-yo" },
+                    { en: "How much is this?", local: "얼마예요?", phonetic: "Eol-ma-ye-yo?" },
+                    { en: "Please take me to this address", local: "이 주소로 가주세요", phonetic: "Ee ju-so-ro ga-ju-se-yo" },
+                    { en: "Thank you", local: "감사합니다", phonetic: "Gam-sa-ham-ni-da" }
+                ],
                 food: [
-                    { name: "Eid Halal Korean Food (Itaewon)", tag: "KMF Halal-Certified", note: "Authentic Halal bulgogi, japchae, samgyetang & tteokbokki near Seoul Central Mosque." },
-                    { name: "Makan Halal Korean Restaurant (Itaewon)", tag: "Halal-Certified", note: "Popular for Korean fried chicken, dakgalbi & beef stew." },
-                    { name: "Busan Jib (Myeongdong)", tag: "Muslim-Friendly • Seafood", note: "Spicy seafood stew, grilled mackerel & ginseng chicken right in Myeongdong." }
+                    { name: "Eid Halal Korean Food (Itaewon)", tag: "KMF Halal-Certified", price: "$$", note: "Authentic Halal bulgogi, japchae, samgyetang & tteokbokki near Seoul Central Mosque." },
+                    { name: "Makan Halal Korean Restaurant (Itaewon)", tag: "Halal-Certified", price: "$$", note: "Popular for Korean fried chicken, dakgalbi & beef stew." },
+                    { name: "Busan Jib (Myeongdong)", tag: "Muslim-Friendly • Seafood", price: "$$", note: "Spicy seafood stew, grilled mackerel & ginseng chicken right in Myeongdong." }
                 ]
             },
             "tokyo": {
                 currency: "JPY",
+                timeZone: "Asia/Tokyo",
+                langCode: "ja-JP",
+                langLabel: "Japanese (日本語)",
                 airportCode: "HND / NRT",
                 airportName: "Haneda (HND) or Narita Airport (NRT)",
                 airportTransfer: "Haneda: 15–25 mins via Tokyo Monorail or Keikyu Line. Narita: 53 mins via Narita Express (N'EX) to Tokyo Station or 41 mins via Keisei Skyliner to Ueno.",
@@ -1117,14 +1315,22 @@
                 busInfo: "Add Digital Suica or PASMO to Apple Wallet / Google Pay for instant tap-and-go on JR Yamanote, Tokyo Metro & Toei buses.",
                 entryChecklist: ["Complete Visit Japan Web (Immigration & Customs QR) & save screenshot in Lintas", "Add Suica/PASMO to phone wallet", "Carry some JPY cash for small ramen shops & temples"],
                 emergency: "Police: 110 • Ambulance/Fire: 119 • Brunei Embassy in Tokyo: +81 80-1161-5328",
+                phrases: [
+                    { en: "I cannot eat pork or alcohol", local: "豚肉とお酒は食べられません", phonetic: "Bu-ta-ni-ku to o-sa-ke wa ta-be-ra-re-ma-sen" },
+                    { en: "Excuse me / How much?", local: "すみません、いくらですか？", phonetic: "Su-mi-ma-sen, i-ku-ra de-su-ka?" },
+                    { en: "Thank you very much", local: "ありがとうございます", phonetic: "A-ri-ga-tou go-za-i-ma-su" }
+                ],
                 food: [
-                    { name: "Halal Ramen Honolu (Ebisu / Asakusa)", tag: "Halal-Certified • Ramen", note: "Rich chicken paitan ramen & crispy karaage — very popular with Bruneian travelers." },
-                    { name: "Gyumon Halal Yakiniku (Shibuya / Asakusa)", tag: "Halal • Wagyu BBQ", note: "Charcoal-grilled Halal Japanese Wagyu beef sets." },
-                    { name: "Naritaya Halal Ramen (Asakusa)", tag: "Halal-Certified", note: "Steps from Senso-ji Temple with mazesoba & gyoza." }
+                    { name: "Halal Ramen Honolu (Ebisu / Asakusa)", tag: "Halal-Certified • Ramen", price: "$", note: "Rich chicken paitan ramen & crispy karaage — very popular with Bruneian travelers." },
+                    { name: "Gyumon Halal Yakiniku (Shibuya / Asakusa)", tag: "Halal • Wagyu BBQ", price: "$$$", note: "Charcoal-grilled Halal Japanese Wagyu beef sets." },
+                    { name: "Naritaya Halal Ramen (Asakusa)", tag: "Halal-Certified", price: "$", note: "Steps from Senso-ji Temple with mazesoba & gyoza." }
                 ]
             },
             "bangkok": {
                 currency: "THB",
+                timeZone: "Asia/Bangkok",
+                langCode: "th-TH",
+                langLabel: "Thai (ภาษาไทย)",
                 airportCode: "BKK / DMK",
                 airportName: "Suvarnabhumi (BKK) or Don Mueang (DMK)",
                 airportTransfer: "BKK: 26 mins to Phaya Thai via Airport Rail Link (฿45). DMK: 20 mins to Bang Sue via SRT Red Line. Use Grab or Bolt in the city.",
@@ -1132,14 +1338,22 @@
                 busInfo: "BTS Skytrain & MRT Subway beat Bangkok traffic. Use Rabbit Card for BTS and contactless Visa/Mastercard for MRT.",
                 entryChecklist: ["Check Thailand Digital Arrival Card (TDAC) requirement before departure", "Install Grab & Bolt apps for metered/fixed rides", "Save flight & attraction QR passes in Lintas"],
                 emergency: "Tourist Police: 1155 • Emergency: 191 • Brunei Embassy in Bangkok: +66 92-270-9382",
+                phrases: [
+                    { en: "Is this Halal food?", local: "อาหารฮาลาลไหมครับ", phonetic: "Aa-haan Ha-laan mai khrap?" },
+                    { en: "Not spicy, please", local: "ไม่เผ็ดครับ", phonetic: "Mai phet khrap" },
+                    { en: "How much is this?", local: "ราคาเท่าไหร่ครับ", phonetic: "Raa-khaa thao-rai khrap?" }
+                ],
                 food: [
-                    { name: "Yana Restaurant (MBK Center, 5th Floor)", tag: "Halal-Certified • Thai", note: "Famous tom yum kung, pad thai & mango sticky rice inside MBK Mall." },
-                    { name: "Saman Islam (Chatuchak Weekend Market)", tag: "Halal • Market Favorite", note: "Legendary beef noodle soup & Thai iced tea inside Section 16." },
-                    { name: "Usman Thai Muslim Food (Sukhumvit Soi 22)", tag: "Halal • Authentic Thai", note: "Green curry, massaman beef & papaya salad near Phrom Phong." }
+                    { name: "Yana Restaurant (MBK Center, 5th Floor)", tag: "Halal-Certified • Thai", price: "$$", note: "Famous tom yum kung, pad thai & mango sticky rice inside MBK Mall." },
+                    { name: "Saman Islam (Chatuchak Weekend Market)", tag: "Halal • Market Favorite", price: "$", note: "Legendary beef noodle soup & Thai iced tea inside Section 16." },
+                    { name: "Usman Thai Muslim Food (Sukhumvit Soi 22)", tag: "Halal • Authentic Thai", price: "$$", note: "Green curry, massaman beef & papaya salad near Phrom Phong." }
                 ]
             },
             "jakarta": {
                 currency: "IDR",
+                timeZone: "Asia/Jakarta",
+                langCode: "id-ID",
+                langLabel: "Bahasa Indonesia",
                 airportCode: "CGK",
                 airportName: "Soekarno-Hatta International Airport (CGK)",
                 airportTransfer: "45 mins to BNI City (Sudirman) via KAI Bandara Airport Rail Link, or 45–75 mins via Bluebird Taxi / Grab / Gojek.",
@@ -1147,14 +1361,21 @@
                 busInfo: "MRT Jakarta (Lebak Bulus – Bundaran HI), LRT Jabodebek & TransJakarta BRT corridors. Buy a Mandiri e-Money or BCA Flazz card at Indomaret.",
                 entryChecklist: ["Submit All Indonesia / e-CD Customs QR before arrival & save in Lintas", "Install Gojek, Grab & Bluebird apps", "Get a multi-trip e-Money/Flazz card for MRT & TransJakarta"],
                 emergency: "Emergency: 112 • Brunei Embassy in Jakarta: +62 811-900-6564",
+                phrases: [
+                    { en: "Where is the MRT station?", local: "Di mana stasiun MRT terdekat?", phonetic: "Dee ma-na sta-si-un MRT ter-de-kat?" },
+                    { en: "Please use the meter", local: "Pakai argo ya Pak", phonetic: "Pa-kai ar-go ya Pak" }
+                ],
                 food: [
-                    { name: "Sate Khas Senayan (Multiple Malls)", tag: "Halal • Indonesian Classic", note: "Signature chicken/lamb satay, soto betawi & tahutelor." },
-                    { name: "Pagi Sore (Menteng / Sudirman)", tag: "Halal • Nasi Padang", note: "Premium Minang-Padang feast with rendang & ayam pop." },
-                    { name: "RM Sederhana (Sabang / Thamrin)", tag: "Halal • Authentic Padang", note: "Reliable, fast & flavorful Padang dishes across central Jakarta." }
+                    { name: "Sate Khas Senayan (Multiple Malls)", tag: "Halal • Indonesian Classic", price: "$$", note: "Signature chicken/lamb satay, soto betawi & tahutelor." },
+                    { name: "Pagi Sore (Menteng / Sudirman)", tag: "Halal • Nasi Padang", price: "$$", note: "Premium Minang-Padang feast with rendang & ayam pop." },
+                    { name: "RM Sederhana (Sabang / Thamrin)", tag: "Halal • Authentic Padang", price: "$", note: "Reliable, fast & flavorful Padang dishes across central Jakarta." }
                 ]
             },
             "london": {
                 currency: "GBP",
+                timeZone: "Europe/London",
+                langCode: "en-GB",
+                langLabel: "British English",
                 airportCode: "LHR / LGW",
                 airportName: "London Heathrow (LHR) or Gatwick (LGW)",
                 airportTransfer: "Heathrow: 15 mins to Paddington via Heathrow Express or ~45 mins via Elizabeth Line directly to Bond St / Liverpool St. Tap contactless card directly.",
@@ -1162,10 +1383,14 @@
                 busInfo: "London Underground (Tube) & red double-decker buses are 100% cashless — tap any contactless bank card or Apple/Google Pay (daily fare cap applies).",
                 entryChecklist: ["Check UK ETA (Electronic Travel Authorisation) status before flying", "Save EES / Eurostar / Heathrow Express QR passes in Lintas", "Bring a contactless card/phone for Tube & buses"],
                 emergency: "Emergency: 999 • Brunei High Commission in London: +44 7481 270501",
+                phrases: [
+                    { en: "Is the chicken / lamb Halal?", local: "Is the chicken and lamb Halal certified?", phonetic: "Ask at counter — most Edgware Rd & Queensway spots are HMC/Halal" },
+                    { en: "Which Tube line for Paddington?", local: "Which Underground line goes to Paddington?", phonetic: "Use Elizabeth Line, Bakerloo, Circle or District Line" }
+                ],
                 food: [
-                    { name: "Roti King (Euston / Battersea)", tag: "Halal • Malaysian-Singaporean", note: "Famous flaky roti canai, kari laksa & char kway teow." },
-                    { name: "Dishoom (King's Cross / Covent Garden)", tag: "Halal Chicken & Lamb Options", note: "Bombay cafe famous for black daal, ruby chicken & chai." },
-                    { name: "Edgware Road & Bayswater (Queensway)", tag: "Halal Hub • Middle Eastern & Asian", note: "Dozens of Halal Lebanese grills, burger spots & Malaysian cafes." }
+                    { name: "Roti King (Euston / Battersea)", tag: "Halal • Malaysian-Singaporean", price: "$$", note: "Famous flaky roti canai, kari laksa & char kway teow." },
+                    { name: "Dishoom (King's Cross / Covent Garden)", tag: "Halal Chicken & Lamb Options", price: "$$", note: "Bombay cafe famous for black daal, ruby chicken & chai." },
+                    { name: "Edgware Road & Bayswater (Queensway)", tag: "Halal Hub • Middle Eastern & Asian", price: "$$", note: "Dozens of Halal Lebanese grills, burger spots & Malaysian cafes." }
                 ]
             }
         };
@@ -1176,7 +1401,6 @@
             if (DESTINATION_GUIDES[cityOnly]) {
                 return { cityTitle: raw.split(',')[0].trim(), ...DESTINATION_GUIDES[cityOnly] };
             }
-            // Smart fallback for other cities in our quick-tap chips or custom entries
             const currencyGuess =
                 /surabaya|balikpapan|bali|bandung|medan/i.test(raw) ? "IDR" :
                 /ho chi minh|hanoi|da nang/i.test(raw) ? "VND" :
@@ -1191,10 +1415,27 @@
                 /melbourne|sydney|perth/i.test(raw) ? "AUD" :
                 /malaysia|labuan|sandakan|tawau/i.test(raw) ? "MYR" : "USD";
 
+            const tzGuess =
+                /surabaya|bali/i.test(raw) ? "Asia/Makassar" :
+                /balikpapan/i.test(raw) ? "Asia/Makassar" :
+                /ho chi minh|hanoi/i.test(raw) ? "Asia/Ho_Chi_Minh" :
+                /manila/i.test(raw) ? "Asia/Manila" :
+                /taipei/i.test(raw) ? "Asia/Taipei" :
+                /hong kong/i.test(raw) ? "Asia/Hong_Kong" :
+                /beijing|shanghai/i.test(raw) ? "Asia/Shanghai" :
+                /paris/i.test(raw) ? "Europe/Paris" :
+                /istanbul/i.test(raw) ? "Europe/Istanbul" :
+                /dubai/i.test(raw) ? "Asia/Dubai" :
+                /jeddah|makkah|madinah/i.test(raw) ? "Asia/Riyadh" :
+                /melbourne/i.test(raw) ? "Australia/Melbourne" : "Asia/Brunei";
+
             const displayCity = raw || "Your Destination";
             return {
                 cityTitle: displayCity,
                 currency: currencyGuess,
+                timeZone: tzGuess,
+                langCode: "en-US",
+                langLabel: "Traveler English",
                 airportCode: "INTL",
                 airportName: `${displayCity} Nearest Airport`,
                 airportTransfer: "Check terminal express train, airport shuttle bus, or local ride-hailing pick-up zone.",
@@ -1206,10 +1447,28 @@
                     "Download offline Google Maps area for your destination"
                 ],
                 emergency: "Brunei MFA Consular Hotline (24/7): +673 871 6001 / +673 871 6002",
+                phrases: [
+                    { en: "Is this Halal certified?", local: "Is this Halal certified?", phonetic: "Ask before ordering" },
+                    { en: "Please take me to this address", local: "Please take me to this address", phonetic: "Show the Taxi Card below" }
+                ],
                 food: [
-                    { name: `Top Halal & Local Eateries in ${displayCity}`, tag: "Search on Maps", note: "Tap Open in Maps to browse highest-rated Halal & local restaurants nearby." }
+                    { name: `Top Halal & Local Eateries in ${displayCity}`, tag: "Search on Maps", price: "$$", note: "Tap Maps ↗ to browse highest-rated Halal & local restaurants nearby." }
                 ]
             };
+        }
+
+        // =========================================================================
+        // TAP-TO-SPEAK OFFLINE VOICE SYNTHESIZER
+        // =========================================================================
+        function speakPhrase(text, langCode) {
+            try {
+                if (!('speechSynthesis' in window)) return;
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = langCode || 'en-US';
+                utter.rate = 0.92;
+                window.speechSynthesis.speak(utter);
+            } catch (_) {}
         }
 
         // =========================================================================
@@ -1274,8 +1533,15 @@
             const from = document.getElementById('fxFromSelect')?.value || "BND";
             const to = document.getElementById('fxToSelect')?.value || "MYR";
             const outEl = document.getElementById('fxResultText');
-            if (!outEl) return;
+            const heroRateEl = document.getElementById('copilotRateChip');
 
+            if (heroRateEl) {
+                const unitRate = activeFxRates[to] || 1;
+                const unitDec = (to === "KRW" || to === "JPY" || to === "IDR" || to === "VND") ? 0 : 2;
+                heroRateEl.textContent = `💱 1 BND ≈ ${unitRate.toLocaleString(undefined, { minimumFractionDigits: unitDec, maximumFractionDigits: unitDec })} ${to}`;
+            }
+
+            if (!outEl) return;
             if (isNaN(amt) || amt < 0) {
                 outEl.textContent = "—";
                 return;
@@ -1286,6 +1552,13 @@
             const decimals = (to === "KRW" || to === "JPY" || to === "IDR" || to === "VND") ? 0 : 2;
             outEl.textContent = `${converted.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} ${to}`;
         }
+
+        document.querySelectorAll('.fx-preset-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.getElementById('fxAmountInput').value = btn.dataset.fxPreset || "100";
+                recalcCurrency();
+            });
+        });
 
         document.getElementById('fxAmountInput').addEventListener('input', recalcCurrency);
         document.getElementById('fxFromSelect').addEventListener('change', recalcCurrency);
@@ -1299,8 +1572,47 @@
             recalcCurrency();
         });
 
+        // Quick-jump chips inside City Co-Pilot
+        document.querySelectorAll('[data-jump]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const target = document.getElementById(btn.dataset.jump);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        let copilotClockTimer = null;
+
         function renderTripGuideForTrip(trip) {
             const guide = getDestinationGuide(trip.location || trip.name);
+            const timeline = getTripTimeline(trip);
+
+            document.getElementById('copilotBadgePill').textContent = guide.airportCode;
+            document.getElementById('copilotHeroCity').textContent = guide.cityTitle;
+            document.getElementById('copilotHeroSub').textContent = trip.weatherSummary
+                ? `Forecast ${trip.weatherSummary} • Currency ${guide.currency} • ${guide.langLabel}`
+                : `Currency ${guide.currency} • ${guide.langLabel} • Offline Ready`;
+            document.getElementById('copilotStatusChip').textContent = `📅 ${timeline.statusLabel}`;
+
+            const updateDestinationClock = () => {
+                const clockEl = document.getElementById('copilotLiveClock');
+                if (!clockEl) return;
+                try {
+                    clockEl.textContent = new Date().toLocaleTimeString([], {
+                        timeZone: guide.timeZone,
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                } catch (_) {
+                    clockEl.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+            };
+            updateDestinationClock();
+            if (copilotClockTimer) clearInterval(copilotClockTimer);
+            copilotClockTimer = setInterval(updateDestinationClock, 15000);
+
             populateCurrencyDropdowns(guide.currency);
             initCurrencyRates();
 
@@ -1312,12 +1624,12 @@
             document.getElementById('guideTransitMapLink').href = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
             document.getElementById('guideTransitBody').innerHTML = `
-                <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl p-3">
-                    <span class="font-bold text-sky-300 block mb-0.5">⛴️ Ferry &amp; Water Crossing</span>
+                <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-2xl p-3">
+                    <span class="font-extrabold text-sky-300 block mb-0.5">⛴️ Ferry &amp; Water Crossing</span>
                     <p style="color: #cbd5e1;" class="leading-relaxed">${escapeHtml(guide.ferryInfo)}</p>
                 </div>
-                <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl p-3">
-                    <span class="font-bold text-emerald-300 block mb-0.5">🚌 Public Bus, Rail &amp; Ride-Hailing</span>
+                <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-2xl p-3">
+                    <span class="font-extrabold text-emerald-300 block mb-0.5">🚌 Public Bus, Rail &amp; Ride-Hailing</span>
                     <p style="color: #cbd5e1;" class="leading-relaxed">${escapeHtml(guide.busInfo)}</p>
                 </div>
             `;
@@ -1326,36 +1638,64 @@
             foodEl.innerHTML = guide.food.map((spot) => {
                 const q = encodeURIComponent(`${spot.name} ${guide.cityTitle}`);
                 return `
-                    <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl p-3 flex items-start justify-between gap-2.5">
+                    <div style="background-color: #0f172a; border: 1px solid rgba(52, 211, 153, 0.25);" class="rounded-2xl p-3 flex items-start justify-between gap-2.5">
                         <div class="overflow-hidden">
-                            <span class="inline-block text-[10px] font-bold text-emerald-300 mb-0.5">${escapeHtml(spot.tag)}</span>
-                            <h4 class="text-xs font-bold text-white truncate">${escapeHtml(spot.name)}</h4>
-                            <p style="color: #94a3b8;" class="text-[11px] mt-0.5 leading-snug">${escapeHtml(spot.note)}</p>
+                            <div class="flex items-center gap-1.5 mb-0.5">
+                                <span class="text-[10px] font-extrabold text-emerald-300">${escapeHtml(spot.tag)}</span>
+                                ${spot.price ? `<span class="text-[10px] font-bold text-amber-300">• ${escapeHtml(spot.price)}</span>` : ''}
+                            </div>
+                            <h4 class="text-xs font-extrabold text-white truncate">${escapeHtml(spot.name)}</h4>
+                            <p style="color: #cbd5e1;" class="text-[11px] mt-0.5 leading-snug">${escapeHtml(spot.note)}</p>
                         </div>
                         <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener noreferrer"
-                           class="shrink-0 px-2.5 py-1.5 rounded-lg bg-blue-600/20 border border-blue-500/35 text-blue-300 text-[11px] font-bold">
+                           class="shrink-0 promo-cta-btn px-3 py-2 rounded-xl text-[11px] font-extrabold">
                             Maps ↗
                         </a>
                     </div>
                 `;
             }).join('');
 
-            // Per-trip saved checklist
+            document.getElementById('phraseLangBadge').textContent = guide.langLabel;
+            const phrasesEl = document.getElementById('guidePhrasesList');
+            phrasesEl.innerHTML = (guide.phrases || []).map((p, idx) => `
+                <div style="background-color: #0f172a; border: 1px solid rgba(192, 132, 252, 0.25);" class="rounded-2xl p-3 flex items-center justify-between gap-3">
+                    <div class="overflow-hidden">
+                        <p style="color: #94a3b8;" class="text-[11px] font-semibold">${escapeHtml(p.en)}</p>
+                        <p class="text-sm font-extrabold text-white mt-0.5 truncate">${escapeHtml(p.local)}</p>
+                        <p class="text-[11px] text-purple-300 mt-0.5 truncate">${escapeHtml(p.phonetic)}</p>
+                    </div>
+                    <button type="button" data-speak-idx="${idx}" class="speak-phrase-btn shrink-0 px-3 py-2 rounded-xl bg-purple-500/20 border border-purple-400/35 text-purple-200 text-xs font-extrabold active:scale-90">
+                        🔊 Speak
+                    </button>
+                </div>
+            `).join('');
+
+            phrasesEl.querySelectorAll('.speak-phrase-btn').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const item = guide.phrases[Number(btn.dataset.speakIdx)];
+                    if (item) speakPhrase(item.local, guide.langCode);
+                });
+            });
+
             const checkStorageKey = `lintas_checklist_${trip.id}`;
             let savedChecks = {};
             try { savedChecks = JSON.parse(localStorage.getItem(checkStorageKey) || "{}"); } catch (_) {}
 
             const checklistEl = document.getElementById('guideChecklistItems');
             const progressEl = document.getElementById('checklistProgressText');
+            const progressBarEl = document.getElementById('checklistProgressBar');
 
             function updateChecklistProgress() {
                 const total = guide.entryChecklist.length;
                 const done = guide.entryChecklist.filter((_, idx) => !!savedChecks[idx]).length;
-                progressEl.textContent = `${done}/${total} Done`;
+                const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+                progressEl.textContent = pct === 100 ? "100% Border Ready ✓" : `${done}/${total} Done`;
+                progressEl.className = pct === 100 ? "text-[11px] font-extrabold text-emerald-400" : "text-[11px] font-extrabold text-sky-400";
+                if (progressBarEl) progressBarEl.style.width = `${pct}%`;
             }
 
             checklistEl.innerHTML = guide.entryChecklist.map((item, idx) => `
-                <label style="background-color: #0f172a; border: 1px solid #334155;" class="flex items-start gap-2.5 p-2.5 rounded-xl cursor-pointer">
+                <label style="background-color: #0f172a; border: 1px solid #334155;" class="flex items-start gap-2.5 p-2.5 rounded-2xl cursor-pointer">
                     <input type="checkbox" data-chk-idx="${idx}" ${savedChecks[idx] ? 'checked' : ''} class="mt-0.5 w-4 h-4 shrink-0 rounded text-blue-600">
                     <span style="color: #e2e8f0;" class="text-xs leading-snug">${escapeHtml(item)}</span>
                 </label>
@@ -1371,7 +1711,6 @@
             });
             updateChecklistProgress();
 
-            // Per-trip saved hotel / driver card
             const hotelStorageKey = `lintas_hotel_${trip.id}`;
             let savedHotel = { name: "", addr: "" };
             try { savedHotel = JSON.parse(localStorage.getItem(hotelStorageKey) || '{"name":"","addr":""}'); } catch (_) {}
@@ -1391,37 +1730,42 @@
             hotelAddrInput.oninput = persistHotel;
 
             document.getElementById('guideEmergencyBox').innerHTML = `
-                <p class="font-semibold text-white">${escapeHtml(guide.emergency)}</p>
+                <p class="font-bold text-white">${escapeHtml(guide.emergency)}</p>
                 <p style="color: #94a3b8;" class="text-[11px]">Brunei MFA 24-Hr Ops Room: +673 238 3374 / +673 871 6001</p>
             `;
         }
 
-        // Trip Detail Sub-Tab Switcher
-        document.getElementById('tabPassesBtn').addEventListener('click', () => {
-            document.getElementById('tripPassesTab').classList.remove('hide');
-            document.getElementById('tripGuideTab').classList.add('hide');
-            document.getElementById('tabPassesBtn').className = 'py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white transition-all';
-            document.getElementById('tabGuideBtn').className = 'py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all';
-        });
+        function setTripDetailTab(mode) {
+            const passesTab = document.getElementById('tripPassesTab');
+            const guideTab = document.getElementById('tripGuideTab');
+            const passesBtn = document.getElementById('tabPassesBtn');
+            const guideBtn = document.getElementById('tabGuideBtn');
 
-        document.getElementById('tabGuideBtn').addEventListener('click', () => {
-            document.getElementById('tripGuideTab').classList.remove('hide');
-            document.getElementById('tripPassesTab').classList.add('hide');
-            document.getElementById('tabGuideBtn').className = 'py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white transition-all';
-            document.getElementById('tabPassesBtn').className = 'py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all';
-        });
+            if (mode === 'copilot') {
+                guideTab.classList.remove('hide');
+                passesTab.classList.add('hide');
+                guideBtn.className = 'copilot-tab-active py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5';
+                passesBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5';
+            } else {
+                passesTab.classList.remove('hide');
+                guideTab.classList.add('hide');
+                passesBtn.className = 'wallet-tab-active py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5';
+                guideBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5';
+            }
+        }
 
-        // Flight Status Tracker Button
+        document.getElementById('tabPassesBtn').addEventListener('click', () => setTripDetailTab('wallet'));
+        document.getElementById('tabGuideBtn').addEventListener('click', () => setTripDetailTab('copilot'));
+
         document.getElementById('checkFlightBtn').addEventListener('click', () => {
             const code = document.getElementById('flightCodeInput').value.trim().toUpperCase().replace(/\s+/g, '');
             const query = code ? `${code} flight status` : `${document.getElementById('guideAirportCode').textContent} flight arrivals departures`;
             window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank', 'noopener,noreferrer');
         });
 
-        // Full-Screen Driver Card Handlers
         document.getElementById('showDriverBtn').addEventListener('click', () => {
             const name = document.getElementById('hotelNameInput').value.trim() || "Hotel / Accommodation";
-            const addr = document.getElementById('hotelAddrInput').value.trim() || "Enter your hotel address in Trip Guide first";
+            const addr = document.getElementById('hotelAddrInput').value.trim() || "Enter your hotel address in City Co-Pilot first";
             document.getElementById('driverHotelName').textContent = name;
             document.getElementById('driverHotelAddr').textContent = addr;
             document.getElementById('driverCardModal').classList.remove('hide');
@@ -1431,7 +1775,7 @@
         });
 
         // =========================================================================
-        // DYNAMIC FIRESTORE AFFILIATE / SPONSOR BANNER (TRIP-AWARE + ROTATING PERKS)
+        // DYNAMIC FIRESTORE AFFILIATE / SPONSOR BANNER
         // =========================================================================
         let bannerLoaded = false;
         let promoTickerTimer = null;
@@ -2478,6 +2822,10 @@
             isAutoLoggingOut = true;
             clearInactivityWatch();
             clearTimeout(arrowHideTimer);
+            if (copilotClockTimer) {
+                clearInterval(copilotClockTimer);
+                copilotClockTimer = null;
+            }
             stopLiveCamera();
             clearSessionActivity();
 
@@ -2907,8 +3255,8 @@
                             <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
                         </div>
                         <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-2.5 flex items-center justify-between text-xs font-bold text-sky-400">
-                            <span>Open Border QRs, Guide &amp; Tools</span>
-                            <span>Open Trip →</span>
+                            <span>Border Wallet &amp; City Co-Pilot</span>
+                            <span>Launch →</span>
                         </div>
                     `;
                     heroCard.onclick = () => openTrip(t);
@@ -3106,6 +3454,10 @@
                     await localDelete("trips", targetTripId);
                 } catch (_) {}
 
+                if (copilotClockTimer) {
+                    clearInterval(copilotClockTimer);
+                    copilotClockTimer = null;
+                }
                 currentTripId = null;
                 showScreen('dashboard');
                 await loadTrips();
@@ -3129,12 +3481,7 @@
             if (trip.weatherSummary) parts.push(trip.weatherSummary);
             document.getElementById('tripDetailMeta').textContent = parts.join(' • ');
 
-            // Default to Passes & QRs tab on open, and pre-populate the Destination Guide
-            document.getElementById('tripPassesTab').classList.remove('hide');
-            document.getElementById('tripGuideTab').classList.add('hide');
-            document.getElementById('tabPassesBtn').className = 'py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white transition-all';
-            document.getElementById('tabGuideBtn').className = 'py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all';
-
+            setTripDetailTab('wallet');
             renderTripGuideForTrip(trip);
             showScreen('tripDetail');
             await loadDocuments(trip.id);
@@ -3149,6 +3496,9 @@
             const docs = await fetchTripDocs(tripId, activeUser.uid);
             docs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             currentTripDocs = docs;
+
+            const walletPill = document.getElementById('walletCountPill');
+            if (walletPill) walletPill.textContent = String(docs.length);
 
             if (docs.length === 0) {
                 document.getElementById('emptyDocsState').classList.remove('hide');
@@ -3582,6 +3932,10 @@
             modals.newDoc.classList.add('hide');
         };
         document.getElementById('backToTripsBtn').onclick = () => {
+            if (copilotClockTimer) {
+                clearInterval(copilotClockTimer);
+                copilotClockTimer = null;
+            }
             currentTripId = null;
             showScreen('dashboard');
             loadTrips();
