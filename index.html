@@ -112,6 +112,38 @@
             border-color: #38bdf8 !important;
             outline: none;
         }
+        .dest-chip-strip {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .dest-chip-strip::-webkit-scrollbar {
+            display: none;
+        }
+        .dest-chip {
+            flex-shrink: 0;
+            background-color: #0f172a;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            border-radius: 999px;
+            padding: 5px 11px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .dest-chip:active {
+            transform: scale(0.95);
+        }
+        .dest-chip.active {
+            background-color: rgba(56, 189, 248, 0.18);
+            color: #7dd3fc;
+            border-color: #38bdf8;
+        }
         .upload-box {
             background-color: #0f172a;
             border: 1.5px dashed #334155;
@@ -393,6 +425,7 @@
                 <div id="tripsContainer" class="space-y-3"></div>
             </div>
 
+            <!-- FIRESTORE-POWERED TRAVEL PARTNER / AFFILIATE BANNER SLOT -->
             <div id="adBannerSlot" class="mt-8"></div>
 
             <p style="color: #475569;" class="text-[11px] text-center leading-relaxed mt-6 px-4">
@@ -552,7 +585,7 @@
         </div>
     </div>
 
-    <!-- NEW TRIP MODAL (WITH START DATE & END DATE PICKERS) -->
+    <!-- NEW TRIP MODAL (WITH QUICK-TAP DESTINATION CHIPS + START/END DATE PICKERS) -->
     <div id="newTripModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5 overflow-y-auto">
         <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
@@ -561,10 +594,36 @@
             </div>
 
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Trip Title *</label>
-            <input type="text" id="tripNameInput" placeholder="e.g., Weekend Getaway, Business Trip" class="input-dark w-full rounded-xl px-4 py-3 mb-3.5 text-sm">
+            <input type="text" id="tripNameInput" placeholder="e.g., Weekend Getaway, Seoul Holiday" class="input-dark w-full rounded-xl px-4 py-3 mb-3.5 text-sm">
 
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Destination City (Optional)</label>
-            <input type="text" id="tripLocationInput" placeholder="e.g., Miri, Kota Kinabalu, Kuala Lumpur" class="input-dark w-full rounded-xl px-4 py-3 mb-3.5 text-sm">
+            <input type="text" id="tripLocationInput" placeholder="Tap a city below or type any destination" class="input-dark w-full rounded-xl px-4 py-3 mb-2 text-sm">
+
+            <!-- QUICK-TAP POPULAR DESTINATIONS STRIP -->
+            <div id="quickDestChips" class="dest-chip-strip mb-3.5" aria-label="Popular destinations">
+                <button type="button" class="dest-chip" data-dest="Miri">🇲🇾 Miri</button>
+                <button type="button" class="dest-chip" data-dest="Kota Kinabalu">🇲🇾 Kota Kinabalu</button>
+                <button type="button" class="dest-chip" data-dest="Kuala Lumpur">🇲🇾 Kuala Lumpur</button>
+                <button type="button" class="dest-chip" data-dest="Kuching">🇲🇾 Kuching</button>
+                <button type="button" class="dest-chip" data-dest="Singapore">🇸🇬 Singapore</button>
+                <button type="button" class="dest-chip" data-dest="Seoul">🇰🇷 Seoul</button>
+                <button type="button" class="dest-chip" data-dest="Tokyo">🇯🇵 Tokyo</button>
+                <button type="button" class="dest-chip" data-dest="Bangkok">🇹🇭 Bangkok</button>
+                <button type="button" class="dest-chip" data-dest="Jakarta">🇮🇩 Jakarta</button>
+                <button type="button" class="dest-chip" data-dest="Surabaya">🇮🇩 Surabaya</button>
+                <button type="button" class="dest-chip" data-dest="Balikpapan">🇮🇩 Balikpapan</button>
+                <button type="button" class="dest-chip" data-dest="Ho Chi Minh City">🇻🇳 Ho Chi Minh</button>
+                <button type="button" class="dest-chip" data-dest="Manila">🇵🇭 Manila</button>
+                <button type="button" class="dest-chip" data-dest="Taipei">🇹🇼 Taipei</button>
+                <button type="button" class="dest-chip" data-dest="Hong Kong">🇭🇰 Hong Kong</button>
+                <button type="button" class="dest-chip" data-dest="Beijing">🇨🇳 Beijing</button>
+                <button type="button" class="dest-chip" data-dest="London">🇬🇧 London</button>
+                <button type="button" class="dest-chip" data-dest="Paris">🇫🇷 Paris</button>
+                <button type="button" class="dest-chip" data-dest="Istanbul">🇹🇷 Istanbul</button>
+                <button type="button" class="dest-chip" data-dest="Dubai">🇦🇪 Dubai</button>
+                <button type="button" class="dest-chip" data-dest="Jeddah">🇸🇦 Jeddah</button>
+                <button type="button" class="dest-chip" data-dest="Melbourne">🇦🇺 Melbourne</button>
+            </div>
 
             <div class="grid grid-cols-2 gap-2.5 mb-3">
                 <div>
@@ -722,7 +781,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, signInAnonymously, linkWithPopup, GoogleAuthProvider, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { initializeFirestore, memoryLocalCache, persistentLocalCache, collection, doc, setDoc, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeFirestore, memoryLocalCache, persistentLocalCache, collection, doc, setDoc, getDoc, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDiOHlvtLaEoB8JpBFZvQQREKpxg97xcuA",
@@ -767,6 +826,66 @@
             const lastTs = Number(localStorage.getItem(LAST_ACTIVE_KEY) || 0);
             if (!lastTs) return false;
             return (Date.now() - lastTs) < SESSION_GRACE_MS;
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // =========================================================================
+        // DYNAMIC FIRESTORE AFFILIATE / SPONSOR BANNER (0 NETLIFY CREDITS TO UPDATE)
+        // =========================================================================
+        let bannerLoaded = false;
+        async function loadPromoBanner() {
+            if (bannerLoaded) return;
+            const slot = document.getElementById('adBannerSlot');
+            if (!slot) return;
+
+            try {
+                const snap = await withTimeout(getDoc(doc(dbCloud, "config", "banner")), 6000);
+                if (!snap.exists()) return;
+                const data = snap.data();
+                if (!data || data.active !== true || !data.linkUrl) return;
+
+                const cleanUrl = String(data.linkUrl).trim();
+                if (!/^https:\/\//i.test(cleanUrl)) return;
+
+                const badgeText = escapeHtml(data.badge || "Travel Partner • eSIM");
+                const titleText = escapeHtml(data.title || "Stay Connected Worldwide");
+                const subtitleText = escapeHtml(data.subtitle || "Instant travel eSIMs for SEA, South Korea, Japan, Europe, UK & Australia — ready in 1 minute.");
+                const ctaText = escapeHtml(data.ctaText || "Get eSIM");
+
+                bannerLoaded = true;
+                slot.innerHTML = `
+                    <a href="${escapeHtml(cleanUrl)}" target="_blank" rel="noopener noreferrer sponsored"
+                       style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(56, 189, 248, 0.32);"
+                       class="block rounded-2xl p-4 shadow-lg active:scale-[0.99] transition-transform text-left">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="overflow-hidden">
+                                <span class="inline-block text-[10px] font-bold uppercase tracking-wider text-sky-400 mb-1">
+                                    ${badgeText}
+                                </span>
+                                <h4 class="text-sm font-bold text-white truncate">
+                                    ${titleText}
+                                </h4>
+                                <p style="color: #94a3b8;" class="text-xs mt-0.5 leading-snug">
+                                    ${subtitleText}
+                                </p>
+                            </div>
+                            <span class="shrink-0 btn-primary text-xs font-bold px-3.5 py-2.5 rounded-xl shadow">
+                                ${ctaText}
+                            </span>
+                        </div>
+                    </a>
+                `;
+            } catch (err) {
+                console.warn("Promo banner skipped:", err);
+            }
         }
 
         // =========================================================================
@@ -1673,6 +1792,34 @@
             privacy: document.getElementById('privacyModal')
         };
 
+        // --- QUICK-TAP DESTINATION CHIPS HANDLER ---
+        const tripLocationInputEl = document.getElementById('tripLocationInput');
+        const tripNameInputEl = document.getElementById('tripNameInput');
+        const destChipButtons = document.querySelectorAll('#quickDestChips .dest-chip');
+
+        function syncDestChipSelection(val) {
+            const clean = (val || '').trim().toLowerCase();
+            destChipButtons.forEach((chip) => {
+                const chipDest = (chip.dataset.dest || '').toLowerCase();
+                chip.classList.toggle('active', clean !== '' && clean === chipDest);
+            });
+        }
+
+        destChipButtons.forEach((chip) => {
+            chip.addEventListener('click', () => {
+                const dest = chip.dataset.dest || '';
+                tripLocationInputEl.value = dest;
+                syncDestChipSelection(dest);
+                if (!tripNameInputEl.value.trim()) {
+                    tripNameInputEl.placeholder = `e.g., ${dest} Trip`;
+                }
+            });
+        });
+
+        tripLocationInputEl.addEventListener('input', (e) => {
+            syncDestChipSelection(e.target.value);
+        });
+
         // --- PDPO 15-MINUTE GRACE / INACTIVITY AUTO-LOCK CONTROLLER ---
         function clearInactivityWatch() {
             if (inactivityTimer) {
@@ -1766,6 +1913,7 @@
             await updateBiometricUI();
             cleanupExpiredItems(user.uid);
             await loadTrips();
+            loadPromoBanner();
 
             // Optional biometric registration prompt after Google Sign-In
             if (offerBiometricRegistration && !user.isAnonymous) {
@@ -2046,6 +2194,8 @@
             btn.textContent = "...";
             btn.disabled = true;
             await loadTrips();
+            bannerLoaded = false;
+            loadPromoBanner();
             btn.textContent = "↻";
             btn.disabled = false;
         });
@@ -2107,8 +2257,8 @@
                     heroCard.innerHTML = `
                         <div class="flex items-start justify-between gap-2 mb-3">
                             <div class="overflow-hidden">
-                                <h3 class="font-bold text-lg text-white truncate">${t.name}</h3>
-                                <p class="text-xs text-slate-300 truncate mt-0.5">${t.location ? `📍 ${t.location}` : '🌍 Personal Travel Folder'}</p>
+                                <h3 class="font-bold text-lg text-white truncate">${escapeHtml(t.name)}</h3>
+                                <p class="text-xs text-slate-300 truncate mt-0.5">${t.location ? `📍 ${escapeHtml(t.location)}` : '🌍 Personal Travel Folder'}</p>
                             </div>
                             <span style="${tl.badgeStyle}" class="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full">
                                 ${tl.statusLabel}
@@ -2182,8 +2332,8 @@
                     el.innerHTML = `
                         <div class="flex items-start justify-between gap-2">
                             <div class="overflow-hidden">
-                                <h3 class="font-bold text-base text-white truncate">${trip.name}</h3>
-                                <p id="${metaElId}" class="${metaParts.length > 0 ? '' : 'hide'} text-xs text-sky-300 font-medium mt-0.5 truncate">${metaParts.join(' • ')}</p>
+                                <h3 class="font-bold text-base text-white truncate">${escapeHtml(trip.name)}</h3>
+                                <p id="${metaElId}" class="${metaParts.length > 0 ? '' : 'hide'} text-xs text-sky-300 font-medium mt-0.5 truncate">${escapeHtml(metaParts.join(' • '))}</p>
                             </div>
                             <span style="${timeline.badgeStyle}" class="shrink-0 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
                                 ${timeline.statusLabel}
@@ -2279,7 +2429,9 @@
                 });
 
                 document.getElementById('tripNameInput').value = '';
+                document.getElementById('tripNameInput').placeholder = 'e.g., Weekend Getaway, Seoul Holiday';
                 document.getElementById('tripLocationInput').value = '';
+                syncDestChipSelection('');
                 document.getElementById('tripStartDateInput').value = '';
                 document.getElementById('tripEndDateInput').value = '';
                 modals.newTrip.classList.add('hide');
@@ -2369,7 +2521,7 @@
                             <span style="background: rgba(15,23,42,0.85);" class="absolute bottom-2 right-2 text-[10px] font-semibold text-white px-2 py-0.5 rounded-md">Tap to view</span>
                         </div>
                         <div class="p-3">
-                            <h4 class="font-bold text-sm text-white truncate">${d.name}</h4>
+                            <h4 class="font-bold text-sm text-white truncate">${escapeHtml(d.name)}</h4>
                         </div>
                     `;
                     el.onclick = () => openGalleryAt(idx);
