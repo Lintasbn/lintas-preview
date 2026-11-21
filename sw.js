@@ -1,5 +1,5 @@
 // Lintas PWA Service Worker v3.0
-const CACHE_NAME = 'lintas-cache-v5';
+const CACHE_NAME = 'lintas-cache-v6';
 const APP_SHELL = [
   './',
   './index.html',
