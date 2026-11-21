@@ -26,7 +26,6 @@
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Hide bulky scrollbars across mobile & desktop views */
         .no-scrollbar {
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -130,7 +129,7 @@
             color: #ffffff;
             box-shadow: 0 6px 18px -4px rgba(16, 185, 129, 0.55);
         }
-        .wallet-tab-active {
+        .passes-tab-active {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: #ffffff;
             box-shadow: 0 6px 18px -4px rgba(37, 99, 235, 0.55);
@@ -155,7 +154,32 @@
             background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(88, 28, 135, 0.22) 100%);
             border: 1px solid rgba(192, 132, 252, 0.28);
         }
-        /* Minimalist Sponsored Ad Strip — intentionally distinct from trip cards */
+        .info-i-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background-color: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            color: #93c5fd;
+            font-family: Georgia, serif;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 12px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            touch-action: manipulation;
+        }
+        .info-i-btn:hover, .info-i-btn:active {
+            background-color: rgba(56, 189, 248, 0.22);
+            border-color: #38bdf8;
+            color: #ffffff;
+            transform: scale(0.94);
+        }
         .sponsored-strip {
             background: rgba(15, 23, 42, 0.72);
             border: 1px dashed rgba(148, 163, 184, 0.28);
@@ -178,7 +202,6 @@
             color: #ffffff;
             box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.45);
         }
-        /* Interactive Tool Deck Transition */
         @keyframes deckPanelIn {
             0% { opacity: 0; transform: translateY(6px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -206,7 +229,6 @@
             border-color: #38bdf8;
             box-shadow: 0 4px 12px -2px rgba(56, 189, 248, 0.35);
         }
-        /* Floating PiP Live Traffic Window */
         .pip-traffic-window {
             position: fixed;
             bottom: 18px;
@@ -219,6 +241,20 @@
             border: 1px solid rgba(56, 189, 248, 0.5);
             border-radius: 24px;
             box-shadow: 0 24px 60px -10px rgba(2, 6, 23, 0.92), 0 0 0 1px rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+        }
+        .pip-info-window {
+            position: fixed;
+            bottom: 18px;
+            right: 16px;
+            left: 16px;
+            max-width: 420px;
+            margin: 0 auto;
+            z-index: 10007;
+            background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(56, 189, 248, 0.55);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px -10px rgba(2, 6, 23, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.08);
             overflow: hidden;
         }
         .modal-card {
@@ -368,12 +404,22 @@
         .gallery-slide-anim {
             animation: slideFade 0.18s ease-out forwards;
         }
+        @keyframes micPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+        }
+        .mic-recording {
+            background-color: #dc2626 !important;
+            color: #ffffff !important;
+            border-color: #f87171 !important;
+            animation: micPulse 1.2s infinite;
+        }
         .app-icon {
-            width: 104px;
-            height: 104px;
-            background: linear-gradient(145deg, #38bdf8 0%, #2563eb 55%, #1e3a8a 100%);
-            border-radius: 26px;
-            box-shadow: 0 18px 38px -8px rgba(37, 99, 235, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+            width: 108px;
+            height: 108px;
+            background: linear-gradient(155deg, #1ea7fd 0%, #1d63ed 55%, #1740b5 100%);
+            border-radius: 28px;
+            box-shadow: 0 18px 38px -8px rgba(29, 99, 237, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.38);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -381,22 +427,26 @@
             position: relative;
             overflow: hidden;
         }
-        .app-icon::before {
-            content: '';
-            position: absolute;
-            top: -30%;
-            left: -20%;
-            width: 140%;
-            height: 75%;
-            background: radial-gradient(circle, rgba(255,255,255,0.28) 0%, transparent 70%);
-            pointer-events: none;
-        }
         .icon-svg {
-            width: 72px;
-            height: 72px;
+            width: 84px;
+            height: 84px;
             position: relative;
             z-index: 1;
-            filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.35));
+        }
+        .app-icon-mini {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(155deg, #1ea7fd 0%, #1d63ed 55%, #1740b5 100%);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px -2px rgba(29, 99, 237, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .icon-svg-mini {
+            width: 28px;
+            height: 28px;
         }
     </style>
 </head>
@@ -406,12 +456,12 @@
     <div id="brandSplash" aria-hidden="true">
         <div class="app-icon" style="margin-bottom: 16px;">
             <svg class="icon-svg" viewBox="0 0 120 120">
-                <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="4.5" stroke-opacity="0.95"/>
-                <ellipse cx="60" cy="60" rx="16" ry="34" fill="none" stroke="white" stroke-width="3" stroke-opacity="0.8"/>
-                <line x1="26" y1="60" x2="94" y2="60" stroke="white" stroke-width="3" stroke-opacity="0.8"/>
-                <path d="M28 77 C48 49, 72 41, 96 30" fill="none" stroke="#fde047" stroke-width="6" stroke-linecap="round"/>
-                <path d="M83 27 L97 29 L91 42" fill="none" stroke="#fde047" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="28" cy="77" r="4.5" fill="#fde047"/>
+                <circle cx="60" cy="60" r="42" fill="none" stroke="white" stroke-width="6.5"/>
+                <ellipse cx="60" cy="60" rx="20" ry="42" fill="none" stroke="white" stroke-width="5"/>
+                <line x1="18" y1="60" x2="102" y2="60" stroke="white" stroke-width="5"/>
+                <path d="M26 78 C48 48, 72 38, 97 26" fill="none" stroke="#facc15" stroke-width="8" stroke-linecap="round"/>
+                <path d="M81 21 L99 25 L92 42" fill="none" stroke="#facc15" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="26" cy="78" r="6" fill="#facc15"/>
             </svg>
         </div>
         <span class="brand-wordmark text-4xl select-none">Lintas<span class="brand-wordmark-dot"></span></span>
@@ -424,27 +474,28 @@
 
     <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="flex-1 flex flex-col justify-between p-6 text-center relative" style="z-index: 10;">
-        <div class="pt-1 flex justify-center px-2">
+        <div class="pt-1 flex justify-center items-center gap-1.5 px-2">
             <button id="localContextPill" type="button" style="background-color: rgba(30, 41, 59, 0.72); border: 1px solid rgba(148, 163, 184, 0.18);" class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 px-3.5 py-1.5 rounded-2xl text-[11px] font-medium text-slate-300 hover:text-white hover:border-blue-400/40 transition-colors max-w-full leading-snug" title="Tap to refresh with precise GPS">
                 <span id="localContextText">Loading local weather &amp; Solat...</span>
             </button>
+            <button type="button" data-info-key="weatherSolat" class="info-i-btn" aria-label="Weather and Solat provider info">i</button>
         </div>
 
         <div class="flex-1 flex flex-col items-center justify-center my-4">
             <div class="app-icon">
                 <svg class="icon-svg" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="4.5" stroke-opacity="0.95"/>
-                    <ellipse cx="60" cy="60" rx="16" ry="34" fill="none" stroke="white" stroke-width="3" stroke-opacity="0.8"/>
-                    <line x1="26" y1="60" x2="94" y2="60" stroke="white" stroke-width="3" stroke-opacity="0.8"/>
-                    <path d="M28 77 C48 49, 72 41, 96 30" fill="none" stroke="#fde047" stroke-width="6" stroke-linecap="round"/>
-                    <path d="M83 27 L97 29 L91 42" fill="none" stroke="#fde047" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="28" cy="77" r="4.5" fill="#fde047"/>
+                    <circle cx="60" cy="60" r="42" fill="none" stroke="white" stroke-width="6.5"/>
+                    <ellipse cx="60" cy="60" rx="20" ry="42" fill="none" stroke="white" stroke-width="5"/>
+                    <line x1="18" y1="60" x2="102" y2="60" stroke="white" stroke-width="5"/>
+                    <path d="M26 78 C48 48, 72 38, 97 26" fill="none" stroke="#facc15" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M81 21 L99 25 L92 42" fill="none" stroke="#facc15" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="26" cy="78" r="6" fill="#facc15"/>
                 </svg>
             </div>
             
             <h1 class="brand-wordmark text-5xl sm:text-6xl mb-2 select-none">Lintas<span class="brand-wordmark-dot"></span></h1>
             <p style="color: #e2e8f0;" class="text-base font-semibold tracking-tight mb-1">Breeze through borders.</p>
-            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-xs leading-relaxed">Border QR wallet, live traffic &amp; flight radar, Halal eats &amp; offline currency tools.</p>
+            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-xs leading-relaxed">Offline travel QR passes, live traffic &amp; flight radar, Halal food finder &amp; voice translator.</p>
 
             <!-- Glassmorphic Auth Card -->
             <div class="glass-auth-card w-full max-w-sm rounded-3xl p-5 space-y-3">
@@ -485,7 +536,7 @@
 
         <footer class="max-w-sm mx-auto pt-3 pb-1">
             <p style="color: #64748b;" class="text-[11px] leading-relaxed">
-                Independent personal travel utility — not affiliated with any government agency. You are solely responsible for the documents you store. Passes auto-expire 30 days after your trip end date.
+                Independent personal travel utility — not affiliated with any government agency or third-party data provider. You are solely responsible for the documents you store. Passes auto-expire 30 days after your trip end date.
             </p>
         </footer>
     </div>
@@ -494,13 +545,14 @@
     <div id="dashboardScreen" class="hide flex-1 flex flex-col h-screen overflow-hidden" style="position: relative; z-index: 10;">
         <div class="glass px-4 py-3.5 flex items-center justify-between sticky top-0 gap-2" style="z-index: 20;">
             <div class="flex items-center gap-2.5 shrink-0">
-                <div style="background: linear-gradient(145deg, #38bdf8, #2563eb);" class="w-8 h-8 rounded-lg flex items-center justify-center shadow">
-                    <svg class="w-5 h-5" viewBox="0 0 120 120">
-                        <circle cx="60" cy="60" r="34" fill="none" stroke="white" stroke-width="5.5"/>
-                        <ellipse cx="60" cy="60" rx="16" ry="34" fill="none" stroke="white" stroke-width="3.5" stroke-opacity="0.85"/>
-                        <line x1="26" y1="60" x2="94" y2="60" stroke="white" stroke-width="3.5" stroke-opacity="0.85"/>
-                        <path d="M28 77 C48 49, 72 41, 96 30" fill="none" stroke="#fde047" stroke-width="7.5" stroke-linecap="round"/>
-                        <path d="M82 26 L97 29 L90 43" fill="none" stroke="#fde047" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <div class="app-icon-mini">
+                    <svg class="icon-svg-mini" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="42" fill="none" stroke="white" stroke-width="7"/>
+                        <ellipse cx="60" cy="60" rx="20" ry="42" fill="none" stroke="white" stroke-width="5.5"/>
+                        <line x1="18" y1="60" x2="102" y2="60" stroke="white" stroke-width="5.5"/>
+                        <path d="M26 78 C48 48, 72 38, 97 26" fill="none" stroke="#facc15" stroke-width="8.5" stroke-linecap="round"/>
+                        <path d="M81 21 L99 25 L92 42" fill="none" stroke="#facc15" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="26" cy="78" r="6" fill="#facc15"/>
                     </svg>
                 </div>
                 <div>
@@ -573,11 +625,11 @@
                 <div id="tripsContainer" class="space-y-3"></div>
             </div>
 
-            <!-- MINIMALIST SPONSORED PARTNER AD STRIP (SEPARATE FROM TRIP CARDS) -->
+            <!-- MINIMALIST SPONSORED PARTNER AD STRIP -->
             <div id="adBannerSlot" class="mt-6"></div>
 
             <p style="color: #475569;" class="text-[11px] text-center leading-relaxed mt-5 px-4">
-                Independent personal travel utility • User-uploaded files remain your sole responsibility • Auto-expires 30 days after trip end date.
+                Independent personal travel utility • Information features rely on third-party providers • Auto-expires 30 days after trip end date.
             </p>
         </div>
 
@@ -588,7 +640,7 @@
         </button>
     </div>
 
-    <!-- TRIP DETAIL SCREEN (BORDER WALLET + INTERACTIVE CITY CO-PILOT DECK) -->
+    <!-- TRIP DETAIL SCREEN (PASSES + INTERACTIVE CITY CO-PILOT DECK) -->
     <div id="tripDetailScreen" style="background-color: #0f172a; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
         <div class="glass px-4 py-3 flex items-center justify-between gap-2" style="position: relative; z-index: 50;">
             <div class="flex items-center gap-2 overflow-hidden">
@@ -603,12 +655,12 @@
             <button id="deleteTripBtn" type="button" class="shrink-0 whitespace-nowrap text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30" style="touch-action: manipulation;">Delete Trip</button>
         </div>
 
-        <!-- SINGLE-LINE GLASSMORPHIC DUAL-PILL SWITCHER -->
+        <!-- SINGLE-LINE GLASSMORPHIC DUAL-PILL SWITCHER (PASSES vs CO-PILOT) -->
         <div style="background-color: #0f172a; border-bottom: 1px solid rgba(148, 163, 184, 0.14);" class="px-4 py-2.5 max-w-2xl w-full mx-auto shrink-0">
             <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.18);" class="grid grid-cols-2 p-1 rounded-2xl gap-1.5 shadow-inner">
-                <button id="tabPassesBtn" type="button" class="wallet-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0">
-                    <span class="whitespace-nowrap truncate">🎫 Wallet</span>
-                    <span id="walletCountPill" class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white shrink-0">0</span>
+                <button id="tabPassesBtn" type="button" class="passes-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0">
+                    <span class="whitespace-nowrap truncate">🎫 Passes</span>
+                    <span id="passesCountPill" class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white shrink-0">0</span>
                 </button>
                 <button id="tabGuideBtn" type="button" class="py-2.5 px-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5 min-w-0">
                     <span class="whitespace-nowrap truncate">✨ Co-Pilot</span>
@@ -618,7 +670,7 @@
         </div>
         
         <div id="tripDetailScrollArea" class="flex-1 overflow-y-auto no-scrollbar p-4 pb-24 max-w-2xl w-full mx-auto">
-            <!-- TAB 1: BORDER WALLET (PASSES & QRs) -->
+            <!-- TAB 1: PASSES & QRs -->
             <div id="tripPassesTab">
                 <button id="addDocTopBtn" type="button" class="w-full btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
                     + Add QR Pass / Document
@@ -631,7 +683,7 @@
                 <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- TAB 2: INTERACTIVE CITY CO-PILOT DECK (NO LONG SCROLLING) -->
+            <!-- TAB 2: INTERACTIVE CITY CO-PILOT DECK -->
             <div id="tripGuideTab" class="hide space-y-3.5">
                 <!-- COMPACT DESTINATION COCKPIT + INTERACTIVE TOOL DECK TABS -->
                 <div class="copilot-hero-card rounded-3xl p-4 shadow-xl">
@@ -640,6 +692,7 @@
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                                 <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">City Co-Pilot</span>
+                                <button type="button" data-info-key="generalCopilot" class="info-i-btn" aria-label="City Co-Pilot disclaimer">i</button>
                             </div>
                             <h3 id="copilotHeroCity" class="text-xl font-black text-white leading-tight truncate">Destination</h3>
                             <p id="copilotHeroSub" style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">Live local time &amp; border intelligence</p>
@@ -661,13 +714,13 @@
                         </span>
                     </div>
 
-                    <!-- INTERACTIVE TOOL DECK SELECTOR (SWITCHES ACTIVE CARD WITHOUT LONG SCROLL) -->
+                    <!-- INTERACTIVE TOOL DECK SELECTOR -->
                     <div class="dest-chip-strip mt-3 pt-3" style="border-top: 1px solid rgba(148, 163, 184, 0.16);">
                         <button id="deckTabRadar" type="button" data-deck="secRadar" class="tool-tab-chip active">🚦 Border Traffic</button>
                         <button type="button" data-deck="secFx" class="tool-tab-chip">💱 Money</button>
                         <button type="button" data-deck="secFood" class="tool-tab-chip">🍜 Halal Eats</button>
+                        <button type="button" data-deck="secPhrases" class="tool-tab-chip">🗣️ Translator</button>
                         <button type="button" data-deck="secTransit" class="tool-tab-chip">⛴️ Ferry &amp; Bus</button>
-                        <button type="button" data-deck="secPhrases" class="tool-tab-chip">🗣️ Speak Local</button>
                         <button type="button" data-deck="secChecklist" class="tool-tab-chip">✅ Checklist</button>
                         <button type="button" data-deck="secDriver" class="tool-tab-chip">🚕 Taxi &amp; SOS</button>
                     </div>
@@ -675,19 +728,18 @@
 
                 <!-- DECK PANEL 1: LIVE LAND BORDER TRAFFIC (WITH FLOATING PiP PREVIEW) OR FLIGHT RADAR -->
                 <div id="secRadar" class="copilot-deck-panel deck-panel-anim">
-                    <!-- DRIVE / LAND BORDER TRAFFIC CARD -->
                     <div id="driveBorderCard" class="card-border-traffic rounded-3xl p-4 shadow-lg">
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="text-base shrink-0">🚦</span>
                                 <h3 class="text-sm font-extrabold text-white truncate">Live Border Traffic &amp; CIQ</h3>
+                                <button type="button" data-info-key="borderTraffic" class="info-i-btn" aria-label="Traffic provider info">i</button>
                             </div>
                             <span id="borderPostBadge" class="shrink-0 whitespace-nowrap text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/35">CIQ LIVE</span>
                         </div>
                         <p id="borderPostTitle" class="text-xs font-extrabold text-white leading-snug"></p>
                         <p id="borderPostDesc" style="color: #cbd5e1;" class="text-xs mt-1 leading-relaxed"></p>
 
-                        <!-- PiP At-a-Glance Traffic Preview Buttons -->
                         <div class="grid grid-cols-2 gap-2 mt-3.5">
                             <button id="openGooglePipBtn" type="button"
                                class="btn-primary py-2.5 px-3 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
@@ -700,19 +752,18 @@
                             </button>
                         </div>
 
-                        <!-- Direct Full App Redirect Links -->
                         <div class="flex items-center justify-between gap-2 mt-2.5 pt-2.5 text-[11px]" style="border-top: 1px solid rgba(148, 163, 184, 0.14);">
                             <a id="googleTrafficLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-white font-semibold">Full Google Maps ↗</a>
                             <a id="wazeTrafficLink" href="https://waze.com/ul" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-white font-semibold">Full Waze App ↗</a>
                         </div>
                     </div>
 
-                    <!-- FLIGHT & AIRPORT RADAR CARD -->
                     <div id="flightRadarCard" class="hide card-flight-radar rounded-3xl p-4 shadow-lg">
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="text-base shrink-0">✈️</span>
                                 <h3 class="text-sm font-extrabold text-white truncate">Flight Radar &amp; Airport</h3>
+                                <button type="button" data-info-key="flightRadar" class="info-i-btn" aria-label="Flight radar provider info">i</button>
                             </div>
                             <span id="guideAirportCode" class="shrink-0 whitespace-nowrap text-[10px] font-black px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/35">AIRPORT</span>
                         </div>
@@ -736,6 +787,7 @@
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">💱</span>
                             <h3 class="text-sm font-extrabold text-white truncate">Market Converter</h3>
+                            <button type="button" data-info-key="currencyFx" class="info-i-btn" aria-label="Currency rate provider info">i</button>
                         </div>
                         <span id="fxRateBadge" class="shrink-0 whitespace-nowrap text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Offline Ready</span>
                     </div>
@@ -771,24 +823,88 @@
                     </p>
                 </div>
 
-                <!-- DECK PANEL 3: RECOMMENDED SPOTS TO EAT -->
+                <!-- DECK PANEL 3: IN-APP HALAL FOOD SEARCH & LIVE MAP PREVIEW -->
                 <div id="secFood" class="hide copilot-deck-panel deck-panel-anim card-food rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🍜</span>
-                            <h3 class="text-sm font-extrabold text-white truncate">Recommended Spots to Eat</h3>
+                            <h3 class="text-sm font-extrabold text-white truncate">Halal Food Finder</h3>
+                            <button type="button" data-info-key="halalFood" class="info-i-btn" aria-label="Halal food provider info">i</button>
                         </div>
-                        <span class="shrink-0 whitespace-nowrap text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">Halal &amp; Local</span>
+                        <span class="shrink-0 whitespace-nowrap text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">In-App Search</span>
                     </div>
+
+                    <div class="flex gap-2 mb-2.5">
+                        <input type="text" id="halalSearchInput" placeholder="Search Halal food, dish or eatery..." class="input-dark flex-1 rounded-xl px-3 py-2 text-xs">
+                        <button id="halalSearchBtn" type="button" class="promo-cta-btn px-3.5 py-2 rounded-xl text-xs font-extrabold shrink-0 whitespace-nowrap">Find</button>
+                    </div>
+
+                    <div class="dest-chip-strip mb-3">
+                        <button type="button" data-halal-tag="all" class="halal-filter-chip dest-chip active">All Curated</button>
+                        <button type="button" data-halal-tag="seafood" class="halal-filter-chip dest-chip">🦐 Seafood</button>
+                        <button type="button" data-halal-tag="ramen" class="halal-filter-chip dest-chip">🍜 Ramen / Noodles</button>
+                        <button type="button" data-halal-tag="nasi" class="halal-filter-chip dest-chip">🍛 Rice / Local</button>
+                        <button type="button" data-halal-tag="bbq" class="halal-filter-chip dest-chip">🥩 Grill / BBQ</button>
+                    </div>
+
+                    <div id="inAppFoodMapBox" class="hide mb-3 rounded-2xl overflow-hidden border border-emerald-500/40 bg-slate-950">
+                        <div class="px-3 py-2 flex items-center justify-between gap-2 bg-slate-900 border-b border-slate-800">
+                            <span id="inAppFoodMapTitle" class="text-[11px] font-extrabold text-emerald-300 truncate">Halal Map Results</span>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <a id="inAppFoodMapExtLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="text-[10px] font-bold text-sky-400 whitespace-nowrap">Full Maps ↗</a>
+                                <button id="closeFoodMapBtn" type="button" class="text-xs font-bold text-slate-400 hover:text-white px-1">✕</button>
+                            </div>
+                        </div>
+                        <iframe id="inAppFoodMapIframe" src="" class="w-full h-48 border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Halal Eatery Map"></iframe>
+                    </div>
+
                     <div id="guideFoodList" class="space-y-2.5"></div>
                 </div>
 
-                <!-- DECK PANEL 4: LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
+                <!-- DECK PANEL 4: IN-APP LIVE TEXT & VOICE TRANSLATOR + PHRASES -->
+                <div id="secPhrases" class="hide copilot-deck-panel deck-panel-anim card-phrase rounded-3xl p-4 shadow-lg">
+                    <div class="flex items-center justify-between gap-2 mb-2.5">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-base shrink-0">🗣️</span>
+                            <h3 class="text-sm font-extrabold text-white truncate">Live Voice &amp; Text Translator</h3>
+                            <button type="button" data-info-key="translator" class="info-i-btn" aria-label="Translator provider info">i</button>
+                        </div>
+                        <span id="phraseLangBadge" class="shrink-0 whitespace-nowrap text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/35">Live</span>
+                    </div>
+
+                    <div style="background-color: #0f172a; border: 1px solid rgba(192, 132, 252, 0.35);" class="rounded-2xl p-3 mb-3 space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <span style="color: #94a3b8;" class="text-[10px] font-bold uppercase">Translate to <strong id="translatorTargetLabel" class="text-purple-300">Local</strong></span>
+                            <button id="voiceMicBtn" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 border border-purple-400/35 text-[11px] font-extrabold text-purple-200 inline-flex items-center gap-1 active:scale-95">
+                                <span>🎙️</span><span id="voiceMicLabel">Speak</span>
+                            </button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="liveTranslateInput" placeholder="Type or tap Speak (e.g., Where is the train?)" class="input-dark flex-1 rounded-xl px-3 py-2 text-xs">
+                            <button id="liveTranslateBtn" type="button" class="btn-primary px-3 py-2 rounded-xl text-xs font-extrabold shrink-0">Go</button>
+                        </div>
+                        <div id="liveTranslateOutputBox" class="hide pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
+                            <div class="min-w-0 flex-1">
+                                <p id="liveTranslatedText" class="text-sm font-black text-white leading-snug break-words"></p>
+                                <p id="liveTranslatedSub" class="text-[10px] text-purple-300 mt-0.5">Tap Play to speak audio out loud</p>
+                            </div>
+                            <button id="speakLiveTranslatedBtn" type="button" class="shrink-0 px-3 py-2 rounded-xl bg-purple-500/25 border border-purple-400/40 text-purple-200 text-xs font-extrabold inline-flex items-center gap-1 active:scale-90">
+                                <span>🔊</span><span>Play</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p style="color: #94a3b8;" class="text-[10px] font-bold uppercase tracking-wider mb-2">Quick Travel Phrases</p>
+                    <div id="guidePhrasesList" class="space-y-2"></div>
+                </div>
+
+                <!-- DECK PANEL 5: LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
                 <div id="secTransit" class="hide copilot-deck-panel deck-panel-anim card-dark rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">⛴️</span>
                             <h3 class="text-sm font-extrabold text-white truncate">Ferry, Bus &amp; Transit</h3>
+                            <button type="button" data-info-key="transit" class="info-i-btn" aria-label="Transit provider info">i</button>
                         </div>
                         <a id="guideTransitMapLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="shrink-0 whitespace-nowrap text-xs font-extrabold text-sky-400 inline-flex items-center gap-1">
                             <span>Transit Map</span><span>↗</span>
@@ -797,24 +913,13 @@
                     <div id="guideTransitBody" class="space-y-2.5 text-xs"></div>
                 </div>
 
-                <!-- DECK PANEL 5: TAP-TO-SPEAK LOCAL PHRASEBOOK -->
-                <div id="secPhrases" class="hide copilot-deck-panel deck-panel-anim card-phrase rounded-3xl p-4 shadow-lg">
-                    <div class="flex items-center justify-between gap-2 mb-2.5">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <span class="text-base shrink-0">🗣️</span>
-                            <h3 class="text-sm font-extrabold text-white truncate">Local Phrases</h3>
-                        </div>
-                        <span id="phraseLangBadge" class="shrink-0 whitespace-nowrap text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/35">Audio</span>
-                    </div>
-                    <div id="guidePhrasesList" class="space-y-2"></div>
-                </div>
-
                 <!-- DECK PANEL 6: PRE-DEPARTURE BORDER & PACKING CHECKLIST -->
                 <div id="secChecklist" class="hide copilot-deck-panel deck-panel-anim card-dark rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">✅</span>
                             <h3 class="text-sm font-extrabold text-white truncate">Border Checklist</h3>
+                            <button type="button" data-info-key="checklist" class="info-i-btn" aria-label="Border checklist disclaimer">i</button>
                         </div>
                         <span id="checklistProgressText" class="shrink-0 whitespace-nowrap text-[11px] font-extrabold text-sky-400">0/0 Done</span>
                     </div>
@@ -830,6 +935,7 @@
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🚕</span>
                             <h3 class="text-sm font-extrabold text-white truncate">Hotel / Taxi Card</h3>
+                            <button type="button" data-info-key="driverSos" class="info-i-btn" aria-label="Taxi and SOS disclaimer">i</button>
                         </div>
                         <button id="showDriverBtn" type="button" class="shrink-0 whitespace-nowrap text-xs font-extrabold px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 inline-flex items-center gap-1 active:scale-95">
                             <span>Show Driver</span><span>⛶</span>
@@ -844,6 +950,28 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- FLOATING PiP AT-A-GLANCE PROVIDER INFO & DISCLAIMER WINDOW (NO REDIRECT) -->
+    <div id="pipInfoModal" class="hide pip-info-window animate-pop">
+        <div class="px-4 py-3 flex items-center justify-between gap-2 bg-slate-900/90 border-b border-slate-800">
+            <div class="flex items-center gap-2 min-w-0">
+                <span class="w-5 h-5 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-300 text-xs font-serif italic font-bold inline-flex items-center justify-center shrink-0">i</span>
+                <span id="pipInfoTitle" class="text-xs font-extrabold text-white truncate">Data Source &amp; Disclaimer</span>
+            </div>
+            <button id="closePipInfoBtn" type="button" class="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-bold shrink-0">✕</button>
+        </div>
+        <div class="p-4 space-y-2.5 text-left">
+            <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl px-3 py-2 flex items-center justify-between gap-2">
+                <span style="color: #94a3b8;" class="text-[11px] font-semibold">Information Provider</span>
+                <span id="pipInfoProvider" class="text-[11px] font-extrabold text-sky-300 text-right">Third-Party Provider</span>
+            </div>
+            <p id="pipInfoBody" style="color: #cbd5e1;" class="text-xs leading-relaxed"></p>
+            <p style="color: #94a3b8;" class="text-[11px] leading-relaxed border-t border-slate-800 pt-2">
+                <strong>Disclaimer:</strong> Lintas is an independent personal travel utility and is not affiliated with, endorsed by, or responsible for the accuracy, availability, or timeliness of information supplied by third-party providers.
+            </p>
+            <button id="ackPipInfoBtn" type="button" class="w-full btn-primary font-bold py-2.5 rounded-xl text-xs mt-1">Understood</button>
         </div>
     </div>
 
@@ -1144,7 +1272,7 @@
                 </button>
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
-                <p><strong>1. Independence &amp; User Responsibility:</strong> Lintas is an independent personal travel organizer not affiliated with any government or border authority. All uploaded files remain under your sole control and responsibility; Lintas assumes no liability for user-stored content.</p>
+                <p><strong>1. Independence &amp; Third-Party Information Disclaimer:</strong> Lintas is an independent personal travel organizer not affiliated with any government, border authority, or third-party data provider. Live traffic maps, flight statuses, currency rates, weather forecasts, Halal eatery maps, and translations are supplied by external providers (Google Maps, Waze, ExchangeRate-API, Open-Meteo, Aladhan, and MyMemory). Lintas makes no guarantees regarding accuracy or availability and assumes no liability for inaccurate third-party information or user-stored content.</p>
                 <p><strong>2. Storage, Session Grace &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Active sessions remain unlocked for 15 minutes across app closes unless Face ID / Fingerprint protection is enabled (which verifies biometrics on every cold open and after timeout). Tapping Sign Out immediately clears your session and removes biometric access. Trips and passes auto-delete 30 days after your trip end date.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs a multi-layer on-device check before upload and blocks Bruneian or foreign passports and IDs.</p>
@@ -1276,6 +1404,83 @@
         }
 
         // =========================================================================
+        // IN-APP PiP PROVIDER INFO & DISCLAIMER REGISTRY (NO REDIRECTION)
+        // =========================================================================
+        const FEATURE_INFO_REGISTRY = {
+            weatherSolat: {
+                title: "Local Weather & Solat Times",
+                provider: "Open-Meteo & Aladhan Prayer Times API",
+                body: "Weather conditions and daily prayer schedules are fetched dynamically based on approximate city location. Always verify exact local mosque or JAKIM / Kementerian Hal Ehwal Ugama prayer times."
+            },
+            generalCopilot: {
+                title: "City Co-Pilot Travel Intelligence",
+                provider: "External Travel APIs & Curated Guides",
+                body: "City Co-Pilot aggregates travel reference data from third-party mapping, exchange rate, and translation providers to assist trip planning."
+            },
+            borderTraffic: {
+                title: "Live Border Traffic & CIQ",
+                provider: "Google Maps Traffic & Waze Live Map",
+                body: "Live road congestion, traffic layers, and checkpoint routes are streamed directly from Google Maps and Waze. Operating hours and queue times at CIQ checkpoints can change without notice."
+            },
+            flightRadar: {
+                title: "Flight Radar & Airport Info",
+                provider: "Google Flight Status & Airport Guides",
+                body: "Live flight tracking queries public aviation status feeds via Google Search. Always verify boarding gate changes, terminal assignments, and check-in cutoffs directly with your airline."
+            },
+            currencyFx: {
+                title: "Market Currency Converter",
+                provider: "ExchangeRate-API (open.er-api.com)",
+                body: "Exchange rates are indicative mid-market reference rates cached locally for offline convenience. Actual rates at banks, money changers, and card issuers will differ."
+            },
+            halalFood: {
+                title: "Halal Food Finder & Map",
+                provider: "Google Maps & Curated Traveler Picks",
+                body: "Eatery locations, reviews, and map previews are supplied by Google Maps and traveler recommendations. Halal certification status can change—always verify valid Halal signage or certification directly at the premises before dining."
+            },
+            translator: {
+                title: "Live Voice & Text Translator",
+                provider: "MyMemory Translation API & Device Speech",
+                body: "Automated translations and voice pronunciations are provided for everyday travel convenience and may contain contextual inaccuracies."
+            },
+            transit: {
+                title: "Ferry, Bus & Transit Guide",
+                provider: "Google Maps Transit & Operator Summaries",
+                body: "Ferry terminals, rail connections, and local transit card summaries are general reference guides. Always check live schedules and ticket availability with the local transport operator."
+            },
+            checklist: {
+                title: "Border Readiness Checklist",
+                provider: "Official Immigration Portal Summaries",
+                body: "Arrival card and entry reminders (such as MDAC, SGAC, K-ETA, and Visit Japan Web) are provided as general guidance. Always verify current entry rules with official government immigration authorities before travel."
+            },
+            driverSos: {
+                title: "Hotel Card & Diplomatic Hotlines",
+                provider: "User-Entered Address & Public Consular Contacts",
+                body: "Hotel details are stored locally on your device. Emergency and consular phone numbers are public reference contacts—confirm current mission duty numbers on official Ministry of Foreign Affairs websites."
+            }
+        };
+
+        function openProviderInfoPip(key) {
+            const info = FEATURE_INFO_REGISTRY[key] || FEATURE_INFO_REGISTRY.generalCopilot;
+            document.getElementById('pipInfoTitle').textContent = info.title;
+            document.getElementById('pipInfoProvider').textContent = info.provider;
+            document.getElementById('pipInfoBody').textContent = info.body;
+            document.getElementById('pipInfoModal').classList.remove('hide');
+        }
+
+        function closeProviderInfoPip() {
+            document.getElementById('pipInfoModal').classList.add('hide');
+        }
+
+        document.querySelectorAll('[data-info-key]').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openProviderInfoPip(btn.dataset.infoKey);
+            });
+        });
+        document.getElementById('closePipInfoBtn').addEventListener('click', closeProviderInfoPip);
+        document.getElementById('ackPipInfoBtn').addEventListener('click', closeProviderInfoPip);
+
+        // =========================================================================
         // DESTINATION INTELLIGENCE DATABASE (BORDER TRAFFIC, AIRPORT, FERRY, FOOD)
         // =========================================================================
         const DESTINATION_GUIDES = {
@@ -1284,6 +1489,7 @@
                 currency: "MYR",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
+                langShort: "ms",
                 langLabel: "Melayu",
                 borderPost: "Sungai Tujoh CIQ",
                 borderTitle: "Sungai Tujoh ICQS Checkpoint (~35 mins to Miri)",
@@ -1303,9 +1509,9 @@
                     { en: "Please drop me here", local: "Tolong turunkan saya di sini", phonetic: "To-long tu-run-kan sa-ya dee see-nee" }
                 ],
                 food: [
-                    { name: "Selera Rasa Segar (Miri Waterfront)", tag: "Halal • Seafood", price: "$$", note: "Famous grilled ikan bakar, butter prawns & local Sarawak dishes by the river." },
-                    { name: "Nasi Katok & Lalapan Miri Central", tag: "Halal • Budget", price: "$", note: "Crispy ayam penyet & sambal lalapan popular with Brunei weekenders." },
-                    { name: "Muara Restaurant (Jalan North Yu Seng)", tag: "Halal • Borneo", price: "$", note: "Authentic ambuyat, kelupis & traditional Borneo-Malay sets." }
+                    { name: "Selera Rasa Segar (Miri Waterfront)", tag: "Halal • Seafood", cat: "seafood", price: "$$", note: "Famous grilled ikan bakar, butter prawns & local Sarawak dishes by the river." },
+                    { name: "Nasi Katok & Lalapan Miri Central", tag: "Halal • Nasi & Grill", cat: "nasi", price: "$", note: "Crispy ayam penyet & sambal lalapan popular with Brunei weekenders." },
+                    { name: "Muara Restaurant (Jalan North Yu Seng)", tag: "Halal • Borneo Local", cat: "nasi", price: "$", note: "Authentic ambuyat, kelupis & traditional Borneo-Malay sets." }
                 ]
             },
             "limbang": {
@@ -1313,6 +1519,7 @@
                 currency: "MYR",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
+                langShort: "ms",
                 langLabel: "Melayu",
                 borderPost: "Kuala Lurah CIQ",
                 borderTitle: "Kuala Lurah – Tedungan Checkpoint (~40 mins from BSB)",
@@ -1331,8 +1538,8 @@
                     { en: "Thank you very much", local: "Terima kasih banyak", phonetic: "Te-ree-ma ka-sih ba-nyak" }
                 ],
                 food: [
-                    { name: "Tamu Limbang Food Stalls", tag: "Halal • Market", price: "$", note: "Famous soto, mee kolok Halal & traditional Sarawak kuih." },
-                    { name: "Limbang Waterfront Seafood", tag: "Halal • Seafood", price: "$$", note: "Fresh river prawns & grilled fish by Sungai Limbang." }
+                    { name: "Tamu Limbang Food Stalls", tag: "Halal • Noodles & Kuih", cat: "ramen", price: "$", note: "Famous soto, mee kolok Halal & traditional Sarawak kuih." },
+                    { name: "Limbang Waterfront Seafood", tag: "Halal • Seafood", cat: "seafood", price: "$$", note: "Fresh river prawns & grilled fish by Sungai Limbang." }
                 ]
             },
             "lawas": {
@@ -1340,6 +1547,7 @@
                 currency: "MYR",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
+                langShort: "ms",
                 langLabel: "Melayu",
                 borderPost: "Mengkalap CIQ",
                 borderTitle: "Temburong Bridge → Labu / Mengkalap CIQ (~15 mins to Lawas)",
@@ -1357,7 +1565,7 @@
                     { en: "Straight ahead to Sabah", local: "Terus ke Sabah", phonetic: "Te-rus ke Sa-bah" }
                 ],
                 food: [
-                    { name: "Restoran Taj Mahal / Lawas Central", tag: "Halal • Local", price: "$", note: "Tahai smoked fish dishes, roti canai & nasi campur." }
+                    { name: "Restoran Taj Mahal / Lawas Central", tag: "Halal • Nasi & Roti", cat: "nasi", price: "$", note: "Tahai smoked fish dishes, roti canai & nasi campur." }
                 ]
             },
             "kota kinabalu": {
@@ -1365,6 +1573,7 @@
                 currency: "MYR",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
+                langShort: "ms",
                 langLabel: "Sabah",
                 borderPost: "Sindumin CIQ",
                 borderTitle: "SOAS Bridge → Temburong → Lawas → Sindumin CIQ (~4.5–5 hrs drive)",
@@ -1384,9 +1593,9 @@
                     { en: "Thank you very much", local: "Terima kasih banyak", phonetic: "Te-ree-ma ka-sih ba-nyak" }
                 ],
                 food: [
-                    { name: "Welcome Seafood Restaurant (Asia City)", tag: "Halal • Seafood", price: "$$", note: "Live tanks with salted egg crab, wet butter tiger prawns & Sabah veggie." },
-                    { name: "Restoran Sri Melaka (Kampung Air)", tag: "Halal • Nyonya", price: "$$", note: "Classic Sabah-Nyonya dishes, asam pedas & sotong goreng tepung." },
-                    { name: "Todak Waterfront Hawker Stalls", tag: "Halal • Night Market", price: "$", note: "Fresh grilled lobster, stingray & coconut pudding right by the sea." }
+                    { name: "Welcome Seafood Restaurant (Asia City)", tag: "Halal • Seafood", cat: "seafood", price: "$$", note: "Live tanks with salted egg crab, wet butter tiger prawns & Sabah veggie." },
+                    { name: "Restoran Sri Melaka (Kampung Air)", tag: "Halal • Nyonya Rice", cat: "nasi", price: "$$", note: "Classic Sabah-Nyonya dishes, asam pedas & sotong goreng tepung." },
+                    { name: "Todak Waterfront Hawker Stalls", tag: "Halal • Grilled Seafood", cat: "seafood", price: "$", note: "Fresh grilled lobster, stingray & coconut pudding right by the sea." }
                 ]
             },
             "kuala lumpur": {
@@ -1394,6 +1603,7 @@
                 currency: "MYR",
                 timeZone: "Asia/Kuala_Lumpur",
                 langCode: "ms-MY",
+                langShort: "ms",
                 langLabel: "Melayu",
                 borderPost: "KLIA Autogate",
                 borderTitle: "KLIA International Arrival & Expressway Traffic",
@@ -1413,9 +1623,9 @@
                     { en: "Thank you", local: "Terima kasih", phonetic: "Te-ree-ma ka-sih" }
                 ],
                 food: [
-                    { name: "Village Park Restaurant (Damansara Uptown)", tag: "Halal • Nasi Lemak", price: "$", note: "Legendary crispy ayam goreng berempah nasi lemak — arrive before 11 AM." },
-                    { name: "Halab Gate / Damascus (Bukit Bintang)", tag: "Halal • Shawarma", price: "$$", note: "Famous chicken/lamb shawarma & charcoal grills in Bukit Bintang." },
-                    { name: "Sambal Hijau (Sungai Penchala)", tag: "Halal • Kampung", price: "$$", note: "Over 60 traditional Malay dishes, masak lemak & grilled fish." }
+                    { name: "Village Park Restaurant (Damansara Uptown)", tag: "Halal • Nasi Lemak", cat: "nasi", price: "$", note: "Legendary crispy ayam goreng berempah nasi lemak — arrive before 11 AM." },
+                    { name: "Halab Gate / Damascus (Bukit Bintang)", tag: "Halal • Grill & Shawarma", cat: "bbq", price: "$$", note: "Famous chicken/lamb shawarma & charcoal grills in Bukit Bintang." },
+                    { name: "Sambal Hijau (Sungai Penchala)", tag: "Halal • Kampung Rice", cat: "nasi", price: "$$", note: "Over 60 traditional Malay dishes, masak lemak & grilled fish." }
                 ]
             },
             "kuching": {
@@ -1423,6 +1633,7 @@
                 currency: "MYR",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
+                langShort: "ms",
                 langLabel: "Sarawak",
                 borderPost: "Pan Borneo / Kuching",
                 borderTitle: "Pan Borneo Highway & Kuching Route Traffic",
@@ -1441,9 +1652,9 @@
                     { en: "Is this Halal?", local: "Ini Halal?", phonetic: "Ee-nee Ha-lal?" }
                 ],
                 food: [
-                    { name: "Topspot Food Court (Bukit Mata)", tag: "Halal • Seafood", price: "$$", note: "Rooftop seafood institution — order midin belacan, oyster omelette & grilled fish." },
-                    { name: "Mom's Laksa (Jalan Haji Taha)", tag: "Halal • Laksa", price: "$", note: "Rich, aromatic Halal Sarawak Laksa & kolo mee." },
-                    { name: "Mira Cake House (Kampung Boyan)", tag: "Halal • Kek Lapis", price: "$", note: "Take the RM1 river sampan across the Waterfront to sample Sarawak layer cakes." }
+                    { name: "Topspot Food Court (Bukit Mata)", tag: "Halal • Seafood", cat: "seafood", price: "$$", note: "Rooftop seafood institution — order midin belacan, oyster omelette & grilled fish." },
+                    { name: "Mom's Laksa (Jalan Haji Taha)", tag: "Halal • Sarawak Laksa", cat: "ramen", price: "$", note: "Rich, aromatic Halal Sarawak Laksa & kolo mee." },
+                    { name: "Mira Cake House (Kampung Boyan)", tag: "Halal • Kek Lapis", cat: "nasi", price: "$", note: "Take the RM1 river sampan across the Waterfront to sample Sarawak layer cakes." }
                 ]
             },
             "singapore": {
@@ -1451,6 +1662,7 @@
                 currency: "SGD",
                 timeZone: "Asia/Singapore",
                 langCode: "en-SG",
+                langShort: "ms",
                 langLabel: "SG / Malay",
                 borderPost: "Woodlands / Tuas",
                 borderTitle: "Woodlands Causeway & Tuas Second Link Live Traffic",
@@ -1469,9 +1681,9 @@
                     { en: "Where is the nearest MRT?", local: "Di mana stesen MRT terdekat?", phonetic: "Dee ma-na ste-sen MRT ter-de-kat?" }
                 ],
                 food: [
-                    { name: "Zam Zam Restaurant (North Bridge Rd)", tag: "Halal • Murtabak", price: "$", note: "Iconic deer/chicken murtabak & briyani opposite Sultan Mosque." },
-                    { name: "Hajjah Maimunah (Jalan Pisang)", tag: "Halal • Nasi Padang", price: "$$", note: "Michelin Bib Gourmand Nasi Padang, siput sedut & beef rendang." },
-                    { name: "Lau Pa Sat Satay Street (Stalls 7 & 8)", tag: "Halal • Hawker", price: "$", note: "Open-air charcoal satay & king prawns under the city skyline." }
+                    { name: "Zam Zam Restaurant (North Bridge Rd)", tag: "Halal • Murtabak & Briyani", cat: "nasi", price: "$", note: "Iconic deer/chicken murtabak & briyani opposite Sultan Mosque." },
+                    { name: "Hajjah Maimunah (Jalan Pisang)", tag: "Halal • Nasi Padang", cat: "nasi", price: "$$", note: "Michelin Bib Gourmand Nasi Padang, siput sedut & beef rendang." },
+                    { name: "Lau Pa Sat Satay Street (Stalls 7 & 8)", tag: "Halal • Charcoal BBQ", cat: "bbq", price: "$", note: "Open-air charcoal satay & king prawns under the city skyline." }
                 ]
             },
             "seoul": {
@@ -1479,6 +1691,7 @@
                 currency: "KRW",
                 timeZone: "Asia/Seoul",
                 langCode: "ko-KR",
+                langShort: "ko",
                 langLabel: "한국어",
                 borderPost: "ICN Expressway",
                 borderTitle: "Incheon (ICN) → Seoul Expressway & City Traffic",
@@ -1499,9 +1712,9 @@
                     { en: "Thank you", local: "감사합니다", phonetic: "Gam-sa-ham-ni-da" }
                 ],
                 food: [
-                    { name: "Eid Halal Korean Food (Itaewon)", tag: "KMF Halal • Korean", price: "$$", note: "Authentic Halal bulgogi, japchae, samgyetang & tteokbokki near Seoul Central Mosque." },
-                    { name: "Makan Halal Korean Restaurant (Itaewon)", tag: "Halal • Korean", price: "$$", note: "Popular for Korean fried chicken, dakgalbi & beef stew." },
-                    { name: "Busan Jib (Myeongdong)", tag: "Halal • Seafood", price: "$$", note: "Spicy seafood stew, grilled mackerel & ginseng chicken right in Myeongdong." }
+                    { name: "Eid Halal Korean Food (Itaewon)", tag: "KMF Halal • Korean BBQ", cat: "bbq", price: "$$", note: "Authentic Halal bulgogi, japchae, samgyetang & tteokbokki near Seoul Central Mosque." },
+                    { name: "Makan Halal Korean Restaurant (Itaewon)", tag: "Halal • Korean Rice & Grill", cat: "nasi", price: "$$", note: "Popular for Korean fried chicken, dakgalbi & beef stew." },
+                    { name: "Busan Jib (Myeongdong)", tag: "Halal • Seafood Stew", cat: "seafood", price: "$$", note: "Spicy seafood stew, grilled mackerel & ginseng chicken right in Myeongdong." }
                 ]
             },
             "tokyo": {
@@ -1509,6 +1722,7 @@
                 currency: "JPY",
                 timeZone: "Asia/Tokyo",
                 langCode: "ja-JP",
+                langShort: "ja",
                 langLabel: "日本語",
                 borderPost: "Tokyo Corridor",
                 borderTitle: "Tokyo Airport Corridor & Highway Traffic",
@@ -1528,9 +1742,9 @@
                     { en: "Thank you very much", local: "ありがとうございます", phonetic: "A-ri-ga-tou go-za-i-ma-su" }
                 ],
                 food: [
-                    { name: "Halal Ramen Honolu (Ebisu / Asakusa)", tag: "Halal • Ramen", price: "$", note: "Rich chicken paitan ramen & crispy karaage — very popular with Bruneian travelers." },
-                    { name: "Gyumon Halal Yakiniku (Shibuya / Asakusa)", tag: "Halal • Wagyu BBQ", price: "$$$", note: "Charcoal-grilled Halal Japanese Wagyu beef sets." },
-                    { name: "Naritaya Halal Ramen (Asakusa)", tag: "Halal • Ramen", price: "$", note: "Steps from Senso-ji Temple with mazesoba & gyoza." }
+                    { name: "Halal Ramen Honolu (Ebisu / Asakusa)", tag: "Halal • Ramen", cat: "ramen", price: "$", note: "Rich chicken paitan ramen & crispy karaage — very popular with Bruneian travelers." },
+                    { name: "Gyumon Halal Yakiniku (Shibuya / Asakusa)", tag: "Halal • Wagyu BBQ", cat: "bbq", price: "$$$", note: "Charcoal-grilled Halal Japanese Wagyu beef sets." },
+                    { name: "Naritaya Halal Ramen (Asakusa)", tag: "Halal • Ramen", cat: "ramen", price: "$", note: "Steps from Senso-ji Temple with mazesoba & gyoza." }
                 ]
             },
             "bangkok": {
@@ -1538,6 +1752,7 @@
                 currency: "THB",
                 timeZone: "Asia/Bangkok",
                 langCode: "th-TH",
+                langShort: "th",
                 langLabel: "ภาษาไทย",
                 borderPost: "BKK Corridor",
                 borderTitle: "Suvarnabhumi / Don Mueang & Bangkok Live Traffic",
@@ -1557,9 +1772,9 @@
                     { en: "How much is this?", local: "ราคาเท่าไหร่ครับ", phonetic: "Raa-khaa thao-rai khrap?" }
                 ],
                 food: [
-                    { name: "Yana Restaurant (MBK Center, 5th Floor)", tag: "Halal • Thai", price: "$$", note: "Famous tom yum kung, pad thai & mango sticky rice inside MBK Mall." },
-                    { name: "Saman Islam (Chatuchak Weekend Market)", tag: "Halal • Market", price: "$", note: "Legendary beef noodle soup & Thai iced tea inside Section 16." },
-                    { name: "Usman Thai Muslim Food (Sukhumvit Soi 22)", tag: "Halal • Thai", price: "$$", note: "Green curry, massaman beef & papaya salad near Phrom Phong." }
+                    { name: "Yana Restaurant (MBK Center, 5th Floor)", tag: "Halal • Thai Seafood & Rice", cat: "seafood", price: "$$", note: "Famous tom yum kung, pad thai & mango sticky rice inside MBK Mall." },
+                    { name: "Saman Islam (Chatuchak Weekend Market)", tag: "Halal • Beef Noodles", cat: "ramen", price: "$", note: "Legendary beef noodle soup & Thai iced tea inside Section 16." },
+                    { name: "Usman Thai Muslim Food (Sukhumvit Soi 22)", tag: "Halal • Thai Curry & Rice", cat: "nasi", price: "$$", note: "Green curry, massaman beef & papaya salad near Phrom Phong." }
                 ]
             },
             "jakarta": {
@@ -1567,6 +1782,7 @@
                 currency: "IDR",
                 timeZone: "Asia/Jakarta",
                 langCode: "id-ID",
+                langShort: "id",
                 langLabel: "Indonesia",
                 borderPost: "CGK Toll Road",
                 borderTitle: "CGK Toll Road & Central Jakarta Live Traffic",
@@ -1585,9 +1801,9 @@
                     { en: "Please use the meter", local: "Pakai argo ya Pak", phonetic: "Pa-kai ar-go ya Pak" }
                 ],
                 food: [
-                    { name: "Sate Khas Senayan (Multiple Malls)", tag: "Halal • Satay", price: "$$", note: "Signature chicken/lamb satay, soto betawi & tahutelor." },
-                    { name: "Pagi Sore (Menteng / Sudirman)", tag: "Halal • Padang", price: "$$", note: "Premium Minang-Padang feast with rendang & ayam pop." },
-                    { name: "RM Sederhana (Sabang / Thamrin)", tag: "Halal • Padang", price: "$", note: "Reliable, fast & flavorful Padang dishes across central Jakarta." }
+                    { name: "Sate Khas Senayan (Multiple Malls)", tag: "Halal • Satay & Grill", cat: "bbq", price: "$$", note: "Signature chicken/lamb satay, soto betawi & tahutelor." },
+                    { name: "Pagi Sore (Menteng / Sudirman)", tag: "Halal • Nasi Padang", cat: "nasi", price: "$$", note: "Premium Minang-Padang feast with rendang & ayam pop." },
+                    { name: "RM Sederhana (Sabang / Thamrin)", tag: "Halal • Nasi Padang", cat: "nasi", price: "$", note: "Reliable, fast & flavorful Padang dishes across central Jakarta." }
                 ]
             },
             "london": {
@@ -1595,6 +1811,7 @@
                 currency: "GBP",
                 timeZone: "Europe/London",
                 langCode: "en-GB",
+                langShort: "en",
                 langLabel: "English",
                 borderPost: "UK eGates / M4",
                 borderTitle: "Heathrow / M4 & Central London Traffic",
@@ -1613,9 +1830,9 @@
                     { en: "Which Tube line for Paddington?", local: "Which Underground line goes to Paddington?", phonetic: "Use Elizabeth Line, Bakerloo, Circle or District Line" }
                 ],
                 food: [
-                    { name: "Roti King (Euston / Battersea)", tag: "Halal • Malaysian", price: "$$", note: "Famous flaky roti canai, kari laksa & char kway teow." },
-                    { name: "Dishoom (King's Cross / Covent Garden)", tag: "Halal Options", price: "$$", note: "Bombay cafe famous for black daal, ruby chicken & chai." },
-                    { name: "Edgware Road & Bayswater (Queensway)", tag: "Halal Hub", price: "$$", note: "Dozens of Halal Lebanese grills, burger spots & Malaysian cafes." }
+                    { name: "Roti King (Euston / Battersea)", tag: "Halal • Malaysian Laksa & Roti", cat: "ramen", price: "$$", note: "Famous flaky roti canai, kari laksa & char kway teow." },
+                    { name: "Dishoom (King's Cross / Covent Garden)", tag: "Halal • Grill & Curry", cat: "bbq", price: "$$", note: "Bombay cafe famous for black daal, ruby chicken & chai." },
+                    { name: "Edgware Road & Bayswater (Queensway)", tag: "Halal • Lebanese & Asian", cat: "bbq", price: "$$", note: "Dozens of Halal Lebanese grills, burger spots & Malaysian cafes." }
                 ]
             }
         };
@@ -1653,14 +1870,25 @@
                 /jeddah|makkah|madinah/i.test(raw) ? "Asia/Riyadh" :
                 /melbourne/i.test(raw) ? "Australia/Melbourne" : "Asia/Brunei";
 
+            const langGuess =
+                /surabaya|bali|balikpapan|bandung|medan/i.test(raw) ? { code: "id-ID", short: "id", label: "Indonesia" } :
+                /ho chi minh|hanoi|da nang/i.test(raw) ? { code: "vi-VN", short: "vi", label: "Vietnamese" } :
+                /manila|cebu/i.test(raw) ? { code: "tl-PH", short: "tl", label: "Tagalog" } :
+                /taipei|hong kong|beijing|shanghai/i.test(raw) ? { code: "zh-CN", short: "zh-CN", label: "中文" } :
+                /paris/i.test(raw) ? { code: "fr-FR", short: "fr", label: "Français" } :
+                /istanbul/i.test(raw) ? { code: "tr-TR", short: "tr", label: "Türkçe" } :
+                /dubai|jeddah|makkah|madinah/i.test(raw) ? { code: "ar-SA", short: "ar", label: "العربية" } :
+                { code: "en-US", short: "en", label: "English" };
+
             const displayCity = raw || "Your Destination";
             return {
                 defaultMode: /miri|limbang|lawas|sipitang|labuan|pontianak/i.test(raw) ? "drive" : "flight",
                 cityTitle: displayCity,
                 currency: currencyGuess,
                 timeZone: tzGuess,
-                langCode: "en-US",
-                langLabel: "English",
+                langCode: langGuess.code,
+                langShort: langGuess.short,
+                langLabel: langGuess.label,
                 borderPost: `${displayCity} Route`,
                 borderTitle: `${displayCity} Live Route & Checkpoint Traffic`,
                 borderDesc: "Check real-time congestion, roadworks & border queue times on Google Maps Traffic or Waze before departing.",
@@ -1682,13 +1910,13 @@
                     { en: "Please take me to this address", local: "Please take me to this address", phonetic: "Show the Taxi Card below" }
                 ],
                 food: [
-                    { name: `Top Halal & Local Eateries in ${displayCity}`, tag: "Maps", price: "$$", note: "Tap Maps ↗ to browse highest-rated Halal & local restaurants nearby." }
+                    { name: `Top Halal & Local Eateries in ${displayCity}`, tag: "Halal • Local", cat: "nasi", price: "$$", note: "Use the search bar above to find any Halal restaurant or dish on the map." }
                 ]
             };
         }
 
         // =========================================================================
-        // TAP-TO-SPEAK OFFLINE VOICE SYNTHESIZER
+        // TAP-TO-SPEAK OFFLINE VOICE SYNTHESIZER + LIVE VOICE/TEXT TRANSLATOR
         // =========================================================================
         function speakPhrase(text, langCode) {
             try {
@@ -1700,6 +1928,207 @@
                 window.speechSynthesis.speak(utter);
             } catch (_) {}
         }
+
+        let activeTranslatedString = "";
+
+        async function runLiveTranslation() {
+            const inputEl = document.getElementById('liveTranslateInput');
+            const outBox = document.getElementById('liveTranslateOutputBox');
+            const outText = document.getElementById('liveTranslatedText');
+            const outSub = document.getElementById('liveTranslatedSub');
+            const rawText = (inputEl?.value || '').trim();
+            if (!rawText || !currentPipGuide) return;
+
+            const targetLang = currentPipGuide.langShort || 'en';
+            outBox.classList.remove('hide');
+            outText.textContent = "Translating...";
+            outSub.textContent = `Converting to ${currentPipGuide.langLabel}...`;
+
+            if (targetLang === 'en') {
+                activeTranslatedString = rawText;
+                outText.textContent = rawText;
+                outSub.textContent = "Ready • Tap Play to speak aloud";
+                return;
+            }
+
+            try {
+                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(rawText)}&langpair=en|${encodeURIComponent(targetLang)}`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    const translated = data?.responseData?.translatedText;
+                    if (translated) {
+                        activeTranslatedString = translated;
+                        outText.textContent = translated;
+                        outSub.textContent = `${currentPipGuide.langLabel} • Tap Play to speak aloud`;
+                        return;
+                    }
+                }
+            } catch (_) {}
+
+            activeTranslatedString = rawText;
+            outText.textContent = rawText;
+            outSub.textContent = "Offline fallback • Tap Play to speak";
+        }
+
+        document.getElementById('liveTranslateBtn').addEventListener('click', runLiveTranslation);
+        document.getElementById('liveTranslateInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                runLiveTranslation();
+            }
+        });
+        document.getElementById('speakLiveTranslatedBtn').addEventListener('click', () => {
+            if (activeTranslatedString && currentPipGuide) {
+                speakPhrase(activeTranslatedString, currentPipGuide.langCode);
+            }
+        });
+
+        let activeSpeechRec = null;
+        document.getElementById('voiceMicBtn').addEventListener('click', async () => {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const micBtn = document.getElementById('voiceMicBtn');
+            const micLabel = document.getElementById('voiceMicLabel');
+
+            if (!SpeechRec) {
+                await showNotice("Voice Input Unavailable", "Speech-to-text microphone is not supported in this browser. You can type your phrase directly in the box.");
+                return;
+            }
+
+            if (activeSpeechRec) {
+                try { activeSpeechRec.stop(); } catch (_) {}
+                return;
+            }
+
+            try {
+                const rec = new SpeechRec();
+                activeSpeechRec = rec;
+                rec.lang = 'en-US';
+                rec.interimResults = false;
+                rec.maxAlternatives = 1;
+
+                micBtn.classList.add('mic-recording');
+                micLabel.textContent = "Listening...";
+
+                rec.onresult = (event) => {
+                    const spoken = event.results?.[0]?.[0]?.transcript || '';
+                    if (spoken) {
+                        document.getElementById('liveTranslateInput').value = spoken;
+                        runLiveTranslation();
+                    }
+                };
+                rec.onerror = () => {};
+                rec.onend = () => {
+                    activeSpeechRec = null;
+                    micBtn.classList.remove('mic-recording');
+                    micLabel.textContent = "Speak";
+                };
+                rec.start();
+            } catch (_) {
+                activeSpeechRec = null;
+                micBtn.classList.remove('mic-recording');
+                micLabel.textContent = "Speak";
+            }
+        });
+
+        // =========================================================================
+        // IN-APP HALAL FOOD SEARCH & EMBEDDED MAP VIEWER
+        // =========================================================================
+        let activeHalalCategory = 'all';
+
+        function openInAppHalalMap(searchLabel) {
+            if (!currentPipGuide) return;
+            const box = document.getElementById('inAppFoodMapBox');
+            const titleEl = document.getElementById('inAppFoodMapTitle');
+            const iframe = document.getElementById('inAppFoodMapIframe');
+            const extLink = document.getElementById('inAppFoodMapExtLink');
+
+            const fullQuery = `${searchLabel} ${currentPipGuide.cityTitle}`;
+            titleEl.textContent = `📍 ${searchLabel} (${currentPipGuide.cityTitle})`;
+            iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(fullQuery)}&z=14&output=embed`;
+            extLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullQuery)}`;
+            box.classList.remove('hide');
+        }
+
+        function renderFilteredHalalList() {
+            if (!currentPipGuide) return;
+            const foodEl = document.getElementById('guideFoodList');
+            const term = (document.getElementById('halalSearchInput')?.value || '').trim().toLowerCase();
+
+            const matches = (currentPipGuide.food || []).filter((spot) => {
+                const catOk = activeHalalCategory === 'all' || spot.cat === activeHalalCategory;
+                const textOk = !term ||
+                    spot.name.toLowerCase().includes(term) ||
+                    spot.tag.toLowerCase().includes(term) ||
+                    spot.note.toLowerCase().includes(term);
+                return catOk && textOk;
+            });
+
+            if (matches.length === 0) {
+                const customTerm = (document.getElementById('halalSearchInput')?.value || '').trim() || 'Halal food';
+                foodEl.innerHTML = `
+                    <div style="background-color: #0f172a; border: 1px solid rgba(52, 211, 153, 0.3);" class="rounded-2xl p-3.5 text-center space-y-2">
+                        <p class="text-xs font-bold text-white">No saved preset for "${escapeHtml(customTerm)}"</p>
+                        <p style="color: #94a3b8;" class="text-[11px]">Search live inside the app map for "${escapeHtml(customTerm)}" in ${escapeHtml(currentPipGuide.cityTitle)}.</p>
+                        <button type="button" id="searchCustomHalalMapBtn" class="promo-cta-btn px-4 py-2 rounded-xl text-xs font-extrabold">
+                            📍 Show "${escapeHtml(customTerm)}" on Map
+                        </button>
+                    </div>
+                `;
+                document.getElementById('searchCustomHalalMapBtn')?.addEventListener('click', () => {
+                    openInAppHalalMap(`Halal ${customTerm}`);
+                });
+                return;
+            }
+
+            foodEl.innerHTML = matches.map((spot) => `
+                <div style="background-color: #0f172a; border: 1px solid rgba(52, 211, 153, 0.25);" class="rounded-2xl p-3 flex items-start justify-between gap-2.5">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-1.5 mb-0.5">
+                            <span class="text-[10px] font-extrabold text-emerald-300">${escapeHtml(spot.tag)}</span>
+                            ${spot.price ? `<span class="text-[10px] font-bold text-amber-300">• ${escapeHtml(spot.price)}</span>` : ''}
+                        </div>
+                        <h4 class="text-xs font-extrabold text-white leading-snug">${escapeHtml(spot.name)}</h4>
+                        <p style="color: #cbd5e1;" class="text-[11px] mt-0.5 leading-snug">${escapeHtml(spot.note)}</p>
+                    </div>
+                    <button type="button" data-spot-name="${escapeHtml(spot.name)}"
+                       class="preview-spot-map-btn shrink-0 whitespace-nowrap promo-cta-btn px-3 py-2 rounded-xl text-[11px] font-extrabold inline-flex items-center gap-1">
+                        <span>📍 Map</span>
+                    </button>
+                </div>
+            `).join('');
+
+            foodEl.querySelectorAll('.preview-spot-map-btn').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    openInAppHalalMap(btn.dataset.spotName || 'Halal food');
+                });
+            });
+        }
+
+        document.getElementById('halalSearchInput').addEventListener('input', renderFilteredHalalList);
+        document.getElementById('halalSearchBtn').addEventListener('click', () => {
+            const q = document.getElementById('halalSearchInput').value.trim();
+            renderFilteredHalalList();
+            if (q) {
+                openInAppHalalMap(`Halal ${q}`);
+            } else {
+                openInAppHalalMap('Halal restaurant');
+            }
+        });
+        document.getElementById('closeFoodMapBtn').addEventListener('click', () => {
+            document.getElementById('inAppFoodMapBox').classList.add('hide');
+            document.getElementById('inAppFoodMapIframe').src = '';
+        });
+
+        document.querySelectorAll('.halal-filter-chip').forEach((chip) => {
+            chip.addEventListener('click', () => {
+                activeHalalCategory = chip.dataset.halalTag || 'all';
+                document.querySelectorAll('.halal-filter-chip').forEach((c) => {
+                    c.classList.toggle('active', c === chip);
+                });
+                renderFilteredHalalList();
+            });
+        });
 
         // =========================================================================
         // OFFLINE-CACHED CURRENCY CONVERTER (OPEN.ER-API.COM)
@@ -1802,7 +2231,7 @@
             recalcCurrency();
         });
 
-        // Interactive Tool Deck Switcher (Switches active card in place — no long scroll)
+        // Interactive Tool Deck Switcher
         function activateCopilotDeck(panelId) {
             document.querySelectorAll('.copilot-deck-panel').forEach((panel) => {
                 if (panel.id === panelId) {
@@ -1826,11 +2255,12 @@
             });
         });
 
-        // Floating PiP Traffic Window Controller (Google Traffic & Waze Live)
+        // Floating PiP Traffic Window Controller
         let currentPipGuide = null;
 
         function openTrafficPip(providerName) {
             if (!currentPipGuide) return;
+            closeProviderInfoPip();
             const modal = document.getElementById('pipTrafficModal');
             const iframe = document.getElementById('pipTrafficIframe');
             const titleEl = document.getElementById('pipWindowTitle');
@@ -1991,28 +2421,21 @@
                 </div>
             `;
 
-            const foodEl = document.getElementById('guideFoodList');
-            foodEl.innerHTML = guide.food.map((spot) => {
-                const q = encodeURIComponent(`${spot.name} ${guide.cityTitle}`);
-                return `
-                    <div style="background-color: #0f172a; border: 1px solid rgba(52, 211, 153, 0.25);" class="rounded-2xl p-3 flex items-start justify-between gap-2.5">
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-1.5 mb-0.5">
-                                <span class="text-[10px] font-extrabold text-emerald-300">${escapeHtml(spot.tag)}</span>
-                                ${spot.price ? `<span class="text-[10px] font-bold text-amber-300">• ${escapeHtml(spot.price)}</span>` : ''}
-                            </div>
-                            <h4 class="text-xs font-extrabold text-white leading-snug">${escapeHtml(spot.name)}</h4>
-                            <p style="color: #cbd5e1;" class="text-[11px] mt-0.5 leading-snug">${escapeHtml(spot.note)}</p>
-                        </div>
-                        <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener noreferrer"
-                           class="shrink-0 whitespace-nowrap promo-cta-btn px-3 py-2 rounded-xl text-[11px] font-extrabold inline-flex items-center gap-1">
-                            <span>Maps</span><span>↗</span>
-                        </a>
-                    </div>
-                `;
-            }).join('');
+            activeHalalCategory = 'all';
+            const halalSearchEl = document.getElementById('halalSearchInput');
+            if (halalSearchEl) halalSearchEl.value = '';
+            document.getElementById('inAppFoodMapBox').classList.add('hide');
+            document.getElementById('inAppFoodMapIframe').src = '';
+            document.querySelectorAll('.halal-filter-chip').forEach((c) => {
+                c.classList.toggle('active', c.dataset.halalTag === 'all');
+            });
+            renderFilteredHalalList();
 
             document.getElementById('phraseLangBadge').textContent = guide.langLabel;
+            document.getElementById('translatorTargetLabel').textContent = guide.langLabel;
+            document.getElementById('liveTranslateInput').value = '';
+            document.getElementById('liveTranslateOutputBox').classList.add('hide');
+
             const phrasesEl = document.getElementById('guidePhrasesList');
             phrasesEl.innerHTML = (guide.phrases || []).map((p, idx) => `
                 <div style="background-color: #0f172a; border: 1px solid rgba(192, 132, 252, 0.25);" class="rounded-2xl p-3 flex items-center justify-between gap-3">
@@ -2105,14 +2528,15 @@
                 passesBtn.className = 'py-2.5 px-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5 min-w-0';
             } else {
                 closeTrafficPip();
+                closeProviderInfoPip();
                 passesTab.classList.remove('hide');
                 guideTab.classList.add('hide');
-                passesBtn.className = 'wallet-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0';
+                passesBtn.className = 'passes-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0';
                 guideBtn.className = 'py-2.5 px-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5 min-w-0';
             }
         }
 
-        document.getElementById('tabPassesBtn').addEventListener('click', () => setTripDetailTab('wallet'));
+        document.getElementById('tabPassesBtn').addEventListener('click', () => setTripDetailTab('passes'));
         document.getElementById('tabGuideBtn').addEventListener('click', () => setTripDetailTab('copilot'));
 
         document.getElementById('checkFlightBtn').addEventListener('click', () => {
@@ -2133,7 +2557,7 @@
         });
 
         // =========================================================================
-        // MINIMALIST SPONSORED AD STRIP (CLEARLY DISTINGUISHED FROM APP CARDS)
+        // MINIMALIST SPONSORED AD STRIP
         // =========================================================================
         let bannerLoaded = false;
         let nextUpcomingDestination = '';
@@ -2247,7 +2671,7 @@
                 const cred = await navigator.credentials.create({
                     publicKey: {
                         challenge,
-                        rp: { name: "Lintas Travel Wallet", id: window.location.hostname },
+                        rp: { name: "Lintas Travel Passes", id: window.location.hostname },
                         user: {
                             id: userIdBytes,
                             name: user.email || "lintas-traveler",
@@ -2635,7 +3059,7 @@
         }
 
         // --- LOCAL INDEXEDDB ENGINE ---
-        const DB_NAME = "LintasLocalWallet";
+        const DB_NAME = "LintasLocalPasses";
         const DB_VERSION = 1;
 
         function openLocalDB() {
@@ -3158,6 +3582,7 @@
             clearInactivityWatch();
             clearTimeout(arrowHideTimer);
             closeTrafficPip();
+            closeProviderInfoPip();
             if (copilotClockTimer) {
                 clearInterval(copilotClockTimer);
                 copilotClockTimer = null;
@@ -3456,6 +3881,7 @@
             localStorage.removeItem(BIO_CRED_KEY);
             modals.settings.classList.add('hide');
             closeTrafficPip();
+            closeProviderInfoPip();
             currentTripId = null;
             currentUser = null;
             await signOut(auth);
@@ -3481,6 +3907,7 @@
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
                 closeTrafficPip();
+                closeProviderInfoPip();
                 currentTripId = null;
                 await deleteUser(auth.currentUser);
                 await showNotice("Data Deleted", "Your account and all saved passes have been permanently removed.", "Lintas • Privacy");
@@ -3593,8 +4020,8 @@
                             <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
                         </div>
                         <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-2.5 flex items-center justify-between text-xs font-bold text-sky-400">
-                            <span>Border Wallet &amp; City Co-Pilot</span>
-                            <span>Launch →</span>
+                            <span>Passes &amp; City Co-Pilot</span>
+                            <span>Open Trip →</span>
                         </div>
                     `;
                     heroCard.onclick = () => openTrip(t);
@@ -3795,6 +4222,7 @@
                 } catch (_) {}
 
                 closeTrafficPip();
+                closeProviderInfoPip();
                 if (copilotClockTimer) {
                     clearInterval(copilotClockTimer);
                     copilotClockTimer = null;
@@ -3822,7 +4250,7 @@
             if (trip.weatherSummary) parts.push(trip.weatherSummary);
             document.getElementById('tripDetailMeta').textContent = parts.join(' • ');
 
-            setTripDetailTab('wallet');
+            setTripDetailTab('passes');
             renderTripGuideForTrip(trip);
             showScreen('tripDetail');
             await loadDocuments(trip.id);
@@ -3838,8 +4266,8 @@
             docs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             currentTripDocs = docs;
 
-            const walletPill = document.getElementById('walletCountPill');
-            if (walletPill) walletPill.textContent = String(docs.length);
+            const passesPill = document.getElementById('passesCountPill');
+            if (passesPill) passesPill.textContent = String(docs.length);
 
             if (docs.length === 0) {
                 document.getElementById('emptyDocsState').classList.remove('hide');
@@ -4274,6 +4702,7 @@
         };
         document.getElementById('backToTripsBtn').onclick = () => {
             closeTrafficPip();
+            closeProviderInfoPip();
             if (copilotClockTimer) {
                 clearInterval(copilotClockTimer);
                 copilotClockTimer = null;
