@@ -117,14 +117,14 @@
         .spotlight-card:active {
             transform: scale(0.985);
         }
-        .copilot-hero-card {
+        .hub-hero-card {
             position: relative;
             overflow: hidden;
             background: linear-gradient(135deg, rgba(14, 116, 144, 0.42) 0%, rgba(15, 23, 42, 0.96) 55%, rgba(6, 95, 70, 0.38) 100%);
             border: 1px solid rgba(56, 189, 248, 0.42);
             box-shadow: 0 14px 32px -10px rgba(14, 165, 233, 0.28);
         }
-        .copilot-tab-active {
+        .hub-tab-active {
             background: linear-gradient(135deg, #0ea5e9, #10b981);
             color: #ffffff;
             box-shadow: 0 6px 18px -4px rgba(16, 185, 129, 0.55);
@@ -155,8 +155,8 @@
             border: 1px solid rgba(192, 132, 252, 0.28);
         }
         .info-i-btn {
-            width: 22px;
-            height: 22px;
+            width: 21px;
+            height: 21px;
             border-radius: 999px;
             background-color: rgba(15, 23, 42, 0.85);
             border: 1px solid rgba(148, 163, 184, 0.35);
@@ -164,7 +164,7 @@
             font-family: Georgia, serif;
             font-style: italic;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 11px;
             line-height: 1;
             display: inline-flex;
             align-items: center;
@@ -557,7 +557,7 @@
                 </div>
                 <div>
                     <span class="brand-wordmark-sm text-xl block leading-none">Lintas<span class="brand-wordmark-dot"></span></span>
-                    <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium">● Sync &amp; Offline Ready</span>
+                    <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium">● Cloud Sync Active</span>
                 </div>
             </div>
 
@@ -640,7 +640,7 @@
         </button>
     </div>
 
-    <!-- TRIP DETAIL SCREEN (PASSES + INTERACTIVE CITY CO-PILOT DECK) -->
+    <!-- TRIP DETAIL SCREEN (PASSES + INTERACTIVE TRAVEL HUB DECK) -->
     <div id="tripDetailScreen" style="background-color: #0f172a; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
         <div class="glass px-4 py-3 flex items-center justify-between gap-2" style="position: relative; z-index: 50;">
             <div class="flex items-center gap-2 overflow-hidden">
@@ -655,7 +655,7 @@
             <button id="deleteTripBtn" type="button" class="shrink-0 whitespace-nowrap text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30" style="touch-action: manipulation;">Delete Trip</button>
         </div>
 
-        <!-- SINGLE-LINE GLASSMORPHIC DUAL-PILL SWITCHER (PASSES vs CO-PILOT) -->
+        <!-- SINGLE-LINE GLASSMORPHIC DUAL-PILL SWITCHER (PASSES vs TRAVEL HUB) -->
         <div style="background-color: #0f172a; border-bottom: 1px solid rgba(148, 163, 184, 0.14);" class="px-4 py-2.5 max-w-2xl w-full mx-auto shrink-0">
             <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.18);" class="grid grid-cols-2 p-1 rounded-2xl gap-1.5 shadow-inner">
                 <button id="tabPassesBtn" type="button" class="passes-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0">
@@ -663,8 +663,8 @@
                     <span id="passesCountPill" class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white shrink-0">0</span>
                 </button>
                 <button id="tabGuideBtn" type="button" class="py-2.5 px-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5 min-w-0">
-                    <span class="whitespace-nowrap truncate">✨ Co-Pilot</span>
-                    <span id="copilotBadgePill" class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0 whitespace-nowrap">LIVE</span>
+                    <span class="whitespace-nowrap truncate">🧭 Travel Hub</span>
+                    <span id="hubBadgePill" class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0 whitespace-nowrap">INFO</span>
                 </button>
             </div>
         </div>
@@ -683,56 +683,55 @@
                 <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- TAB 2: INTERACTIVE CITY CO-PILOT DECK -->
+            <!-- TAB 2: INTERACTIVE TRAVEL HUB DECK -->
             <div id="tripGuideTab" class="hide space-y-3.5">
-                <!-- COMPACT DESTINATION COCKPIT + INTERACTIVE TOOL DECK TABS -->
-                <div class="copilot-hero-card rounded-3xl p-4 shadow-xl">
+                <!-- COMPACT DESTINATION OVERVIEW + INTERACTIVE TOOL TABS -->
+                <div class="hub-hero-card rounded-3xl p-4 shadow-xl">
                     <div class="flex items-start justify-between gap-3">
-                        <div class="overflow-hidden">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">City Co-Pilot</span>
-                                <button type="button" data-info-key="generalCopilot" class="info-i-btn" aria-label="City Co-Pilot disclaimer">i</button>
+                        <div class="min-w-0 flex-1 text-left">
+                            <div class="flex items-center gap-1.5 mb-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">Destination Hub</span>
+                                <button type="button" data-info-key="generalHub" class="info-i-btn" aria-label="Travel Hub disclaimer">i</button>
                             </div>
-                            <h3 id="copilotHeroCity" class="text-xl font-black text-white leading-tight truncate">Destination</h3>
-                            <p id="copilotHeroSub" style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">Live local time &amp; border intelligence</p>
+                            <h3 id="hubHeroCity" class="text-xl font-black text-white leading-tight truncate">Destination</h3>
+                            <p id="hubHeroSub" style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">Local time, currency &amp; essential travel info</p>
                         </div>
                         <div style="background: rgba(15, 23, 42, 0.78); border: 1px solid rgba(56, 189, 248, 0.35);" class="rounded-2xl px-3 py-2 text-right shrink-0">
                             <span style="color: #94a3b8;" class="block text-[9px] font-bold uppercase tracking-wider">Local Time</span>
-                            <span id="copilotLiveClock" class="text-sm font-black text-sky-300 tabular-nums whitespace-nowrap">--:--</span>
+                            <span id="hubLiveClock" class="text-sm font-black text-sky-300 tabular-nums whitespace-nowrap">--:--</span>
                         </div>
                     </div>
 
-                    <!-- TRAVEL MODE SWITCHER + LIVE RATE -->
+                    <!-- TRAVEL MODE SWITCHER + EXCHANGE RATE -->
                     <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
                         <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.22);" class="inline-flex p-1 rounded-xl gap-1">
                             <button id="modeDriveBtn" type="button" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all whitespace-nowrap">🚗 Drive / Border</button>
                             <button id="modeFlightBtn" type="button" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap">✈️ Flight</button>
                         </div>
-                        <span id="copilotRateChip" style="background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(52, 211, 153, 0.35);" class="text-[11px] font-bold text-emerald-300 px-2.5 py-1 rounded-xl whitespace-nowrap">
+                        <span id="hubRateChip" style="background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(52, 211, 153, 0.35);" class="text-[11px] font-bold text-emerald-300 px-2.5 py-1 rounded-xl whitespace-nowrap">
                             💱 1 BND = —
                         </span>
                     </div>
 
-                    <!-- INTERACTIVE TOOL DECK SELECTOR -->
+                    <!-- INTERACTIVE TOOL SELECTOR (NO BORDER CHECKLIST) -->
                     <div class="dest-chip-strip mt-3 pt-3" style="border-top: 1px solid rgba(148, 163, 184, 0.16);">
                         <button id="deckTabRadar" type="button" data-deck="secRadar" class="tool-tab-chip active">🚦 Border Traffic</button>
-                        <button type="button" data-deck="secFx" class="tool-tab-chip">💱 Money</button>
+                        <button type="button" data-deck="secFx" class="tool-tab-chip">💱 Currency</button>
                         <button type="button" data-deck="secFood" class="tool-tab-chip">🍜 Halal Eats</button>
                         <button type="button" data-deck="secPhrases" class="tool-tab-chip">🗣️ Translator</button>
                         <button type="button" data-deck="secTransit" class="tool-tab-chip">⛴️ Ferry &amp; Bus</button>
-                        <button type="button" data-deck="secChecklist" class="tool-tab-chip">✅ Checklist</button>
                         <button type="button" data-deck="secDriver" class="tool-tab-chip">🚕 Taxi &amp; SOS</button>
                     </div>
                 </div>
 
                 <!-- DECK PANEL 1: LIVE LAND BORDER TRAFFIC (WITH FLOATING PiP PREVIEW) OR FLIGHT RADAR -->
-                <div id="secRadar" class="copilot-deck-panel deck-panel-anim">
+                <div id="secRadar" class="hub-deck-panel deck-panel-anim">
                     <div id="driveBorderCard" class="card-border-traffic rounded-3xl p-4 shadow-lg">
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="text-base shrink-0">🚦</span>
-                                <h3 class="text-sm font-extrabold text-white truncate">Live Border Traffic &amp; CIQ</h3>
+                                <h3 class="text-sm font-extrabold text-white truncate">Border Traffic &amp; CIQ</h3>
                                 <button type="button" data-info-key="borderTraffic" class="info-i-btn" aria-label="Traffic provider info">i</button>
                             </div>
                             <span id="borderPostBadge" class="shrink-0 whitespace-nowrap text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/35">CIQ LIVE</span>
@@ -762,7 +761,7 @@
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="text-base shrink-0">✈️</span>
-                                <h3 class="text-sm font-extrabold text-white truncate">Flight Radar &amp; Airport</h3>
+                                <h3 class="text-sm font-extrabold text-white truncate">Flight Status &amp; Airport</h3>
                                 <button type="button" data-info-key="flightRadar" class="info-i-btn" aria-label="Flight radar provider info">i</button>
                             </div>
                             <span id="guideAirportCode" class="shrink-0 whitespace-nowrap text-[10px] font-black px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/35">AIRPORT</span>
@@ -770,7 +769,7 @@
                         <p id="guideAirportName" class="text-xs font-extrabold text-white leading-snug"></p>
                         <p id="guideAirportTransfer" style="color: #cbd5e1;" class="text-xs mt-1 leading-relaxed"></p>
                         <div style="background-color: #0f172a; border: 1px solid #334155;" class="mt-2.5 rounded-xl px-3 py-2 text-[11px] text-amber-200 leading-snug">
-                            🛂 <strong>Flight Tip:</strong> Arrive at BWN / terminal 2.5 hrs before departure; keep power banks in cabin carry-on only.
+                            🛂 <strong>Flight Tip:</strong> Arrive at terminal 2.5 hrs before departure; keep power banks in cabin carry-on only.
                         </div>
                         <div class="mt-3 flex gap-2">
                             <input type="text" id="flightCodeInput" placeholder="Flight No. (e.g., BI873, AK510)" class="input-dark flex-1 rounded-xl px-3 py-2 text-xs uppercase font-bold">
@@ -781,15 +780,15 @@
                     </div>
                 </div>
 
-                <!-- DECK PANEL 2: OFFLINE-READY CURRENCY CONVERTER -->
-                <div id="secFx" class="hide copilot-deck-panel deck-panel-anim card-fx rounded-3xl p-4 shadow-lg">
+                <!-- DECK PANEL 2: CURRENCY CONVERTER (CLEAN GLOBAL NAMING) -->
+                <div id="secFx" class="hide hub-deck-panel deck-panel-anim card-fx rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-3">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">💱</span>
-                            <h3 class="text-sm font-extrabold text-white truncate">Market Converter</h3>
+                            <h3 class="text-sm font-extrabold text-white truncate">Currency Converter</h3>
                             <button type="button" data-info-key="currencyFx" class="info-i-btn" aria-label="Currency rate provider info">i</button>
                         </div>
-                        <span id="fxRateBadge" class="shrink-0 whitespace-nowrap text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Offline Ready</span>
+                        <span id="fxRateBadge" class="shrink-0 whitespace-nowrap text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Live Rate</span>
                     </div>
 
                     <div class="flex items-center gap-1.5 mb-2.5">
@@ -815,16 +814,16 @@
                         </div>
                     </div>
                     <div style="background-color: #0f172a; border: 1px solid rgba(56, 189, 248, 0.35);" class="mt-3 rounded-2xl px-3.5 py-3 flex items-center justify-between gap-2">
-                        <span style="color: #94a3b8;" class="text-xs font-medium whitespace-nowrap">Converted Total</span>
+                        <span style="color: #94a3b8;" class="text-xs font-medium whitespace-nowrap">Converted Amount</span>
                         <span id="fxResultText" class="text-lg font-black text-sky-300 whitespace-nowrap">—</span>
                     </div>
                     <p style="color: #64748b;" class="text-[10px] mt-1.5 text-right">
-                        <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-400">Rates By Exchange Rate API</a> • Cached offline
+                        <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-400">Rates via ExchangeRate-API</a> • Works offline
                     </p>
                 </div>
 
                 <!-- DECK PANEL 3: IN-APP HALAL FOOD SEARCH & LIVE MAP PREVIEW -->
-                <div id="secFood" class="hide copilot-deck-panel deck-panel-anim card-food rounded-3xl p-4 shadow-lg">
+                <div id="secFood" class="hide hub-deck-panel deck-panel-anim card-food rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🍜</span>
@@ -862,11 +861,11 @@
                 </div>
 
                 <!-- DECK PANEL 4: IN-APP LIVE TEXT & VOICE TRANSLATOR + PHRASES -->
-                <div id="secPhrases" class="hide copilot-deck-panel deck-panel-anim card-phrase rounded-3xl p-4 shadow-lg">
+                <div id="secPhrases" class="hide hub-deck-panel deck-panel-anim card-phrase rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🗣️</span>
-                            <h3 class="text-sm font-extrabold text-white truncate">Live Voice &amp; Text Translator</h3>
+                            <h3 class="text-sm font-extrabold text-white truncate">Voice &amp; Text Translator</h3>
                             <button type="button" data-info-key="translator" class="info-i-btn" aria-label="Translator provider info">i</button>
                         </div>
                         <span id="phraseLangBadge" class="shrink-0 whitespace-nowrap text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/35">Live</span>
@@ -899,7 +898,7 @@
                 </div>
 
                 <!-- DECK PANEL 5: LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
-                <div id="secTransit" class="hide copilot-deck-panel deck-panel-anim card-dark rounded-3xl p-4 shadow-lg">
+                <div id="secTransit" class="hide hub-deck-panel deck-panel-anim card-dark rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">⛴️</span>
@@ -913,24 +912,8 @@
                     <div id="guideTransitBody" class="space-y-2.5 text-xs"></div>
                 </div>
 
-                <!-- DECK PANEL 6: PRE-DEPARTURE BORDER & PACKING CHECKLIST -->
-                <div id="secChecklist" class="hide copilot-deck-panel deck-panel-anim card-dark rounded-3xl p-4 shadow-lg">
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <span class="text-base shrink-0">✅</span>
-                            <h3 class="text-sm font-extrabold text-white truncate">Border Checklist</h3>
-                            <button type="button" data-info-key="checklist" class="info-i-btn" aria-label="Border checklist disclaimer">i</button>
-                        </div>
-                        <span id="checklistProgressText" class="shrink-0 whitespace-nowrap text-[11px] font-extrabold text-sky-400">0/0 Done</span>
-                    </div>
-                    <div style="background-color: #0f172a;" class="w-full h-2 rounded-full overflow-hidden mb-3">
-                        <div id="checklistProgressBar" style="width: 0%; background: linear-gradient(90deg, #38bdf8, #10b981); transition: width 0.25s ease;" class="h-full rounded-full"></div>
-                    </div>
-                    <div id="guideChecklistItems" class="space-y-2"></div>
-                </div>
-
-                <!-- DECK PANEL 7: STAY ADDRESS & EMERGENCY CONTACTS -->
-                <div id="secDriver" class="hide copilot-deck-panel deck-panel-anim card-dark rounded-3xl p-4 space-y-3 shadow-lg">
+                <!-- DECK PANEL 6: STAY ADDRESS & EMERGENCY CONTACTS -->
+                <div id="secDriver" class="hide hub-deck-panel deck-panel-anim card-dark rounded-3xl p-4 space-y-3 shadow-lg">
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🚕</span>
@@ -945,7 +928,7 @@
                     <input type="text" id="hotelAddrInput" placeholder="Full Street Address (for taxi / Grab)" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
 
                     <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-3">
-                        <p class="text-xs font-extrabold text-red-300 mb-1.5">🚨 Local SOS &amp; Brunei Diplomatic Hotline</p>
+                        <p class="text-xs font-extrabold text-red-300 mb-1.5">🚨 Local SOS &amp; Diplomatic Hotline</p>
                         <div id="guideEmergencyBox" style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-2xl p-3 text-xs space-y-1 leading-relaxed"></div>
                     </div>
                 </div>
@@ -1005,7 +988,7 @@
             <h2 id="driverHotelName" class="text-3xl sm:text-4xl font-extrabold text-white leading-tight break-words">My Hotel</h2>
             <p id="driverHotelAddr" class="text-lg sm:text-xl font-semibold text-sky-300 leading-relaxed break-words">No address entered yet</p>
         </div>
-        <p style="color: #64748b;" class="text-xs">Saved offline on your device</p>
+        <p style="color: #64748b;" class="text-xs">Saved on your device for offline access</p>
     </div>
 
     <!-- FULLSCREEN SWIPING GALLERY VIEWER -->
@@ -1184,7 +1167,7 @@
                 </div>
             </div>
 
-            <p style="color: #64748b;" class="text-xs mb-5">Unlocks live border traffic or flight radar, City Co-Pilot &amp; auto-cleans 30 days after Trip End Date.</p>
+            <p style="color: #64748b;" class="text-xs mb-5">Unlocks live border traffic or flight radar, Travel Hub &amp; auto-cleans 30 days after Trip End Date.</p>
             <button id="saveTripBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl">Create Trip</button>
         </div>
     </div>
@@ -1273,7 +1256,7 @@
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
                 <p><strong>1. Independence &amp; Third-Party Information Disclaimer:</strong> Lintas is an independent personal travel organizer not affiliated with any government, border authority, or third-party data provider. Live traffic maps, flight statuses, currency rates, weather forecasts, Halal eatery maps, and translations are supplied by external providers (Google Maps, Waze, ExchangeRate-API, Open-Meteo, Aladhan, and MyMemory). Lintas makes no guarantees regarding accuracy or availability and assumes no liability for inaccurate third-party information or user-stored content.</p>
-                <p><strong>2. Storage, Session Grace &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline caching. Active sessions remain unlocked for 15 minutes across app closes unless Face ID / Fingerprint protection is enabled (which verifies biometrics on every cold open and after timeout). Tapping Sign Out immediately clears your session and removes biometric access. Trips and passes auto-delete 30 days after your trip end date.</p>
+                <p><strong>2. Storage, Session Grace &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline availability. Active sessions remain unlocked for 15 minutes across app closes unless Face ID / Fingerprint protection is enabled (which verifies biometrics on every cold open and after timeout). Tapping Sign Out immediately clears your session and removes biometric access. Trips and passes auto-delete 30 days after your trip end date.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs a multi-layer on-device check before upload and blocks Bruneian or foreign passports and IDs.</p>
                 <p><strong>5. Immediate Deletion:</strong> You can permanently delete all stored trips, passes, and your account at any time via <em>Account &amp; Privacy → Delete Account &amp; Wipe All Data</em>.</p>
@@ -1410,27 +1393,27 @@
             weatherSolat: {
                 title: "Local Weather & Solat Times",
                 provider: "Open-Meteo & Aladhan Prayer Times API",
-                body: "Weather conditions and daily prayer schedules are fetched dynamically based on approximate city location. Always verify exact local mosque or JAKIM / Kementerian Hal Ehwal Ugama prayer times."
+                body: "Weather conditions and daily prayer schedules are fetched dynamically based on approximate city location. Always verify exact local mosque or religious authority prayer times."
             },
-            generalCopilot: {
-                title: "City Co-Pilot Travel Intelligence",
+            generalHub: {
+                title: "Destination Travel Hub",
                 provider: "External Travel APIs & Curated Guides",
-                body: "City Co-Pilot aggregates travel reference data from third-party mapping, exchange rate, and translation providers to assist trip planning."
+                body: "Destination Hub aggregates travel reference data from third-party mapping, exchange rate, and translation providers to assist trip planning."
             },
             borderTraffic: {
-                title: "Live Border Traffic & CIQ",
+                title: "Border Traffic & CIQ",
                 provider: "Google Maps Traffic & Waze Live Map",
                 body: "Live road congestion, traffic layers, and checkpoint routes are streamed directly from Google Maps and Waze. Operating hours and queue times at CIQ checkpoints can change without notice."
             },
             flightRadar: {
-                title: "Flight Radar & Airport Info",
+                title: "Flight Status & Airport Info",
                 provider: "Google Flight Status & Airport Guides",
                 body: "Live flight tracking queries public aviation status feeds via Google Search. Always verify boarding gate changes, terminal assignments, and check-in cutoffs directly with your airline."
             },
             currencyFx: {
-                title: "Market Currency Converter",
+                title: "Currency Converter",
                 provider: "ExchangeRate-API (open.er-api.com)",
-                body: "Exchange rates are indicative mid-market reference rates cached locally for offline convenience. Actual rates at banks, money changers, and card issuers will differ."
+                body: "Exchange rates are indicative mid-market reference rates saved locally so the converter continues working when offline. Actual rates at banks, money changers, and card issuers will differ."
             },
             halalFood: {
                 title: "Halal Food Finder & Map",
@@ -1438,7 +1421,7 @@
                 body: "Eatery locations, reviews, and map previews are supplied by Google Maps and traveler recommendations. Halal certification status can change—always verify valid Halal signage or certification directly at the premises before dining."
             },
             translator: {
-                title: "Live Voice & Text Translator",
+                title: "Voice & Text Translator",
                 provider: "MyMemory Translation API & Device Speech",
                 body: "Automated translations and voice pronunciations are provided for everyday travel convenience and may contain contextual inaccuracies."
             },
@@ -1446,11 +1429,6 @@
                 title: "Ferry, Bus & Transit Guide",
                 provider: "Google Maps Transit & Operator Summaries",
                 body: "Ferry terminals, rail connections, and local transit card summaries are general reference guides. Always check live schedules and ticket availability with the local transport operator."
-            },
-            checklist: {
-                title: "Border Readiness Checklist",
-                provider: "Official Immigration Portal Summaries",
-                body: "Arrival card and entry reminders (such as MDAC, SGAC, K-ETA, and Visit Japan Web) are provided as general guidance. Always verify current entry rules with official government immigration authorities before travel."
             },
             driverSos: {
                 title: "Hotel Card & Diplomatic Hotlines",
@@ -1460,7 +1438,7 @@
         };
 
         function openProviderInfoPip(key) {
-            const info = FEATURE_INFO_REGISTRY[key] || FEATURE_INFO_REGISTRY.generalCopilot;
+            const info = FEATURE_INFO_REGISTRY[key] || FEATURE_INFO_REGISTRY.generalHub;
             document.getElementById('pipInfoTitle').textContent = info.title;
             document.getElementById('pipInfoProvider').textContent = info.provider;
             document.getElementById('pipInfoBody').textContent = info.body;
@@ -1501,7 +1479,6 @@
                 airportTransfer: "~15 mins (10 km) to Miri City Centre via Grab (~RM12–18) or airport taxi.",
                 ferryInfo: "No passenger ferry to Brunei — overland border crossing via Sungai Tujoh CIQ (~35 mins from Miri).",
                 busInfo: "Miri City Bus (Line 33/34) serves Boulevard, Bintang Megamall & Permyjaya. Grab is the fastest way around town.",
-                entryChecklist: ["Submit MDAC (Malaysia Digital Arrival Card) within 3 days before arrival", "Save MDAC PIN & QR screenshot in Lintas", "Ensure vehicle VEP / EES pass & car registration are ready for Sungai Tujoh"],
                 emergency: "Emergency: 999 • Brunei Consulate General in Kuching (Sarawak): +60 10-950 1143",
                 phrases: [
                     { en: "Is this Halal certified?", local: "Ini ada sijil Halal?", phonetic: "Ee-nee ah-dah see-jil Ha-lal?" },
@@ -1531,7 +1508,6 @@
                 airportTransfer: "~10 mins to Limbang Town Centre via local taxi or Grab.",
                 ferryInfo: "Express boats connect Limbang Wharf to Labuan & Lawas depending on river tide schedules.",
                 busInfo: "Compact town centre — walkable around Tamu Limbang & waterfront; Grab available for longer trips.",
-                entryChecklist: ["Submit MDAC within 3 days before arrival", "Save MDAC & vehicle EES pass in Lintas", "Check Kuala Lurah CIQ closing time (10:00 PM)"],
                 emergency: "Emergency: 999 • Brunei Consulate General in Kuching: +60 10-950 1143",
                 phrases: [
                     { en: "Is this Halal?", local: "Ini Halal?", phonetic: "Ee-nee Ha-lal?" },
@@ -1559,7 +1535,6 @@
                 airportTransfer: "~5 mins to Lawas Town Centre.",
                 ferryInfo: "Lawas Wharf serves speedboats to Labuan (Sundar / Lawas terminal).",
                 busInfo: "Trans-Borneo highway connects Lawas directly to Sindumin (Sabah border) in ~25 mins.",
-                entryChecklist: ["Submit MDAC within 3 days before arrival", "Save MDAC & vehicle pass in Lintas", "Check Mengkalap / Sindumin CIQ operating hours"],
                 emergency: "Emergency: 999 • Brunei Consulate General in Kota Kinabalu: +60 10-241 6112",
                 phrases: [
                     { en: "Straight ahead to Sabah", local: "Terus ke Sabah", phonetic: "Te-rus ke Sa-bah" }
@@ -1585,7 +1560,6 @@
                 airportTransfer: "~15 mins (8 km) to KK City / Gaya Street via Grab (~RM10–16) or Airport Bus (RM5).",
                 ferryInfo: "Jesselton Point Ferry Terminal (City Centre): hourly boats to Tunku Abdul Rahman Marine Park (Manukan, Sapi, Mamutik) & Labuan express ferry.",
                 busInfo: "City Bus (green/blue) loops KK Sentral, Wawasan Plaza & 1Borneo. Grab covers all city & Kundasang day trips.",
-                entryChecklist: ["Submit MDAC (Malaysia Digital Arrival Card) within 3 days before arrival", "Save MDAC & return flight/EES QR passes in Lintas", "Pack light jacket if heading up to Kundasang / Ranau"],
                 emergency: "Emergency: 999 • Brunei Consulate General in Kota Kinabalu (Sabah): +60 10-241 6112",
                 phrases: [
                     { en: "Where is the jetty to the islands?", local: "Di mana jeti ke pulau?", phonetic: "Dee ma-na je-tee ke pu-lau?" },
@@ -1615,7 +1589,6 @@
                 airportTransfer: "28 mins to KL Sentral via KLIA Ekspres train (RM55), ~55 mins via Airport Coach (RM15), or ~50 mins via Grab (~RM65–85).",
                 ferryInfo: "Nearest port is Port Klang (~45 mins via KTM Komuter) for ferries to Pulau Ketam & Sumatra.",
                 busInfo: "RapidKL MRT, LRT & Monorail connect Bukit Bintang, KLCC & KL Sentral using Touch 'n Go card. Free GoKL city buses run green/purple loops.",
-                entryChecklist: ["Submit MDAC within 3 days before arrival", "Save KLIA Ekspres / flight QR pass in Lintas", "Top up Touch 'n Go eWallet / card for MRT & tolls"],
                 emergency: "Emergency: 999 • Brunei High Commission in Kuala Lumpur: +60 19-212 0114",
                 phrases: [
                     { en: "Which train goes to KLCC?", local: "Tren mana ke KLCC?", phonetic: "Tren ma-na ke KLCC?" },
@@ -1645,7 +1618,6 @@
                 airportTransfer: "~20 mins (11 km) to Kuching Waterfront via Grab (~RM14–20).",
                 ferryInfo: "Traditional Penambang sampan boats cross Sarawak River (RM1) between Waterfront & Kampung Boyan for kek lapis.",
                 busInfo: "Kuching Metro electric buses (free city routes) & Grab serve Waterfront, VivaCity & Semenggoh.",
-                entryChecklist: ["Submit MDAC within 3 days before arrival", "Save flight / vehicle & hotel confirmations in Lintas"],
                 emergency: "Emergency: 999 • Brunei Consulate General in Kuching: +60 10-950 1143",
                 phrases: [
                     { en: "Cross the river by boat", local: "Seberang sungai naik perahu", phonetic: "Se-be-rang su-ngai na-ik pe-ra-hu" },
@@ -1674,7 +1646,6 @@
                 airportTransfer: "~30 mins to City Hall / Orchard via MRT East-West Line (change at Tanah Merah) or ~20 mins via Grab / Taxi (~SGD 22–32).",
                 ferryInfo: "Tanah Merah Ferry Terminal (10 mins from Changi) for Batam & Bintan; HarbourFront Ferry Terminal (VivoCity) for Batam/Sentosa.",
                 busInfo: "Tap Visa/Mastercard directly on any MRT gate or SBS/SMRT public bus (no EZ-Link purchase needed). Use Grab, Gojek, or Zig.",
-                entryChecklist: ["Submit SG Arrival Card (SGAC) within 3 days before arrival", "Save SGAC & Changi Jewel / attraction QRs in Lintas", "Bring Visa/Mastercard contactless card for MRT & buses"],
                 emergency: "Police: 999 • Ambulance/Fire: 995 • Brunei High Commission in Singapore: +65 9673 0300",
                 phrases: [
                     { en: "Does this stall have MUIS Halal cert?", local: "Kedai ini ada sijil Halal MUIS?", phonetic: "Ke-dai ee-nee a-da see-jil Ha-lal MUIS?" },
@@ -1703,7 +1674,6 @@
                 airportTransfer: "43 mins nonstop to Seoul Station via AREX Express Train (~₩11,000), or 60–75 mins via Airport Limousine Bus (~₩17,000).",
                 ferryInfo: "Incheon Coastal Passenger Terminal operates ferries to Jeju & nearby islands; Busan Port serves ferries to Fukuoka/Osaka.",
                 busInfo: "Buy a T-money card at any GS25/CU convenience store for Seoul Subway & blue/green buses. Use Naver Map or KakaoMap (Google Maps walking is limited in Korea) and Kakao T for taxis.",
-                entryChecklist: ["Check K-ETA / Q-Code health declaration requirements before flight", "Install Naver Map & Kakao T before landing", "Save AREX train QR & Nami/Everland tickets in Lintas"],
                 emergency: "Police: 112 • Fire/Ambulance: 119 • Brunei Embassy in Seoul: +82 10-4406-3808",
                 phrases: [
                     { en: "No pork or alcohol, please", local: "돼지고기랑 술 빼주세요", phonetic: "Dwae-ji-go-gi-rang sul ppae-ju-se-yo" },
@@ -1734,7 +1704,6 @@
                 airportTransfer: "Haneda: 15–25 mins via Tokyo Monorail or Keikyu Line. Narita: 53 mins via Narita Express (N'EX) to Tokyo Station or 41 mins via Keisei Skyliner to Ueno.",
                 ferryInfo: "Tokyo Bay Ferry (Kurihama–Kanaya) & Takeshiba Pier for Izu Islands; Tokyo Water Bus cruises Asakusa to Odaiba.",
                 busInfo: "Add Digital Suica or PASMO to Apple Wallet / Google Pay for instant tap-and-go on JR Yamanote, Tokyo Metro & Toei buses.",
-                entryChecklist: ["Complete Visit Japan Web (Immigration & Customs QR) & save screenshot in Lintas", "Add Suica/PASMO to phone wallet", "Carry some JPY cash for small ramen shops & temples"],
                 emergency: "Police: 110 • Ambulance/Fire: 119 • Brunei Embassy in Tokyo: +81 80-1161-5328",
                 phrases: [
                     { en: "I cannot eat pork or alcohol", local: "豚肉とお酒は食べられません", phonetic: "Bu-ta-ni-ku to o-sa-ke wa ta-be-ra-re-ma-sen" },
@@ -1764,7 +1733,6 @@
                 airportTransfer: "BKK: 26 mins to Phaya Thai via Airport Rail Link (฿45). DMK: 20 mins to Bang Sue via SRT Red Line. Use Grab or Bolt in the city.",
                 ferryInfo: "Chao Phraya Express Boat (Orange Flag, ฿16) connects Sathorn Pier (BTS Saphan Taksin) to Wat Arun, Grand Palace & Asiatique.",
                 busInfo: "BTS Skytrain & MRT Subway beat Bangkok traffic. Use Rabbit Card for BTS and contactless Visa/Mastercard for MRT.",
-                entryChecklist: ["Check Thailand Digital Arrival Card (TDAC) requirement before departure", "Install Grab & Bolt apps for metered/fixed rides", "Save flight & attraction QR passes in Lintas"],
                 emergency: "Tourist Police: 1155 • Emergency: 191 • Brunei Embassy in Bangkok: +66 92-270-9382",
                 phrases: [
                     { en: "Is this Halal food?", local: "อาหารฮาลาลไหมครับ", phonetic: "Aa-haan Ha-laan mai khrap?" },
@@ -1794,7 +1762,6 @@
                 airportTransfer: "45 mins to BNI City (Sudirman) via KAI Bandara Airport Rail Link, or 45–75 mins via Bluebird Taxi / Grab / Gojek.",
                 ferryInfo: "Marina Ancol Pier operates speedboats (30–90 mins) to Thousand Islands (Pulau Macan, Pulau Ayer, Pulau Sepa).",
                 busInfo: "MRT Jakarta (Lebak Bulus – Bundaran HI), LRT Jabodebek & TransJakarta BRT corridors. Buy a Mandiri e-Money or BCA Flazz card at Indomaret.",
-                entryChecklist: ["Submit All Indonesia / e-CD Customs QR before arrival & save in Lintas", "Install Gojek, Grab & Bluebird apps", "Get a multi-trip e-Money/Flazz card for MRT & TransJakarta"],
                 emergency: "Emergency: 112 • Brunei Embassy in Jakarta: +62 811-900-6564",
                 phrases: [
                     { en: "Where is the MRT station?", local: "Di mana stasiun MRT terdekat?", phonetic: "Dee ma-na sta-si-un MRT ter-de-kat?" },
@@ -1823,7 +1790,6 @@
                 airportTransfer: "Heathrow: 15 mins to Paddington via Heathrow Express or ~45 mins via Elizabeth Line directly to Bond St / Liverpool St. Tap contactless card directly.",
                 ferryInfo: "Uber Boat by Thames Clippers runs along the River Thames from Westminster & London Eye to Tower Pier & Greenwich.",
                 busInfo: "London Underground (Tube) & red double-decker buses are 100% cashless — tap any contactless bank card or Apple/Google Pay (daily fare cap applies).",
-                entryChecklist: ["Check UK ETA (Electronic Travel Authorisation) status before flying", "Save EES / Eurostar / Heathrow Express QR passes in Lintas", "Bring a contactless card/phone for Tube & buses"],
                 emergency: "Emergency: 999 • Brunei High Commission in London: +44 7481 270501",
                 phrases: [
                     { en: "Is the chicken / lamb Halal?", local: "Is the chicken and lamb Halal certified?", phonetic: "Ask at counter — most Edgware Rd & Queensway spots are HMC/Halal" },
@@ -1899,11 +1865,6 @@
                 airportTransfer: "Check terminal express train, airport shuttle bus, or local ride-hailing pick-up zone.",
                 ferryInfo: "Use Transit Map ↗ above to view nearby ferry terminals, harbor crossings & intercity rail.",
                 busInfo: "Check local metro/bus contactless tap rules and download the primary regional ride-hailing app before arrival.",
-                entryChecklist: [
-                    "Verify digital arrival card / visa rules 72 hours before departure",
-                    "Save flight boarding passes, eSIM QR & hotel voucher in Lintas",
-                    "Download offline Google Maps area for your destination"
-                ],
                 emergency: "Brunei MFA Consular Hotline (24/7): +673 871 6001 / +673 871 6002",
                 phrases: [
                     { en: "Is this Halal certified?", local: "Is this Halal certified?", phonetic: "Ask before ordering" },
@@ -2131,7 +2092,7 @@
         });
 
         // =========================================================================
-        // OFFLINE-CACHED CURRENCY CONVERTER (OPEN.ER-API.COM)
+        // CURRENCY CONVERTER (OPEN.ER-API.COM WITH AUTOMATIC OFFLINE FALLBACK)
         // =========================================================================
         const FX_CACHE_KEY = "lintas_fx_rates_bnd_v1";
         const SUPPORTED_CURRENCIES = ["BND", "MYR", "SGD", "KRW", "JPY", "THB", "IDR", "VND", "PHP", "TWD", "HKD", "CNY", "GBP", "EUR", "TRY", "AED", "SAR", "AUD", "USD"];
@@ -2150,7 +2111,7 @@
                     const parsed = JSON.parse(cachedRaw);
                     if (parsed && parsed.rates) {
                         activeFxRates = { ...FALLBACK_RATES_FROM_BND, ...parsed.rates };
-                        if (badge) badge.textContent = "Cached Offline ✓";
+                        if (badge) badge.textContent = "Offline Ready";
                     }
                 }
             } catch (_) {}
@@ -2166,7 +2127,7 @@
                                 updatedAt: Date.now(),
                                 rates: data.rates
                             }));
-                            if (badge) badge.textContent = "Live • Cached ✓";
+                            if (badge) badge.textContent = "Live Rate";
                         }
                     }
                 } catch (_) {}
@@ -2192,7 +2153,7 @@
             const from = document.getElementById('fxFromSelect')?.value || "BND";
             const to = document.getElementById('fxToSelect')?.value || "MYR";
             const outEl = document.getElementById('fxResultText');
-            const heroRateEl = document.getElementById('copilotRateChip');
+            const heroRateEl = document.getElementById('hubRateChip');
 
             if (heroRateEl) {
                 const unitRate = activeFxRates[to] || 1;
@@ -2232,8 +2193,8 @@
         });
 
         // Interactive Tool Deck Switcher
-        function activateCopilotDeck(panelId) {
-            document.querySelectorAll('.copilot-deck-panel').forEach((panel) => {
+        function activateHubDeck(panelId) {
+            document.querySelectorAll('.hub-deck-panel').forEach((panel) => {
                 if (panel.id === panelId) {
                     panel.classList.remove('hide');
                     panel.classList.remove('deck-panel-anim');
@@ -2251,7 +2212,7 @@
 
         document.querySelectorAll('[data-deck]').forEach((btn) => {
             btn.addEventListener('click', () => {
-                activateCopilotDeck(btn.dataset.deck);
+                activateHubDeck(btn.dataset.deck);
             });
         });
 
@@ -2310,7 +2271,7 @@
         document.getElementById('pipSwitchWazeBtn').addEventListener('click', () => openTrafficPip('waze'));
         document.getElementById('closePipTrafficBtn').addEventListener('click', closeTrafficPip);
 
-        // Travel Mode Switcher inside City Co-Pilot (Drive/Border vs Flight)
+        // Travel Mode Switcher inside Travel Hub (Drive/Border vs Flight)
         let activeOpenTrip = null;
         function applyTripTravelMode(mode) {
             const isDrive = mode === 'drive';
@@ -2332,7 +2293,7 @@
                 driveCard.classList.add('hide');
                 flightBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-sky-500 text-slate-950 transition-all whitespace-nowrap';
                 driveBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap';
-                if (deckRadarTab) deckRadarTab.textContent = '✈️ Flight Radar';
+                if (deckRadarTab) deckRadarTab.textContent = '✈️ Flight Status';
             }
 
             if (activeOpenTrip && activeOpenTrip.id) {
@@ -2342,31 +2303,31 @@
 
         document.getElementById('modeDriveBtn').addEventListener('click', () => {
             applyTripTravelMode('drive');
-            activateCopilotDeck('secRadar');
+            activateHubDeck('secRadar');
         });
         document.getElementById('modeFlightBtn').addEventListener('click', () => {
             applyTripTravelMode('flight');
-            activateCopilotDeck('secRadar');
+            activateHubDeck('secRadar');
         });
 
-        let copilotClockTimer = null;
+        let hubClockTimer = null;
 
         function renderTripGuideForTrip(trip) {
             activeOpenTrip = trip;
             const guide = getDestinationGuide(trip.location || trip.name);
             currentPipGuide = guide;
 
-            document.getElementById('copilotBadgePill').textContent = guide.airportCode;
-            document.getElementById('copilotHeroCity').textContent = guide.cityTitle;
-            document.getElementById('copilotHeroSub').textContent = trip.weatherSummary
-                ? `Forecast ${trip.weatherSummary} • ${guide.currency} • ${guide.langLabel}`
-                : `${guide.currency} • ${guide.langLabel} • Offline Ready`;
+            document.getElementById('hubBadgePill').textContent = guide.airportCode;
+            document.getElementById('hubHeroCity').textContent = guide.cityTitle;
+            document.getElementById('hubHeroSub').textContent = trip.weatherSummary
+                ? `${trip.weatherSummary} • ${guide.currency} • ${guide.langLabel}`
+                : `${guide.currency} • ${guide.langLabel} • Ready`;
 
             const savedOverride = localStorage.getItem(`lintas_mode_${trip.id}`);
             const titleImpliesDrive = /road\s*trip|drive|driving|overland|border|ciq/i.test(trip.name || '');
             const resolvedMode = savedOverride || trip.travelMode || (titleImpliesDrive ? 'drive' : guide.defaultMode) || 'flight';
             applyTripTravelMode(resolvedMode);
-            activateCopilotDeck('secRadar');
+            activateHubDeck('secRadar');
 
             document.getElementById('borderPostBadge').textContent = guide.borderPost.toUpperCase();
             document.getElementById('borderPostTitle').textContent = guide.borderTitle;
@@ -2383,7 +2344,7 @@
             document.getElementById('wazeTrafficLink').href = wazeUrl;
 
             const updateDestinationClock = () => {
-                const clockEl = document.getElementById('copilotLiveClock');
+                const clockEl = document.getElementById('hubLiveClock');
                 if (!clockEl) return;
                 try {
                     clockEl.textContent = new Date().toLocaleTimeString([], {
@@ -2397,8 +2358,8 @@
                 }
             };
             updateDestinationClock();
-            if (copilotClockTimer) clearInterval(copilotClockTimer);
-            copilotClockTimer = setInterval(updateDestinationClock, 15000);
+            if (hubClockTimer) clearInterval(hubClockTimer);
+            hubClockTimer = setInterval(updateDestinationClock, 15000);
 
             populateCurrencyDropdowns(guide.currency);
             initCurrencyRates();
@@ -2457,40 +2418,6 @@
                 });
             });
 
-            const checkStorageKey = `lintas_checklist_${trip.id}`;
-            let savedChecks = {};
-            try { savedChecks = JSON.parse(localStorage.getItem(checkStorageKey) || "{}"); } catch (_) {}
-
-            const checklistEl = document.getElementById('guideChecklistItems');
-            const progressEl = document.getElementById('checklistProgressText');
-            const progressBarEl = document.getElementById('checklistProgressBar');
-
-            function updateChecklistProgress() {
-                const total = guide.entryChecklist.length;
-                const done = guide.entryChecklist.filter((_, idx) => !!savedChecks[idx]).length;
-                const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-                progressEl.textContent = pct === 100 ? "100% Border Ready ✓" : `${done}/${total} Done`;
-                progressEl.className = pct === 100 ? "shrink-0 whitespace-nowrap text-[11px] font-extrabold text-emerald-400" : "shrink-0 whitespace-nowrap text-[11px] font-extrabold text-sky-400";
-                if (progressBarEl) progressBarEl.style.width = `${pct}%`;
-            }
-
-            checklistEl.innerHTML = guide.entryChecklist.map((item, idx) => `
-                <label style="background-color: #0f172a; border: 1px solid #334155;" class="flex items-start gap-2.5 p-2.5 rounded-2xl cursor-pointer">
-                    <input type="checkbox" data-chk-idx="${idx}" ${savedChecks[idx] ? 'checked' : ''} class="mt-0.5 w-4 h-4 shrink-0 rounded text-blue-600">
-                    <span style="color: #e2e8f0;" class="text-xs leading-snug">${escapeHtml(item)}</span>
-                </label>
-            `).join('');
-
-            checklistEl.querySelectorAll('input[type="checkbox"]').forEach((box) => {
-                box.addEventListener('change', (e) => {
-                    const i = e.target.dataset.chkIdx;
-                    savedChecks[i] = e.target.checked;
-                    localStorage.setItem(checkStorageKey, JSON.stringify(savedChecks));
-                    updateChecklistProgress();
-                });
-            });
-            updateChecklistProgress();
-
             const hotelStorageKey = `lintas_hotel_${trip.id}`;
             let savedHotel = { name: "", addr: "" };
             try { savedHotel = JSON.parse(localStorage.getItem(hotelStorageKey) || '{"name":"","addr":""}'); } catch (_) {}
@@ -2521,10 +2448,10 @@
             const passesBtn = document.getElementById('tabPassesBtn');
             const guideBtn = document.getElementById('tabGuideBtn');
 
-            if (mode === 'copilot') {
+            if (mode === 'hub') {
                 guideTab.classList.remove('hide');
                 passesTab.classList.add('hide');
-                guideBtn.className = 'copilot-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0';
+                guideBtn.className = 'hub-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0';
                 passesBtn.className = 'py-2.5 px-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5 min-w-0';
             } else {
                 closeTrafficPip();
@@ -2537,7 +2464,7 @@
         }
 
         document.getElementById('tabPassesBtn').addEventListener('click', () => setTripDetailTab('passes'));
-        document.getElementById('tabGuideBtn').addEventListener('click', () => setTripDetailTab('copilot'));
+        document.getElementById('tabGuideBtn').addEventListener('click', () => setTripDetailTab('hub'));
 
         document.getElementById('checkFlightBtn').addEventListener('click', () => {
             const code = document.getElementById('flightCodeInput').value.trim().toUpperCase().replace(/\s+/g, '');
@@ -2547,7 +2474,7 @@
 
         document.getElementById('showDriverBtn').addEventListener('click', () => {
             const name = document.getElementById('hotelNameInput').value.trim() || "Hotel / Accommodation";
-            const addr = document.getElementById('hotelAddrInput').value.trim() || "Enter your hotel address in City Co-Pilot first";
+            const addr = document.getElementById('hotelAddrInput').value.trim() || "Enter your hotel address in Travel Hub first";
             document.getElementById('driverHotelName').textContent = name;
             document.getElementById('driverHotelAddr').textContent = addr;
             document.getElementById('driverCardModal').classList.remove('hide');
@@ -3583,9 +3510,9 @@
             clearTimeout(arrowHideTimer);
             closeTrafficPip();
             closeProviderInfoPip();
-            if (copilotClockTimer) {
-                clearInterval(copilotClockTimer);
-                copilotClockTimer = null;
+            if (hubClockTimer) {
+                clearInterval(hubClockTimer);
+                hubClockTimer = null;
             }
             stopLiveCamera();
             clearSessionActivity();
@@ -3650,14 +3577,14 @@
             if (user.isAnonymous) {
                 document.getElementById('userEmailDisplay').textContent = "Guest";
                 document.getElementById('settingsUserLabel').textContent = "Guest (Local Device)";
-                syncBadge.textContent = "● Offline Local Mode";
+                syncBadge.textContent = "● Offline Mode";
                 settingsMode.textContent = "✓ Local-Only Storage • 15m Grace Active";
                 guestBanner.classList.remove('hide');
             } else {
                 const label = user.email ? user.email.split('@')[0] : "Traveler";
                 document.getElementById('userEmailDisplay').textContent = label;
                 document.getElementById('settingsUserLabel').textContent = user.email || "Google Account";
-                syncBadge.textContent = "● Cloud Sync + Offline Ready";
+                syncBadge.textContent = "● Cloud Sync Active";
                 settingsMode.textContent = "✓ Cloud Sync • 15m Grace • 30d Auto-Delete";
                 guestBanner.classList.add('hide');
             }
@@ -3863,7 +3790,7 @@
                 const email = auth.currentUser.email || "Traveler";
                 document.getElementById('userEmailDisplay').textContent = email.split('@')[0];
                 document.getElementById('settingsUserLabel').textContent = email;
-                document.getElementById('syncStatusBadge').textContent = "● Cloud Sync + Offline Ready";
+                document.getElementById('syncStatusBadge').textContent = "● Cloud Sync Active";
                 await loadTrips();
                 await showNotice("Account Linked", "Your trips are now synced across your devices.", "Lintas • Sync Active");
             } catch (error) {
@@ -4020,7 +3947,7 @@
                             <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
                         </div>
                         <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-2.5 flex items-center justify-between text-xs font-bold text-sky-400">
-                            <span>Passes &amp; City Co-Pilot</span>
+                            <span>Passes &amp; Travel Hub</span>
                             <span>Open Trip →</span>
                         </div>
                     `;
@@ -4223,9 +4150,9 @@
 
                 closeTrafficPip();
                 closeProviderInfoPip();
-                if (copilotClockTimer) {
-                    clearInterval(copilotClockTimer);
-                    copilotClockTimer = null;
+                if (hubClockTimer) {
+                    clearInterval(hubClockTimer);
+                    hubClockTimer = null;
                 }
                 currentTripId = null;
                 showScreen('dashboard');
@@ -4703,9 +4630,9 @@
         document.getElementById('backToTripsBtn').onclick = () => {
             closeTrafficPip();
             closeProviderInfoPip();
-            if (copilotClockTimer) {
-                clearInterval(copilotClockTimer);
-                copilotClockTimer = null;
+            if (hubClockTimer) {
+                clearInterval(hubClockTimer);
+                hubClockTimer = null;
             }
             currentTripId = null;
             showScreen('dashboard');
