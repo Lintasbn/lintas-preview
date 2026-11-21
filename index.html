@@ -93,6 +93,46 @@
         .spotlight-card:active {
             transform: scale(0.985);
         }
+        .promo-partner-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.42) 0%, rgba(15, 23, 42, 0.96) 55%, rgba(14, 116, 144, 0.32) 100%);
+            border: 1px solid rgba(52, 211, 153, 0.42);
+            box-shadow: 0 12px 30px -8px rgba(16, 185, 129, 0.25);
+            transition: transform 0.12s ease, border-color 0.2s ease;
+        }
+        .promo-partner-card:active {
+            transform: scale(0.985);
+        }
+        .promo-cta-btn {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            box-shadow: 0 6px 18px -4px rgba(16, 185, 129, 0.6);
+        }
+        .promo-cta-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+            transform: skewX(-20deg);
+            animation: ctaShimmer 3.6s infinite;
+        }
+        @keyframes ctaShimmer {
+            0%, 55% { left: -120%; }
+            100% { left: 160%; }
+        }
+        @keyframes tickerFade {
+            0% { opacity: 0; transform: translateY(4px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .promo-ticker-anim {
+            animation: tickerFade 0.28s ease-out forwards;
+        }
         .modal-card {
             background-color: #1e293b;
             border: 1px solid rgba(255, 255, 255, 0.14);
@@ -103,6 +143,10 @@
             border: 1px solid #334155 !important;
             caret-color: #3b82f6;
             color-scheme: dark;
+            min-width: 0;
+            min-height: 44px;
+            -webkit-appearance: none;
+            appearance: none;
         }
         .input-dark::placeholder {
             color: #64748b !important;
@@ -275,7 +319,7 @@
         <div style="background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);" class="w-96 h-96 mx-auto -mt-20"></div>
     </div>
 
-    <!-- LOGIN SCREEN (APPROACH B GLASSMORPHIC CARD) -->
+    <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="flex-1 flex flex-col justify-between p-6 text-center relative" style="z-index: 10;">
         <div class="pt-1 flex justify-center px-2">
             <button id="localContextPill" type="button" style="background-color: rgba(30, 41, 59, 0.72); border: 1px solid rgba(148, 163, 184, 0.18);" class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 px-3.5 py-1.5 rounded-2xl text-[11px] font-medium text-slate-300 hover:text-white hover:border-blue-400/40 transition-colors max-w-full leading-snug" title="Tap to refresh with precise GPS">
@@ -297,11 +341,10 @@
             
             <h1 class="brand-wordmark text-5xl sm:text-6xl mb-2 select-none">Lintas<span class="brand-wordmark-dot"></span></h1>
             <p style="color: #e2e8f0;" class="text-base font-semibold tracking-tight mb-1">Breeze through borders.</p>
-            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-xs leading-relaxed">All your travel QR passes &amp; receipts, synced and ready offline.</p>
+            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-xs leading-relaxed">All your travel QR passes, transit guides &amp; tools, synced and ready offline.</p>
 
-            <!-- Approach B Glassmorphic Auth Card -->
+            <!-- Glassmorphic Auth Card -->
             <div class="glass-auth-card w-full max-w-sm rounded-3xl p-5 space-y-3">
-                <!-- BIOMETRIC QUICK UNLOCK BUTTON (REQUIRED ON COLD OPEN & AFTER TIMEOUT WHEN BIOMETRICS ARE REGISTERED) -->
                 <button id="biometricUnlockBtn" type="button" class="hide btn-biometric w-full font-bold py-4 px-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg text-sm">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path>
@@ -344,7 +387,7 @@
         </footer>
     </div>
 
-    <!-- DASHBOARD SCREEN (APPROACH B SPOTLIGHT + FILTER PILLS + FAB) -->
+    <!-- DASHBOARD SCREEN -->
     <div id="dashboardScreen" class="hide flex-1 flex flex-col h-screen overflow-hidden" style="position: relative; z-index: 10;">
         <div class="glass px-4 py-3.5 flex items-center justify-between sticky top-0 gap-2" style="z-index: 20;">
             <div class="flex items-center gap-2.5 shrink-0">
@@ -388,7 +431,7 @@
                     </button>
                 </div>
 
-                <!-- BIOMETRIC OPT-IN BANNER (OPTIONAL — USERS WHO SKIP STILL GET 15-MIN GRACE PERSISTENCE) -->
+                <!-- BIOMETRIC OPT-IN BANNER -->
                 <div id="biometricSetupBanner" class="hide mb-4 p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-between gap-3">
                     <div class="text-left">
                         <p class="text-xs font-bold text-sky-300">Optional: Face ID / Fingerprint</p>
@@ -399,7 +442,7 @@
                     </button>
                 </div>
 
-                <!-- APPROACH B: NEXT UPCOMING / ACTIVE TRIP SPOTLIGHT CARD -->
+                <!-- NEXT UPCOMING / ACTIVE TRIP SPOTLIGHT CARD -->
                 <div id="spotlightSection" class="hide mb-6">
                     <div class="flex items-center justify-between mb-2">
                         <span id="spotlightHeading" class="text-[11px] font-bold uppercase tracking-wider text-sky-400">● Next Upcoming Trip</span>
@@ -426,7 +469,7 @@
             </div>
 
             <!-- FIRESTORE-POWERED TRAVEL PARTNER / AFFILIATE BANNER SLOT -->
-            <div id="adBannerSlot" class="mt-8"></div>
+            <div id="adBannerSlot" class="mt-7"></div>
 
             <p style="color: #475569;" class="text-[11px] text-center leading-relaxed mt-6 px-4">
                 Independent personal travel utility • User-uploaded files remain your sole responsibility • Auto-expires 30 days after trip end date.
@@ -440,9 +483,9 @@
         </button>
     </div>
 
-    <!-- TRIP DETAIL SCREEN -->
+    <!-- TRIP DETAIL SCREEN (PASSES & QRs + ALL-IN-ONE DESTINATION HUB) -->
     <div id="tripDetailScreen" style="background-color: #0f172a; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
-        <div class="glass px-4 py-3.5 flex items-center justify-between gap-2" style="position: relative; z-index: 50;">
+        <div class="glass px-4 py-3 flex items-center justify-between gap-2" style="position: relative; z-index: 50;">
             <div class="flex items-center gap-2 overflow-hidden">
                 <button id="backToTripsBtn" type="button" class="p-2 -ml-2 text-blue-400 shrink-0">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -454,18 +497,153 @@
             </div>
             <button id="deleteTripBtn" type="button" class="shrink-0 text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30" style="touch-action: manipulation;">Delete Trip</button>
         </div>
+
+        <!-- TRIP DETAIL SUB-TABS: PASSES vs DESTINATION HUB -->
+        <div style="background-color: #0f172a; border-bottom: 1px solid rgba(148, 163, 184, 0.12);" class="px-4 py-2.5 max-w-2xl w-full mx-auto shrink-0">
+            <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.16);" class="grid grid-cols-2 p-1 rounded-2xl gap-1">
+                <button id="tabPassesBtn" type="button" class="py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white transition-all">
+                    🎫 Passes &amp; QRs
+                </button>
+                <button id="tabGuideBtn" type="button" class="py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all">
+                    🧭 Trip Guide &amp; Tools
+                </button>
+            </div>
+        </div>
         
         <div class="flex-1 overflow-y-auto p-4 pb-24 max-w-2xl w-full mx-auto">
-            <button id="addDocTopBtn" type="button" class="w-full btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
-                + Add QR Pass / Document
-            </button>
+            <!-- TAB 1: PASSES & QRs -->
+            <div id="tripPassesTab">
+                <button id="addDocTopBtn" type="button" class="w-full btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
+                    + Add QR Pass / Document
+                </button>
 
-            <div id="emptyDocsState" class="text-center py-14 card-dark rounded-2xl p-6">
-                <p style="color: #94a3b8;" class="text-sm mb-2">No passes added to this trip yet.</p>
-                <p style="color: #64748b;" class="text-xs">Upload EES QR, MDAC, ferry/flight passes, or booking receipts for instant offline access.</p>
+                <div id="emptyDocsState" class="text-center py-14 card-dark rounded-2xl p-6">
+                    <p style="color: #94a3b8;" class="text-sm mb-2">No passes added to this trip yet.</p>
+                    <p style="color: #64748b;" class="text-xs">Upload EES QR, MDAC, ferry/flight passes, or booking receipts for instant offline access.</p>
+                </div>
+                <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
             </div>
-            <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
+
+            <!-- TAB 2: ALL-IN-ONE DESTINATION HUB & TRAVEL TOOLS -->
+            <div id="tripGuideTab" class="hide space-y-4">
+                <!-- 1. OFFLINE-READY CURRENCY CONVERTER -->
+                <div class="card-dark rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">💱</span>
+                            <h3 class="text-sm font-bold text-white">Quick Currency Converter</h3>
+                        </div>
+                        <span id="fxRateBadge" class="text-[10px] font-semibold text-emerald-400">Offline Ready</span>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center">
+                        <div class="col-span-5">
+                            <input type="number" id="fxAmountInput" value="100" min="0" step="any" class="input-dark w-full rounded-xl px-3 py-2 text-sm font-bold" placeholder="Amount">
+                        </div>
+                        <div class="col-span-3">
+                            <select id="fxFromSelect" class="input-dark w-full rounded-xl px-2 py-2 text-xs font-bold text-center"></select>
+                        </div>
+                        <div class="col-span-1 flex justify-center">
+                            <button id="fxSwapBtn" type="button" class="p-1.5 rounded-lg bg-slate-800 text-sky-400 text-xs font-bold active:scale-90" title="Swap currencies">⇄</button>
+                        </div>
+                        <div class="col-span-3">
+                            <select id="fxToSelect" class="input-dark w-full rounded-xl px-2 py-2 text-xs font-bold text-center"></select>
+                        </div>
+                    </div>
+                    <div style="background-color: #0f172a; border: 1px solid #334155;" class="mt-3 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
+                        <span style="color: #94a3b8;" class="text-xs">Converted Total</span>
+                        <span id="fxResultText" class="text-base font-extrabold text-sky-300">—</span>
+                    </div>
+                    <p style="color: #64748b;" class="text-[10px] mt-1.5 text-right">
+                        <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-400">Rates By Exchange Rate API</a> • Cached for offline use
+                    </p>
+                </div>
+
+                <!-- 2. NEAREST AIRPORT & LIVE FLIGHT TRACKER -->
+                <div class="card-dark rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">✈️</span>
+                            <h3 class="text-sm font-bold text-white">Airport &amp; Flight Status</h3>
+                        </div>
+                        <span id="guideAirportCode" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">AIRPORT</span>
+                    </div>
+                    <p id="guideAirportName" class="text-xs font-semibold text-white"></p>
+                    <p id="guideAirportTransfer" style="color: #94a3b8;" class="text-xs mt-1 leading-relaxed"></p>
+                    <div class="mt-3 flex gap-2">
+                        <input type="text" id="flightCodeInput" placeholder="Flight No. (e.g., BI873, AK510)" class="input-dark flex-1 rounded-xl px-3 py-2 text-xs uppercase">
+                        <button id="checkFlightBtn" type="button" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-bold shrink-0">Track Flight ↗</button>
+                    </div>
+                </div>
+
+                <!-- 3. LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
+                <div class="card-dark rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">⛴️</span>
+                            <h3 class="text-sm font-bold text-white">Ferry, Public Bus &amp; Transit</h3>
+                        </div>
+                        <a id="guideTransitMapLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-400">Transit Map ↗</a>
+                    </div>
+                    <div id="guideTransitBody" class="space-y-2.5 text-xs"></div>
+                </div>
+
+                <!-- 4. RECOMMENDED SPOTS TO EAT (HALAL & LOCAL FAVORITES) -->
+                <div class="card-dark rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">🍜</span>
+                            <h3 class="text-sm font-bold text-white">Recommended Spots to Eat</h3>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Halal &amp; Local</span>
+                    </div>
+                    <div id="guideFoodList" class="space-y-2.5"></div>
+                </div>
+
+                <!-- 5. PRE-DEPARTURE BORDER & PACKING CHECKLIST -->
+                <div class="card-dark rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">✅</span>
+                            <h3 class="text-sm font-bold text-white">Border &amp; Packing Checklist</h3>
+                        </div>
+                        <span id="checklistProgressText" class="text-[11px] font-bold text-sky-400">0/0 Done</span>
+                    </div>
+                    <div id="guideChecklistItems" class="space-y-2"></div>
+                </div>
+
+                <!-- 6. STAY ADDRESS ("SHOW TAXI DRIVER") & EMERGENCY CONTACTS -->
+                <div class="card-dark rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">🏨</span>
+                            <h3 class="text-sm font-bold text-white">Hotel / Stay Address Card</h3>
+                        </div>
+                        <button id="showDriverBtn" type="button" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/35">Show Driver ⛶</button>
+                    </div>
+                    <input type="text" id="hotelNameInput" placeholder="Hotel / Airbnb Name" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
+                    <input type="text" id="hotelAddrInput" placeholder="Full Street Address (for taxi / Grab)" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
+
+                    <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-3">
+                        <p class="text-xs font-bold text-red-300 mb-1.5">🚨 Local Emergency &amp; Brunei Mission</p>
+                        <div id="guideEmergencyBox" style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl p-3 text-xs space-y-1"></div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <!-- FULL-SCREEN "SHOW TO TAXI DRIVER" CARD -->
+    <div id="driverCardModal" style="z-index: 10005;" class="hide fixed inset-0 bg-slate-950 flex flex-col justify-between p-6 text-center">
+        <div class="flex justify-between items-center">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Lintas • Driver Card</span>
+            <button id="closeDriverCardBtn" type="button" class="px-4 py-2 rounded-full bg-slate-800 text-white text-xs font-bold">Close ✕</button>
+        </div>
+        <div class="my-auto space-y-4">
+            <p style="color: #94a3b8;" class="text-xs uppercase tracking-widest">Please take me to:</p>
+            <h2 id="driverHotelName" class="text-3xl sm:text-4xl font-extrabold text-white leading-tight break-words">My Hotel</h2>
+            <p id="driverHotelAddr" class="text-lg sm:text-xl font-semibold text-sky-300 leading-relaxed break-words">No address entered yet</p>
+        </div>
+        <p style="color: #64748b;" class="text-xs">Saved offline on your device</p>
     </div>
 
     <!-- FULLSCREEN SWIPING GALLERY VIEWER -->
@@ -585,7 +763,7 @@
         </div>
     </div>
 
-    <!-- NEW TRIP MODAL (WITH QUICK-TAP DESTINATION CHIPS + START/END DATE PICKERS) -->
+    <!-- NEW TRIP MODAL -->
     <div id="newTripModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5 overflow-y-auto">
         <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
@@ -625,18 +803,18 @@
                 <button type="button" class="dest-chip" data-dest="Melbourne">🇦🇺 Melbourne</button>
             </div>
 
-            <div class="grid grid-cols-2 gap-2.5 mb-3">
-                <div>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div class="min-w-0">
                     <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Start Date</label>
                     <input type="date" id="tripStartDateInput" class="input-dark w-full rounded-xl px-3 py-2.5 text-xs">
                 </div>
-                <div>
+                <div class="min-w-0">
                     <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">End Date</label>
                     <input type="date" id="tripEndDateInput" class="input-dark w-full rounded-xl px-3 py-2.5 text-xs">
                 </div>
             </div>
 
-            <p style="color: #64748b;" class="text-xs mb-5">Checks destination forecast &amp; auto-cleans 30 days after your Trip End Date.</p>
+            <p style="color: #64748b;" class="text-xs mb-5">Unlocks destination guide, weather forecast &amp; auto-cleans 30 days after Trip End Date.</p>
             <button id="saveTripBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl">Create Trip</button>
         </div>
     </div>
@@ -734,7 +912,7 @@
         </div>
     </div>
 
-    <!-- BIOMETRIC ENROLLMENT CONFIRMATION MODAL (OPTIONAL AFTER GOOGLE SIGN-IN) -->
+    <!-- BIOMETRIC ENROLLMENT CONFIRMATION MODAL -->
     <div id="bioPromptModal" style="z-index: 10004;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
         <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center">
             <div class="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center mx-auto mb-3 text-sky-300">
@@ -797,7 +975,6 @@
         const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
 
-        // Detect iOS / Safari WebKit: avoid Firestore IndexedDB multi-tab hang on iOS by using memoryLocalCache + our custom IndexedDB offline mirror
         const isAppleWebKit = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
             (/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
@@ -808,7 +985,7 @@
 
         const RETENTION_DAYS = 30;
         const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
-        const SESSION_GRACE_MS = 15 * 60 * 1000; // 15-minute grace window across app closes & inactivity
+        const SESSION_GRACE_MS = 15 * 60 * 1000;
         const LAST_ACTIVE_KEY = "lintas_last_active_ts";
         const TAB_UNLOCKED_KEY = "lintas_tab_unlocked";
         const BIO_CRED_KEY = "lintas_biometric_cred_v1";
@@ -838,11 +1015,430 @@
         }
 
         // =========================================================================
-        // DYNAMIC FIRESTORE AFFILIATE / SPONSOR BANNER (0 NETLIFY CREDITS TO UPDATE)
+        // DESTINATION INTELLIGENCE DATABASE (AIRPORT, FERRY, BUS, FOOD, EMBASSY)
+        // =========================================================================
+        const DESTINATION_GUIDES = {
+            "miri": {
+                currency: "MYR",
+                airportCode: "MYY",
+                airportName: "Miri Airport (MYY)",
+                airportTransfer: "~15 mins (10 km) to Miri City Centre via Grab (~RM12–18) or airport taxi.",
+                ferryInfo: "No passenger ferry to Brunei — overland border crossing via Sungai Tujoh CIQ (~35 mins from Miri).",
+                busInfo: "Miri City Bus (Line 33/34) serves Boulevard, Bintang Megamall & Permyjaya. Grab is the fastest way around town.",
+                entryChecklist: ["Submit MDAC (Malaysia Digital Arrival Card) within 3 days before arrival", "Save MDAC PIN & QR screenshot in Lintas", "Ensure vehicle VEP / EES pass is ready for Sungai Tujoh border"],
+                emergency: "Emergency: 999 • Brunei Consulate General in Kuching (Sarawak): +60 10-950 1143",
+                food: [
+                    { name: "Selera Rasa Segar (Miri Waterfront)", tag: "Halal • Local Seafood", note: "Famous grilled ikan bakar, butter prawns & local Sarawak dishes by the river." },
+                    { name: "Nasi Katok & Lalapan Miri Central", tag: "Halal • Budget Favorite", note: "Crispy ayam penyet & sambal lalapan popular with Brunei weekenders." },
+                    { name: "Muara Restaurant (Jalan North Yu Seng)", tag: "Halal • Brunei-Malay", note: "Authentic ambuyat, kelupis & traditional Borneo-Malay sets." }
+                ]
+            },
+            "kota kinabalu": {
+                currency: "MYR",
+                airportCode: "BKI",
+                airportName: "Kota Kinabalu International Airport (BKI)",
+                airportTransfer: "~15 mins (8 km) to KK City / Gaya Street via Grab (~RM10–16) or Airport Bus (RM5).",
+                ferryInfo: "Jesselton Point Ferry Terminal (City Centre): hourly boats to Tunku Abdul Rahman Marine Park (Manukan, Sapi, Mamutik) & Labuan express ferry.",
+                busInfo: "City Bus (green/blue) loops KK Sentral, Wawasan Plaza & 1Borneo. Grab covers all city & Kundasang day trips.",
+                entryChecklist: ["Submit MDAC (Malaysia Digital Arrival Card) within 3 days before arrival", "Save MDAC & return flight QR passes in Lintas", "Pack light jacket if heading up to Kundasang / Ranau"],
+                emergency: "Emergency: 999 • Brunei Consulate General in Kota Kinabalu (Sabah): +60 10-241 6112",
+                food: [
+                    { name: "Welcome Seafood Restaurant (Asia City)", tag: "Halal-Certified • Seafood", note: "Live tanks with salted egg crab, wet butter tiger prawns & Sabah veggie." },
+                    { name: "Restoran Sri Melaka (Kampung Air)", tag: "Halal • Nyonya & Local", note: "Classic Sabah-Nyonya dishes, asam pedas & sotong goreng tepung." },
+                    { name: "Todak Waterfront Hawker Stalls", tag: "Muslim-Friendly • Night Market", note: "Fresh grilled lobster, stingray & coconut pudding right by the sea." }
+                ]
+            },
+            "kuala lumpur": {
+                currency: "MYR",
+                airportCode: "KUL",
+                airportName: "Kuala Lumpur International Airport (KLIA T1 / T2)",
+                airportTransfer: "28 mins to KL Sentral via KLIA Ekspres train (RM55), ~55 mins via Airport Coach (RM15), or ~50 mins via Grab (~RM65–85).",
+                ferryInfo: "Nearest port is Port Klang (~45 mins via KTM Komuter) for ferries to Pulau Ketam & Sumatra.",
+                busInfo: "RapidKL MRT, LRT & Monorail connect Bukit Bintang, KLCC & KL Sentral using Touch 'n Go card. Free GoKL city buses run green/purple loops.",
+                entryChecklist: ["Submit MDAC within 3 days before arrival", "Save KLIA Ekspres / flight QR pass in Lintas", "Top up Touch 'n Go eWallet / card for MRT & tolls"],
+                emergency: "Emergency: 999 • Brunei High Commission in Kuala Lumpur: +60 19-212 0114",
+                food: [
+                    { name: "Village Park Restaurant (Damansara Uptown)", tag: "Halal • Iconic Nasi Lemak", note: "Legendary crispy ayam goreng berempah nasi lemak — arrive before 11 AM." },
+                    { name: "Jalan Alor & Bukit Bintang Halal Spots", tag: "Halal Options • Street Food", note: "Try Damascus Bukit Bintang (shawarma) or Halab Gate nearby." },
+                    { name: "Sambal Hijau (Sungai Penchala)", tag: "Halal • Kampung Buffet", note: "Over 60 traditional Malay dishes, masak lemak & grilled fish." }
+                ]
+            },
+            "kuching": {
+                currency: "MYR",
+                airportCode: "KCH",
+                airportName: "Kuching International Airport (KCH)",
+                airportTransfer: "~20 mins (11 km) to Kuching Waterfront via Grab (~RM14–20).",
+                ferryInfo: "Traditional Penambang sampan boats cross Sarawak River (RM1) between Waterfront & Kampung Boyan for kek lapis.",
+                busInfo: "Kuching Metro electric buses (free city routes) & Grab serve Waterfront, VivaCity & Semenggoh.",
+                entryChecklist: ["Submit MDAC within 3 days before arrival", "Save flight & hotel confirmations in Lintas"],
+                emergency: "Emergency: 999 • Brunei Consulate General in Kuching: +60 10-950 1143",
+                food: [
+                    { name: "Topspot Food Court (Bukit Mata)", tag: "Halal Seafood Stalls", note: "Rooftop seafood institution — order midin belacan, oyster omelette & grilled fish." },
+                    { name: "Mom's Laksa (Jalan Haji Taha)", tag: "Halal • Sarawak Laksa", note: "Rich, aromatic Halal Sarawak Laksa & kolo mee." },
+                    { name: "Mira Cake House (Kampung Boyan)", tag: "Halal • Kek Lapis", note: "Take the RM1 river sampan across the Waterfront to sample Sarawak layer cakes." }
+                ]
+            },
+            "singapore": {
+                currency: "SGD",
+                airportCode: "SIN",
+                airportName: "Singapore Changi Airport (SIN)",
+                airportTransfer: "~30 mins to City Hall / Orchard via MRT East-West Line (change at Tanah Merah) or ~20 mins via Grab / Taxi (~SGD 22–32).",
+                ferryInfo: "Tanah Merah Ferry Terminal (10 mins from Changi) for Batam & Bintan; HarbourFront Ferry Terminal (VivoCity) for Batam/Sentosa.",
+                busInfo: "Tap Visa/Mastercard directly on any MRT gate or SBS/SMRT public bus (no EZ-Link purchase needed). Use Grab, Gojek, or Zig.",
+                entryChecklist: ["Submit SG Arrival Card (SGAC) within 3 days before arrival", "Save SGAC & Changi Jewel / attraction QRs in Lintas", "Bring Visa/Mastercard contactless card for MRT & buses"],
+                emergency: "Police: 999 • Ambulance/Fire: 995 • Brunei High Commission in Singapore: +65 9673 0300",
+                food: [
+                    { name: "Zam Zam Restaurant (North Bridge Rd)", tag: "Halal • Heritage Murtabak", note: "Iconic deer/chicken murtabak & briyani opposite Sultan Mosque." },
+                    { name: "Hajjah Maimunah (Jalan Pisang)", tag: "Halal • Michelin Bib Gourmand", note: "Famous Nasi Padang, siput sedut & beef rendang." },
+                    { name: "Lau Pa Sat / Maxwell Halal Stalls", tag: "Halal Stalls • Hawker", note: "Satay Street at night (Stalls 7 & 8 are Halal-certified)." }
+                ]
+            },
+            "seoul": {
+                currency: "KRW",
+                airportCode: "ICN",
+                airportName: "Incheon International Airport (ICN T1 / T2)",
+                airportTransfer: "43 mins nonstop to Seoul Station via AREX Express Train (~₩11,000), or 60–75 mins via Airport Limousine Bus (~₩17,000).",
+                ferryInfo: "Incheon Coastal Passenger Terminal operates ferries to Jeju & nearby islands; Busan Port serves ferries to Fukuoka/Osaka.",
+                busInfo: "Buy a T-money card at any GS25/CU convenience store for Seoul Subway & blue/green buses. Use Naver Map or KakaoMap (Google Maps walking is limited in Korea) and Kakao T for taxis.",
+                entryChecklist: ["Check K-ETA / Q-Code health declaration requirements before flight", "Install Naver Map & Kakao T before landing", "Save AREX train QR & Nami/Everland tickets in Lintas"],
+                emergency: "Police: 112 • Fire/Ambulance: 119 • Brunei Embassy in Seoul: +82 10-4406-3808",
+                food: [
+                    { name: "Eid Halal Korean Food (Itaewon)", tag: "KMF Halal-Certified", note: "Authentic Halal bulgogi, japchae, samgyetang & tteokbokki near Seoul Central Mosque." },
+                    { name: "Makan Halal Korean Restaurant (Itaewon)", tag: "Halal-Certified", note: "Popular for Korean fried chicken, dakgalbi & beef stew." },
+                    { name: "Busan Jib (Myeongdong)", tag: "Muslim-Friendly • Seafood", note: "Spicy seafood stew, grilled mackerel & ginseng chicken right in Myeongdong." }
+                ]
+            },
+            "tokyo": {
+                currency: "JPY",
+                airportCode: "HND / NRT",
+                airportName: "Haneda (HND) or Narita Airport (NRT)",
+                airportTransfer: "Haneda: 15–25 mins via Tokyo Monorail or Keikyu Line. Narita: 53 mins via Narita Express (N'EX) to Tokyo Station or 41 mins via Keisei Skyliner to Ueno.",
+                ferryInfo: "Tokyo Bay Ferry (Kurihama–Kanaya) & Takeshiba Pier for Izu Islands; Tokyo Water Bus cruises Asakusa to Odaiba.",
+                busInfo: "Add Digital Suica or PASMO to Apple Wallet / Google Pay for instant tap-and-go on JR Yamanote, Tokyo Metro & Toei buses.",
+                entryChecklist: ["Complete Visit Japan Web (Immigration & Customs QR) & save screenshot in Lintas", "Add Suica/PASMO to phone wallet", "Carry some JPY cash for small ramen shops & temples"],
+                emergency: "Police: 110 • Ambulance/Fire: 119 • Brunei Embassy in Tokyo: +81 80-1161-5328",
+                food: [
+                    { name: "Halal Ramen Honolu (Ebisu / Asakusa)", tag: "Halal-Certified • Ramen", note: "Rich chicken paitan ramen & crispy karaage — very popular with Bruneian travelers." },
+                    { name: "Gyumon Halal Yakiniku (Shibuya / Asakusa)", tag: "Halal • Wagyu BBQ", note: "Charcoal-grilled Halal Japanese Wagyu beef sets." },
+                    { name: "Naritaya Halal Ramen (Asakusa)", tag: "Halal-Certified", note: "Steps from Senso-ji Temple with mazesoba & gyoza." }
+                ]
+            },
+            "bangkok": {
+                currency: "THB",
+                airportCode: "BKK / DMK",
+                airportName: "Suvarnabhumi (BKK) or Don Mueang (DMK)",
+                airportTransfer: "BKK: 26 mins to Phaya Thai via Airport Rail Link (฿45). DMK: 20 mins to Bang Sue via SRT Red Line. Use Grab or Bolt in the city.",
+                ferryInfo: "Chao Phraya Express Boat (Orange Flag, ฿16) connects Sathorn Pier (BTS Saphan Taksin) to Wat Arun, Grand Palace & Asiatique.",
+                busInfo: "BTS Skytrain & MRT Subway beat Bangkok traffic. Use Rabbit Card for BTS and contactless Visa/Mastercard for MRT.",
+                entryChecklist: ["Check Thailand Digital Arrival Card (TDAC) requirement before departure", "Install Grab & Bolt apps for metered/fixed rides", "Save flight & attraction QR passes in Lintas"],
+                emergency: "Tourist Police: 1155 • Emergency: 191 • Brunei Embassy in Bangkok: +66 92-270-9382",
+                food: [
+                    { name: "Yana Restaurant (MBK Center, 5th Floor)", tag: "Halal-Certified • Thai", note: "Famous tom yum kung, pad thai & mango sticky rice inside MBK Mall." },
+                    { name: "Saman Islam (Chatuchak Weekend Market)", tag: "Halal • Market Favorite", note: "Legendary beef noodle soup & Thai iced tea inside Section 16." },
+                    { name: "Usman Thai Muslim Food (Sukhumvit Soi 22)", tag: "Halal • Authentic Thai", note: "Green curry, massaman beef & papaya salad near Phrom Phong." }
+                ]
+            },
+            "jakarta": {
+                currency: "IDR",
+                airportCode: "CGK",
+                airportName: "Soekarno-Hatta International Airport (CGK)",
+                airportTransfer: "45 mins to BNI City (Sudirman) via KAI Bandara Airport Rail Link, or 45–75 mins via Bluebird Taxi / Grab / Gojek.",
+                ferryInfo: "Marina Ancol Pier operates speedboats (30–90 mins) to Thousand Islands (Pulau Macan, Pulau Ayer, Pulau Sepa).",
+                busInfo: "MRT Jakarta (Lebak Bulus – Bundaran HI), LRT Jabodebek & TransJakarta BRT corridors. Buy a Mandiri e-Money or BCA Flazz card at Indomaret.",
+                entryChecklist: ["Submit All Indonesia / e-CD Customs QR before arrival & save in Lintas", "Install Gojek, Grab & Bluebird apps", "Get a multi-trip e-Money/Flazz card for MRT & TransJakarta"],
+                emergency: "Emergency: 112 • Brunei Embassy in Jakarta: +62 811-900-6564",
+                food: [
+                    { name: "Sate Khas Senayan (Multiple Malls)", tag: "Halal • Indonesian Classic", note: "Signature chicken/lamb satay, soto betawi & tahutelor." },
+                    { name: "Pagi Sore (Menteng / Sudirman)", tag: "Halal • Nasi Padang", note: "Premium Minang-Padang feast with rendang & ayam pop." },
+                    { name: "RM Sederhana (Sabang / Thamrin)", tag: "Halal • Authentic Padang", note: "Reliable, fast & flavorful Padang dishes across central Jakarta." }
+                ]
+            },
+            "london": {
+                currency: "GBP",
+                airportCode: "LHR / LGW",
+                airportName: "London Heathrow (LHR) or Gatwick (LGW)",
+                airportTransfer: "Heathrow: 15 mins to Paddington via Heathrow Express or ~45 mins via Elizabeth Line directly to Bond St / Liverpool St. Tap contactless card directly.",
+                ferryInfo: "Uber Boat by Thames Clippers runs along the River Thames from Westminster & London Eye to Tower Pier & Greenwich.",
+                busInfo: "London Underground (Tube) & red double-decker buses are 100% cashless — tap any contactless bank card or Apple/Google Pay (daily fare cap applies).",
+                entryChecklist: ["Check UK ETA (Electronic Travel Authorisation) status before flying", "Save EES / Eurostar / Heathrow Express QR passes in Lintas", "Bring a contactless card/phone for Tube & buses"],
+                emergency: "Emergency: 999 • Brunei High Commission in London: +44 7481 270501",
+                food: [
+                    { name: "Roti King (Euston / Battersea)", tag: "Halal • Malaysian-Singaporean", note: "Famous flaky roti canai, kari laksa & char kway teow." },
+                    { name: "Dishoom (King's Cross / Covent Garden)", tag: "Halal Chicken & Lamb Options", note: "Bombay cafe famous for black daal, ruby chicken & chai." },
+                    { name: "Edgware Road & Bayswater (Queensway)", tag: "Halal Hub • Middle Eastern & Asian", note: "Dozens of Halal Lebanese grills, burger spots & Malaysian cafes." }
+                ]
+            }
+        };
+
+        function getDestinationGuide(locationStr) {
+            const raw = (locationStr || '').trim();
+            const cityOnly = raw.split(',')[0].trim().toLowerCase();
+            if (DESTINATION_GUIDES[cityOnly]) {
+                return { cityTitle: raw.split(',')[0].trim(), ...DESTINATION_GUIDES[cityOnly] };
+            }
+            // Smart fallback for other cities in our quick-tap chips or custom entries
+            const currencyGuess =
+                /surabaya|balikpapan|bali|bandung|medan/i.test(raw) ? "IDR" :
+                /ho chi minh|hanoi|da nang/i.test(raw) ? "VND" :
+                /manila|cebu/i.test(raw) ? "PHP" :
+                /taipei|kaohsiung/i.test(raw) ? "TWD" :
+                /hong kong/i.test(raw) ? "HKD" :
+                /beijing|shanghai|guangzhou/i.test(raw) ? "CNY" :
+                /paris|rome|amsterdam|berlin|madrid/i.test(raw) ? "EUR" :
+                /istanbul|ankara/i.test(raw) ? "TRY" :
+                /dubai|abu dhabi/i.test(raw) ? "AED" :
+                /jeddah|makkah|madinah|riyadh/i.test(raw) ? "SAR" :
+                /melbourne|sydney|perth/i.test(raw) ? "AUD" :
+                /malaysia|labuan|sandakan|tawau/i.test(raw) ? "MYR" : "USD";
+
+            const displayCity = raw || "Your Destination";
+            return {
+                cityTitle: displayCity,
+                currency: currencyGuess,
+                airportCode: "INTL",
+                airportName: `${displayCity} Nearest Airport`,
+                airportTransfer: "Check terminal express train, airport shuttle bus, or local ride-hailing pick-up zone.",
+                ferryInfo: "Use Transit Map ↗ above to view nearby ferry terminals, harbor crossings & intercity rail.",
+                busInfo: "Check local metro/bus contactless tap rules and download the primary regional ride-hailing app before arrival.",
+                entryChecklist: [
+                    "Verify digital arrival card / visa rules 72 hours before departure",
+                    "Save flight boarding passes, eSIM QR & hotel voucher in Lintas",
+                    "Download offline Google Maps area for your destination"
+                ],
+                emergency: "Brunei MFA Consular Hotline (24/7): +673 871 6001 / +673 871 6002",
+                food: [
+                    { name: `Top Halal & Local Eateries in ${displayCity}`, tag: "Search on Maps", note: "Tap Open in Maps to browse highest-rated Halal & local restaurants nearby." }
+                ]
+            };
+        }
+
+        // =========================================================================
+        // OFFLINE-CACHED CURRENCY CONVERTER (OPEN.ER-API.COM)
+        // =========================================================================
+        const FX_CACHE_KEY = "lintas_fx_rates_bnd_v1";
+        const SUPPORTED_CURRENCIES = ["BND", "MYR", "SGD", "KRW", "JPY", "THB", "IDR", "VND", "PHP", "TWD", "HKD", "CNY", "GBP", "EUR", "TRY", "AED", "SAR", "AUD", "USD"];
+        const FALLBACK_RATES_FROM_BND = {
+            BND: 1, MYR: 3.30, SGD: 1.00, KRW: 1030, JPY: 114, THB: 25.4,
+            IDR: 11850, VND: 18900, PHP: 43.2, TWD: 24.1, HKD: 5.82, CNY: 5.38,
+            GBP: 0.58, EUR: 0.69, TRY: 25.6, AED: 2.74, SAR: 2.80, AUD: 1.14, USD: 0.75
+        };
+        let activeFxRates = { ...FALLBACK_RATES_FROM_BND };
+
+        async function initCurrencyRates() {
+            const badge = document.getElementById('fxRateBadge');
+            try {
+                const cachedRaw = localStorage.getItem(FX_CACHE_KEY);
+                if (cachedRaw) {
+                    const parsed = JSON.parse(cachedRaw);
+                    if (parsed && parsed.rates) {
+                        activeFxRates = { ...FALLBACK_RATES_FROM_BND, ...parsed.rates };
+                        if (badge) badge.textContent = "Cached Offline ✓";
+                    }
+                }
+            } catch (_) {}
+
+            if (navigator.onLine) {
+                try {
+                    const res = await fetch("https://open.er-api.com/v6/latest/BND");
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.result === "success" && data.rates) {
+                            activeFxRates = { ...FALLBACK_RATES_FROM_BND, ...data.rates };
+                            localStorage.setItem(FX_CACHE_KEY, JSON.stringify({
+                                updatedAt: Date.now(),
+                                rates: data.rates
+                            }));
+                            if (badge) badge.textContent = "Live Rate • Cached ✓";
+                        }
+                    }
+                } catch (_) {}
+            }
+            recalcCurrency();
+        }
+
+        function populateCurrencyDropdowns(targetCurrency = "MYR") {
+            const fromSel = document.getElementById('fxFromSelect');
+            const toSel = document.getElementById('fxToSelect');
+            if (!fromSel || !toSel) return;
+
+            fromSel.innerHTML = SUPPORTED_CURRENCIES.map(c => `<option value="${c}">${c}</option>`).join('');
+            toSel.innerHTML = SUPPORTED_CURRENCIES.map(c => `<option value="${c}">${c}</option>`).join('');
+
+            fromSel.value = "BND";
+            toSel.value = SUPPORTED_CURRENCIES.includes(targetCurrency) && targetCurrency !== "BND" ? targetCurrency : "MYR";
+            recalcCurrency();
+        }
+
+        function recalcCurrency() {
+            const amt = parseFloat(document.getElementById('fxAmountInput')?.value || "0");
+            const from = document.getElementById('fxFromSelect')?.value || "BND";
+            const to = document.getElementById('fxToSelect')?.value || "MYR";
+            const outEl = document.getElementById('fxResultText');
+            if (!outEl) return;
+
+            if (isNaN(amt) || amt < 0) {
+                outEl.textContent = "—";
+                return;
+            }
+            const rateFrom = activeFxRates[from] || 1;
+            const rateTo = activeFxRates[to] || 1;
+            const converted = (amt / rateFrom) * rateTo;
+            const decimals = (to === "KRW" || to === "JPY" || to === "IDR" || to === "VND") ? 0 : 2;
+            outEl.textContent = `${converted.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} ${to}`;
+        }
+
+        document.getElementById('fxAmountInput').addEventListener('input', recalcCurrency);
+        document.getElementById('fxFromSelect').addEventListener('change', recalcCurrency);
+        document.getElementById('fxToSelect').addEventListener('change', recalcCurrency);
+        document.getElementById('fxSwapBtn').addEventListener('click', () => {
+            const fromSel = document.getElementById('fxFromSelect');
+            const toSel = document.getElementById('fxToSelect');
+            const tmp = fromSel.value;
+            fromSel.value = toSel.value;
+            toSel.value = tmp;
+            recalcCurrency();
+        });
+
+        function renderTripGuideForTrip(trip) {
+            const guide = getDestinationGuide(trip.location || trip.name);
+            populateCurrencyDropdowns(guide.currency);
+            initCurrencyRates();
+
+            document.getElementById('guideAirportCode').textContent = guide.airportCode;
+            document.getElementById('guideAirportName').textContent = guide.airportName;
+            document.getElementById('guideAirportTransfer').textContent = guide.airportTransfer;
+
+            const mapQuery = encodeURIComponent(`${guide.cityTitle} transit ferry bus station`);
+            document.getElementById('guideTransitMapLink').href = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+            document.getElementById('guideTransitBody').innerHTML = `
+                <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl p-3">
+                    <span class="font-bold text-sky-300 block mb-0.5">⛴️ Ferry &amp; Water Crossing</span>
+                    <p style="color: #cbd5e1;" class="leading-relaxed">${escapeHtml(guide.ferryInfo)}</p>
+                </div>
+                <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl p-3">
+                    <span class="font-bold text-emerald-300 block mb-0.5">🚌 Public Bus, Rail &amp; Ride-Hailing</span>
+                    <p style="color: #cbd5e1;" class="leading-relaxed">${escapeHtml(guide.busInfo)}</p>
+                </div>
+            `;
+
+            const foodEl = document.getElementById('guideFoodList');
+            foodEl.innerHTML = guide.food.map((spot) => {
+                const q = encodeURIComponent(`${spot.name} ${guide.cityTitle}`);
+                return `
+                    <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl p-3 flex items-start justify-between gap-2.5">
+                        <div class="overflow-hidden">
+                            <span class="inline-block text-[10px] font-bold text-emerald-300 mb-0.5">${escapeHtml(spot.tag)}</span>
+                            <h4 class="text-xs font-bold text-white truncate">${escapeHtml(spot.name)}</h4>
+                            <p style="color: #94a3b8;" class="text-[11px] mt-0.5 leading-snug">${escapeHtml(spot.note)}</p>
+                        </div>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener noreferrer"
+                           class="shrink-0 px-2.5 py-1.5 rounded-lg bg-blue-600/20 border border-blue-500/35 text-blue-300 text-[11px] font-bold">
+                            Maps ↗
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            // Per-trip saved checklist
+            const checkStorageKey = `lintas_checklist_${trip.id}`;
+            let savedChecks = {};
+            try { savedChecks = JSON.parse(localStorage.getItem(checkStorageKey) || "{}"); } catch (_) {}
+
+            const checklistEl = document.getElementById('guideChecklistItems');
+            const progressEl = document.getElementById('checklistProgressText');
+
+            function updateChecklistProgress() {
+                const total = guide.entryChecklist.length;
+                const done = guide.entryChecklist.filter((_, idx) => !!savedChecks[idx]).length;
+                progressEl.textContent = `${done}/${total} Done`;
+            }
+
+            checklistEl.innerHTML = guide.entryChecklist.map((item, idx) => `
+                <label style="background-color: #0f172a; border: 1px solid #334155;" class="flex items-start gap-2.5 p-2.5 rounded-xl cursor-pointer">
+                    <input type="checkbox" data-chk-idx="${idx}" ${savedChecks[idx] ? 'checked' : ''} class="mt-0.5 w-4 h-4 shrink-0 rounded text-blue-600">
+                    <span style="color: #e2e8f0;" class="text-xs leading-snug">${escapeHtml(item)}</span>
+                </label>
+            `).join('');
+
+            checklistEl.querySelectorAll('input[type="checkbox"]').forEach((box) => {
+                box.addEventListener('change', (e) => {
+                    const i = e.target.dataset.chkIdx;
+                    savedChecks[i] = e.target.checked;
+                    localStorage.setItem(checkStorageKey, JSON.stringify(savedChecks));
+                    updateChecklistProgress();
+                });
+            });
+            updateChecklistProgress();
+
+            // Per-trip saved hotel / driver card
+            const hotelStorageKey = `lintas_hotel_${trip.id}`;
+            let savedHotel = { name: "", addr: "" };
+            try { savedHotel = JSON.parse(localStorage.getItem(hotelStorageKey) || '{"name":"","addr":""}'); } catch (_) {}
+
+            const hotelNameInput = document.getElementById('hotelNameInput');
+            const hotelAddrInput = document.getElementById('hotelAddrInput');
+            hotelNameInput.value = savedHotel.name || "";
+            hotelAddrInput.value = savedHotel.addr || "";
+
+            const persistHotel = () => {
+                localStorage.setItem(hotelStorageKey, JSON.stringify({
+                    name: hotelNameInput.value.trim(),
+                    addr: hotelAddrInput.value.trim()
+                }));
+            };
+            hotelNameInput.oninput = persistHotel;
+            hotelAddrInput.oninput = persistHotel;
+
+            document.getElementById('guideEmergencyBox').innerHTML = `
+                <p class="font-semibold text-white">${escapeHtml(guide.emergency)}</p>
+                <p style="color: #94a3b8;" class="text-[11px]">Brunei MFA 24-Hr Ops Room: +673 238 3374 / +673 871 6001</p>
+            `;
+        }
+
+        // Trip Detail Sub-Tab Switcher
+        document.getElementById('tabPassesBtn').addEventListener('click', () => {
+            document.getElementById('tripPassesTab').classList.remove('hide');
+            document.getElementById('tripGuideTab').classList.add('hide');
+            document.getElementById('tabPassesBtn').className = 'py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white transition-all';
+            document.getElementById('tabGuideBtn').className = 'py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all';
+        });
+
+        document.getElementById('tabGuideBtn').addEventListener('click', () => {
+            document.getElementById('tripGuideTab').classList.remove('hide');
+            document.getElementById('tripPassesTab').classList.add('hide');
+            document.getElementById('tabGuideBtn').className = 'py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white transition-all';
+            document.getElementById('tabPassesBtn').className = 'py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all';
+        });
+
+        // Flight Status Tracker Button
+        document.getElementById('checkFlightBtn').addEventListener('click', () => {
+            const code = document.getElementById('flightCodeInput').value.trim().toUpperCase().replace(/\s+/g, '');
+            const query = code ? `${code} flight status` : `${document.getElementById('guideAirportCode').textContent} flight arrivals departures`;
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank', 'noopener,noreferrer');
+        });
+
+        // Full-Screen Driver Card Handlers
+        document.getElementById('showDriverBtn').addEventListener('click', () => {
+            const name = document.getElementById('hotelNameInput').value.trim() || "Hotel / Accommodation";
+            const addr = document.getElementById('hotelAddrInput').value.trim() || "Enter your hotel address in Trip Guide first";
+            document.getElementById('driverHotelName').textContent = name;
+            document.getElementById('driverHotelAddr').textContent = addr;
+            document.getElementById('driverCardModal').classList.remove('hide');
+        });
+        document.getElementById('closeDriverCardBtn').addEventListener('click', () => {
+            document.getElementById('driverCardModal').classList.add('hide');
+        });
+
+        // =========================================================================
+        // DYNAMIC FIRESTORE AFFILIATE / SPONSOR BANNER (TRIP-AWARE + ROTATING PERKS)
         // =========================================================================
         let bannerLoaded = false;
-        async function loadPromoBanner() {
-            if (bannerLoaded) return;
+        let promoTickerTimer = null;
+        let nextUpcomingDestination = '';
+
+        async function loadPromoBanner(forceRefresh = false) {
+            if (bannerLoaded && !forceRefresh) return;
             const slot = document.getElementById('adBannerSlot');
             if (!slot) return;
 
@@ -855,41 +1451,90 @@
                 const cleanUrl = String(data.linkUrl).trim();
                 if (!/^https:\/\//i.test(cleanUrl)) return;
 
-                const badgeText = escapeHtml(data.badge || "Travel Partner • eSIM");
-                const titleText = escapeHtml(data.title || "Stay Connected Worldwide");
-                const subtitleText = escapeHtml(data.subtitle || "Instant travel eSIMs for SEA, South Korea, Japan, Europe, UK & Australia — ready in 1 minute.");
+                const destCity = nextUpcomingDestination
+                    ? nextUpcomingDestination.split(',')[0].trim()
+                    : '';
+
+                const badgeText = escapeHtml(
+                    destCity
+                        ? `Travel Data • ${destCity}`
+                        : (data.badge || "Travel Partner • eSIM")
+                );
+                const titleText = escapeHtml(
+                    destCity
+                        ? `Heading to ${destCity}? Get Travel Data`
+                        : (data.title || "Stay Connected Worldwide")
+                );
+                const subtitleText = escapeHtml(
+                    data.subtitle || "Fast 4G/5G travel data (5G where available) for SEA, South Korea, Japan, UK & Europe — activate in 1 minute."
+                );
                 const ctaText = escapeHtml(data.ctaText || "Get eSIM");
+
+                const perks = [
+                    "⚡ Activate via QR in 1 min before takeoff",
+                    "📶 Fast travel data (5G where available)",
+                    "💬 Keep your WhatsApp & home SIM active",
+                    "🌍 200+ destinations • No roaming bill shock"
+                ];
+                let perkIdx = 0;
 
                 bannerLoaded = true;
                 slot.innerHTML = `
                     <a href="${escapeHtml(cleanUrl)}" target="_blank" rel="noopener noreferrer sponsored"
-                       style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(56, 189, 248, 0.32);"
-                       class="block rounded-2xl p-4 shadow-lg active:scale-[0.99] transition-transform text-left">
+                       class="promo-partner-card block rounded-3xl p-4 text-left">
                         <div class="flex items-center justify-between gap-3">
-                            <div class="overflow-hidden">
-                                <span class="inline-block text-[10px] font-bold uppercase tracking-wider text-sky-400 mb-1">
-                                    ${badgeText}
-                                </span>
-                                <h4 class="text-sm font-bold text-white truncate">
-                                    ${titleText}
-                                </h4>
-                                <p style="color: #94a3b8;" class="text-xs mt-0.5 leading-snug">
-                                    ${subtitleText}
-                                </p>
+                            <div class="flex items-start gap-3 overflow-hidden">
+                                <div style="background: rgba(16, 185, 129, 0.16); border: 1px solid rgba(52, 211, 153, 0.35);" class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 mt-0.5 text-emerald-300">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+                                    </svg>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <div class="flex items-center gap-1.5 mb-1">
+                                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-300 truncate">
+                                            ${badgeText}
+                                        </span>
+                                    </div>
+                                    <h4 class="text-sm font-extrabold text-white truncate">
+                                        ${titleText}
+                                    </h4>
+                                    <p style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">
+                                        ${subtitleText}
+                                    </p>
+                                    <p id="promoPerkTicker" class="promo-ticker-anim text-[11px] font-semibold text-amber-300 mt-1.5 truncate">
+                                        ${perks[0]}
+                                    </p>
+                                </div>
                             </div>
-                            <span class="shrink-0 btn-primary text-xs font-bold px-3.5 py-2.5 rounded-xl shadow">
+                            <span class="shrink-0 promo-cta-btn text-xs font-extrabold px-3.5 py-2.5 rounded-xl">
                                 ${ctaText}
                             </span>
                         </div>
                     </a>
                 `;
+
+                if (promoTickerTimer) clearInterval(promoTickerTimer);
+                promoTickerTimer = setInterval(() => {
+                    const tickerEl = document.getElementById('promoPerkTicker');
+                    if (!tickerEl) {
+                        clearInterval(promoTickerTimer);
+                        promoTickerTimer = null;
+                        return;
+                    }
+                    perkIdx = (perkIdx + 1) % perks.length;
+                    tickerEl.classList.remove('promo-ticker-anim');
+                    void tickerEl.offsetWidth;
+                    tickerEl.textContent = perks[perkIdx];
+                    tickerEl.classList.add('promo-ticker-anim');
+                }, 4200);
             } catch (err) {
                 console.warn("Promo banner skipped:", err);
             }
         }
 
         // =========================================================================
-        // BIOMETRIC UNLOCK ENGINE (STRICT UV FLAG CHECK; REMOVED ON EXPLICIT SIGN OUT)
+        // BIOMETRIC UNLOCK ENGINE
         // =========================================================================
         function bufToBase64Url(buf) {
             const bytes = new Uint8Array(buf);
@@ -1030,12 +1675,9 @@
                 return false;
             }
 
-            // Enforce Bit 2 (0x04) of byte 32 in authenticatorData: User Verified (UV) flag
             const authData = new Uint8Array(assertion.response.authenticatorData);
             const flags = authData[32];
-            const isUserVerified = (flags & 0x04) !== 0;
-
-            return isUserVerified;
+            return (flags & 0x04) !== 0;
         }
 
         async function updateBiometricUI() {
@@ -1267,7 +1909,7 @@
             }
         }
 
-        // --- START DATE & END DATE TIMELINE FORMATTER (BACKWARD COMPATIBLE WITH travelDate) ---
+        // --- START DATE & END DATE TIMELINE FORMATTER ---
         function getTripTimeline(trip) {
             const startStr = trip.startDate || trip.travelDate || '';
             const endStr = trip.endDate || startStr;
@@ -1332,7 +1974,7 @@
             };
         }
 
-        // --- LOCAL INDEXEDDB ENGINE (ALSO MIRRORS CLOUD DATA FOR iOS OFFLINE RELIABILITY) ---
+        // --- LOCAL INDEXEDDB ENGINE ---
         const DB_NAME = "LintasLocalWallet";
         const DB_VERSION = 1;
 
@@ -1387,7 +2029,7 @@
             });
         }
 
-        // --- UNIFIED STORAGE LAYER (WITH iOS-SAFE TIMEOUT + LOCAL MIRROR CACHE) ---
+        // --- UNIFIED STORAGE LAYER ---
         function isCloudUser() {
             const activeUser = currentUser || auth.currentUser;
             return activeUser && !activeUser.isAnonymous;
@@ -1486,7 +2128,7 @@
             }
         }
 
-        // --- AUTO-CLEANUP EXPIRED ITEMS (30 DAYS AFTER TRIP END DATE) ---
+        // --- AUTO-CLEANUP EXPIRED ITEMS ---
         async function cleanupExpiredItems(uid) {
             const now = Date.now();
             try {
@@ -1842,6 +2484,7 @@
             Object.values(modals).forEach(m => m.classList.add('hide'));
             document.getElementById('confirmModal').classList.add('hide');
             document.getElementById('bioPromptModal').classList.add('hide');
+            document.getElementById('driverCardModal').classList.add('hide');
             pendingImageData = null;
             currentTripId = null;
             currentTripDocs = [];
@@ -1913,9 +2556,8 @@
             await updateBiometricUI();
             cleanupExpiredItems(user.uid);
             await loadTrips();
-            loadPromoBanner();
+            loadPromoBanner(true);
 
-            // Optional biometric registration prompt after Google Sign-In
             if (offerBiometricRegistration && !user.isAnonymous) {
                 const supported = await isBiometricHardwareAvailable();
                 const bioProfile = getSavedBiometricProfile();
@@ -1931,8 +2573,6 @@
                 const hasBioEnrolled = !!(bioProfile && bioProfile.uid === user.uid);
                 const tabUnlocked = sessionStorage.getItem(TAB_UNLOCKED_KEY) === "1";
 
-                // If biometrics are enrolled, require Face ID / Fingerprint on every cold app open;
-                // otherwise allow direct entry within the 15-minute grace window.
                 if (isWithinGraceWindow() && (!hasBioEnrolled || tabUnlocked)) {
                     if (!currentUser || currentUser.uid !== user.uid) {
                         await enterDashboardForUser(user, false);
@@ -1940,7 +2580,6 @@
                     return;
                 }
 
-                // Outside grace window or cold open with biometrics enabled: enforce lock screen
                 clearInactivityWatch();
                 currentUser = null;
                 currentTripId = null;
@@ -1956,7 +2595,6 @@
             }
         });
 
-        // Biometric Unlock Handler on Login Screen (Strict UV verification)
         document.getElementById('biometricUnlockBtn').addEventListener('click', async () => {
             const bioProfile = getSavedBiometricProfile();
             if (!bioProfile) {
@@ -2012,7 +2650,6 @@
             }
         });
 
-        // Biometric Opt-in / Disable Handlers inside Dashboard & Settings
         document.getElementById('enableBiometricBannerBtn').addEventListener('click', async () => {
             const activeUser = currentUser || auth.currentUser;
             if (activeUser) await enrollBiometricForUser(activeUser);
@@ -2030,7 +2667,6 @@
             }
         });
 
-        // Seamless Google Sign-In
         async function triggerGoogleSignIn() {
             if (isSigningIn) return;
             isSigningIn = true;
@@ -2130,7 +2766,6 @@
             }
         });
 
-        // SIGN OUT: COMPLETELY CLEARS SESSION, GRACE WINDOW, TAB UNLOCK, AND BIOMETRIC ACCESS!
         document.getElementById('signOutSettingsBtn').addEventListener('click', async () => {
             clearInactivityWatch();
             clearSessionActivity();
@@ -2174,7 +2809,6 @@
             }
         });
 
-        // Quick Filter Pills Handler (All / Upcoming / Past)
         document.querySelectorAll('.trip-filter-btn').forEach((btn) => {
             btn.addEventListener('click', async () => {
                 currentTripFilter = btn.dataset.filter || 'all';
@@ -2194,8 +2828,7 @@
             btn.textContent = "...";
             btn.disabled = true;
             await loadTrips();
-            bannerLoaded = false;
-            loadPromoBanner();
+            loadPromoBanner(true);
             btn.textContent = "↻";
             btn.disabled = false;
         });
@@ -2214,7 +2847,6 @@
                     console.error("Error loading trips:", err);
                 }
 
-                // Deduplicate by trip.id to prevent race-condition duplicates
                 const uniqueMap = new Map();
                 for (const t of trips) {
                     if (t && t.id) uniqueMap.set(t.id, t);
@@ -2228,8 +2860,10 @@
                 spotlightSlot.innerHTML = '';
 
                 if (trips.length === 0) {
+                    nextUpcomingDestination = '';
                     spotlightSection.classList.add('hide');
                     document.getElementById('emptyTripsState').classList.remove('hide');
+                    loadPromoBanner(true);
                     return;
                 }
 
@@ -2238,10 +2872,14 @@
                     timeline: getTripTimeline(trip)
                 }));
 
-                // Approach B: Spotlight Card for nearest Active or Upcoming Trip
                 const upcomingOrActive = enriched
                     .filter((item) => item.timeline.category === 'active' || item.timeline.category === 'upcoming')
                     .sort((a, b) => a.timeline.sortKey - b.timeline.sortKey);
+
+                nextUpcomingDestination = upcomingOrActive.length > 0
+                    ? (upcomingOrActive[0].trip.location || '')
+                    : '';
+                loadPromoBanner(true);
 
                 if (upcomingOrActive.length > 0 && currentTripFilter !== 'past') {
                     const hero = upcomingOrActive[0];
@@ -2269,8 +2907,8 @@
                             <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
                         </div>
                         <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-2.5 flex items-center justify-between text-xs font-bold text-sky-400">
-                            <span>Open Border QRs &amp; Passes</span>
-                            <span>View Documents →</span>
+                            <span>Open Border QRs, Guide &amp; Tools</span>
+                            <span>Open Trip →</span>
                         </div>
                     `;
                     heroCard.onclick = () => openTrip(t);
@@ -2292,7 +2930,6 @@
                     spotlightSection.classList.add('hide');
                 }
 
-                // Filter list for All / Upcoming / Past
                 const filtered = enriched
                     .filter((item) => {
                         if (currentTripFilter === 'upcoming') {
@@ -2369,7 +3006,6 @@
             }
         }
 
-        // Keep End Date >= Start Date when creating a trip
         document.getElementById('tripStartDateInput').addEventListener('change', (e) => {
             const startVal = e.target.value;
             const endInput = document.getElementById('tripEndDateInput');
@@ -2493,6 +3129,13 @@
             if (trip.weatherSummary) parts.push(trip.weatherSummary);
             document.getElementById('tripDetailMeta').textContent = parts.join(' • ');
 
+            // Default to Passes & QRs tab on open, and pre-populate the Destination Guide
+            document.getElementById('tripPassesTab').classList.remove('hide');
+            document.getElementById('tripGuideTab').classList.add('hide');
+            document.getElementById('tabPassesBtn').className = 'py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white transition-all';
+            document.getElementById('tabGuideBtn').className = 'py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all';
+
+            renderTripGuideForTrip(trip);
             showScreen('tripDetail');
             await loadDocuments(trip.id);
         }
@@ -2530,7 +3173,7 @@
             }
         }
 
-        // --- SWIPEABLE GALLERY ENGINE + AUTO-HIDING ARROWS ---
+        // --- SWIPEABLE GALLERY ENGINE ---
         function revealNavArrowsTemporarily() {
             const prevBtn = document.getElementById('prevDocBtn');
             const nextBtn = document.getElementById('nextDocBtn');
@@ -2948,7 +3591,6 @@
             screens.viewer.classList.add('hide');
         };
 
-        // Initialize biometric button state immediately on load
         updateBiometricUI();
     </script>
 
