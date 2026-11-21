@@ -536,7 +536,7 @@
 
         <footer class="max-w-sm mx-auto pt-3 pb-1">
             <p style="color: #64748b;" class="text-[11px] leading-relaxed">
-                Independent personal travel utility — not affiliated with any government agency or third-party data provider. You are solely responsible for the documents you store. Passes auto-expire 30 days after your trip end date.
+                Independent personal travel utility — not affiliated with any government or border authority. You are solely responsible for the QR passes &amp; documents you store. Info features rely on third-party providers. Auto-expires 30 days after trip end date.
             </p>
         </footer>
     </div>
@@ -628,8 +628,8 @@
             <!-- MINIMALIST SPONSORED PARTNER AD STRIP -->
             <div id="adBannerSlot" class="mt-6"></div>
 
-            <p style="color: #475569;" class="text-[11px] text-center leading-relaxed mt-5 px-4">
-                Independent personal travel utility • Information features rely on third-party providers • Auto-expires 30 days after trip end date.
+            <p style="color: #64748b;" class="text-[11px] text-center leading-relaxed mt-5 px-3">
+                Independent personal travel utility — not affiliated with any government or border authority. QR passes &amp; uploaded files remain the user's sole responsibility, not Lintas. Third-party info relies on external providers • Auto-expires 30 days after trip end date.
             </p>
         </div>
 
@@ -714,7 +714,7 @@
                         </span>
                     </div>
 
-                    <!-- INTERACTIVE TOOL SELECTOR (NO BORDER CHECKLIST) -->
+                    <!-- INTERACTIVE TOOL SELECTOR -->
                     <div class="dest-chip-strip mt-3 pt-3" style="border-top: 1px solid rgba(148, 163, 184, 0.16);">
                         <button id="deckTabRadar" type="button" data-deck="secRadar" class="tool-tab-chip active">🚦 Border Traffic</button>
                         <button type="button" data-deck="secFx" class="tool-tab-chip">💱 Currency</button>
@@ -780,7 +780,7 @@
                     </div>
                 </div>
 
-                <!-- DECK PANEL 2: CURRENCY CONVERTER (CLEAN GLOBAL NAMING) -->
+                <!-- DECK PANEL 2: CURRENCY CONVERTER -->
                 <div id="secFx" class="hide hub-deck-panel deck-panel-anim card-fx rounded-3xl p-4 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-3">
                         <div class="flex items-center gap-2 min-w-0">
@@ -1255,7 +1255,7 @@
                 </button>
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
-                <p><strong>1. Independence &amp; Third-Party Information Disclaimer:</strong> Lintas is an independent personal travel organizer not affiliated with any government, border authority, or third-party data provider. Live traffic maps, flight statuses, currency rates, weather forecasts, Halal eatery maps, and translations are supplied by external providers (Google Maps, Waze, ExchangeRate-API, Open-Meteo, Aladhan, and MyMemory). Lintas makes no guarantees regarding accuracy or availability and assumes no liability for inaccurate third-party information or user-stored content.</p>
+                <p><strong>1. Independence, User Responsibility &amp; Third-Party Providers:</strong> Lintas is an independent personal travel organizer not affiliated with any government, border authority, or third-party data provider. All uploaded QR passes and files remain under the user's sole control and responsibility, not Lintas. Live traffic maps, flight statuses, currency rates, weather forecasts, Halal eatery maps, and translations are supplied by external providers (Google Maps, Waze, ExchangeRate-API, Open-Meteo, Aladhan, and MyMemory); Lintas makes no guarantees regarding accuracy and assumes no liability for inaccurate third-party information.</p>
                 <p><strong>2. Storage, Session Grace &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline availability. Active sessions remain unlocked for 15 minutes across app closes unless Face ID / Fingerprint protection is enabled (which verifies biometrics on every cold open and after timeout). Tapping Sign Out immediately clears your session and removes biometric access. Trips and passes auto-delete 30 days after your trip end date.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs a multi-layer on-device check before upload and blocks Bruneian or foreign passports and IDs.</p>
@@ -2484,7 +2484,7 @@
         });
 
         // =========================================================================
-        // MINIMALIST SPONSORED AD STRIP
+        // MINIMALIST SPONSORED AD STRIP (NO TEXT TRUNCATION)
         // =========================================================================
         let bannerLoaded = false;
         let nextUpcomingDestination = '';
@@ -2513,7 +2513,7 @@
                         : (data.title || "Global Travel eSIM")
                 );
                 const subtitleText = escapeHtml(
-                    data.subtitle || "Instant QR activation • 4G/5G where available • No roaming shock"
+                    "Instant travel eSIMs for 200+ destinations worldwide — ready in 1 min."
                 );
                 const ctaText = escapeHtml(data.ctaText || "Get eSIM");
 
@@ -2523,14 +2523,14 @@
                        class="sponsored-strip px-3.5 py-3 flex items-center justify-between gap-3 text-left">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5 mb-0.5">
-                                <span style="background: rgba(148, 163, 184, 0.15); color: #94a3b8;" class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded">
+                                <span style="background: rgba(148, 163, 184, 0.15); color: #94a3b8;" class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0">
                                     Sponsored
                                 </span>
                                 <span class="text-xs font-bold text-slate-200 truncate">
                                     ${titleText}
                                 </span>
                             </div>
-                            <p style="color: #94a3b8;" class="text-[11px] leading-snug truncate">
+                            <p style="color: #94a3b8;" class="text-[11px] leading-snug">
                                 ${subtitleText}
                             </p>
                         </div>
