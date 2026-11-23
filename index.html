@@ -209,22 +209,44 @@
             color: #ffffff;
             transform: scale(0.94);
         }
-        .sponsored-strip {
-            background: rgba(15, 23, 42, 0.72);
-            border: 1px dashed rgba(148, 163, 184, 0.28);
-            border-radius: 16px;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
+        /* Floating, Calm & Animated Travel Perks Carousel */
+        @keyframes floatGentle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
         }
-        .sponsored-strip:hover {
-            border-color: rgba(52, 211, 153, 0.45);
-            background: rgba(30, 41, 59, 0.55);
+        @keyframes perkSlideIn {
+            0% { opacity: 0; transform: translateX(14px); }
+            100% { opacity: 1; transform: translateX(0); }
         }
-        .sponsored-pill-btn {
-            background-color: rgba(16, 185, 129, 0.16);
-            color: #6ee7b7;
-            border: 1px solid rgba(52, 211, 153, 0.38);
+        @keyframes ctaSoftGlow {
+            0%, 100% { box-shadow: 0 4px 14px -2px rgba(45, 212, 191, 0.28); }
+            50% { box-shadow: 0 6px 20px -2px rgba(45, 212, 191, 0.52); }
+        }
+        .partner-float-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(19, 78, 74, 0.34) 55%, rgba(12, 74, 110, 0.38) 100%);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(94, 234, 212, 0.28);
+            border-radius: 22px;
+            box-shadow: 0 16px 34px -10px rgba(2, 6, 23, 0.85), 0 0 24px -8px rgba(45, 212, 191, 0.22);
+            animation: floatGentle 4.8s ease-in-out infinite;
+            transition: border-color 0.25s ease, transform 0.15s ease;
+        }
+        .partner-float-card:active {
+            transform: scale(0.985);
+        }
+        .perk-slide-anim {
+            animation: perkSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .perk-pill-btn {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.24), rgba(14, 165, 233, 0.24));
+            color: #99f6e4;
+            border: 1px solid rgba(94, 234, 212, 0.42);
             white-space: nowrap;
             flex-shrink: 0;
+            animation: ctaSoftGlow 3.2s ease-in-out infinite;
         }
         .promo-cta-btn {
             background: linear-gradient(135deg, #10b981, #059669);
@@ -564,9 +586,13 @@
         </div>
 
         <footer class="max-w-sm mx-auto pt-3 pb-1">
-            <p style="color: #64748b;" class="text-[11px] leading-relaxed">
-                Independent personal travel utility — not affiliated with any government or border authority. You are solely responsible for the QR passes &amp; documents you store. Info features rely on third-party providers. Auto-expires 30 days after trip end date.
-            </p>
+            <div class="flex flex-wrap items-center justify-center gap-1.5 text-[11px] text-slate-400">
+                <span>Independent Travel Utility</span>
+                <span>•</span>
+                <button type="button" data-info-key="appDisclaimer" class="text-sky-400 hover:text-sky-300 font-semibold underline">Terms &amp; Disclaimer</button>
+                <span>•</span>
+                <span>30d Auto-Clean</span>
+            </div>
         </footer>
     </div>
 
@@ -657,12 +683,24 @@
                 <div id="tripsContainer" class="space-y-3"></div>
             </div>
 
-            <!-- MINIMALIST SPONSORED PARTNER AD STRIP -->
-            <div id="adBannerSlot" class="mt-6"></div>
+            <!-- FLOATING ANIMATED TRAVEL PERKS CAROUSEL (SUPPORTS MULTIPLE OFFERS) -->
+            <div id="adBannerSlot" class="mt-7"></div>
 
-            <p style="color: #64748b;" class="text-[11px] text-center leading-relaxed mt-5 px-3">
-                Independent personal travel utility — not affiliated with any government or border authority. QR passes &amp; uploaded files remain the user's sole responsibility, not Lintas. Third-party info relies on external providers • Auto-expires 30 days after trip end date.
-            </p>
+            <!-- CLEAN EXECUTIVE FOOTER BAR -->
+            <footer style="border-top: 1px solid rgba(148, 163, 184, 0.12);" class="mt-6 pt-4 pb-2 flex flex-col items-center gap-2 text-center">
+                <div class="flex flex-wrap items-center justify-center gap-2 text-[11px]">
+                    <span class="font-semibold text-slate-400">Lintas • Independent Travel Utility</span>
+                    <button type="button" data-info-key="appDisclaimer" style="background-color: rgba(30, 41, 59, 0.85); border: 1px solid rgba(56, 189, 248, 0.3);" class="px-2.5 py-1 rounded-full text-sky-300 font-semibold hover:text-white transition-colors">
+                        Terms &amp; Disclaimer
+                    </button>
+                    <button type="button" id="footerPrivacyBtn" style="background-color: rgba(30, 41, 59, 0.85); border: 1px solid rgba(148, 163, 184, 0.22);" class="px-2.5 py-1 rounded-full text-slate-300 font-semibold hover:text-white transition-colors">
+                        Privacy &amp; PDPO
+                    </button>
+                </div>
+                <p style="color: #64748b;" class="text-[10px]">
+                    Not affiliated with any government or border authority • Auto-cleans 30d after trip
+                </p>
+            </footer>
         </div>
 
         <!-- FLOATING + NEW TRIP BUTTON -->
@@ -1422,6 +1460,11 @@
         // IN-APP PiP PROVIDER INFO & DISCLAIMER REGISTRY (NO REDIRECTION)
         // =========================================================================
         const FEATURE_INFO_REGISTRY = {
+            appDisclaimer: {
+                title: "Terms & User Responsibility",
+                provider: "Lintas Personal Travel Utility",
+                body: "Lintas is an independent travel organizer and is not affiliated with any government or border authority. All uploaded QR passes, boarding passes, and receipts remain strictly the user's sole responsibility, not Lintas. Trips and passes automatically expire 30 days after the trip end date."
+            },
             weatherSolat: {
                 title: "Local Weather & Solat Times",
                 provider: "Open-Meteo & Aladhan Prayer Times API",
@@ -1486,6 +1529,9 @@
                 e.stopPropagation();
                 openProviderInfoPip(btn.dataset.infoKey);
             });
+        });
+        document.getElementById('footerPrivacyBtn')?.addEventListener('click', () => {
+            modals.privacy.classList.remove('hide');
         });
         document.getElementById('closePipInfoBtn').addEventListener('click', closeProviderInfoPip);
         document.getElementById('ackPipInfoBtn').addEventListener('click', closeProviderInfoPip);
@@ -2516,10 +2562,12 @@
         });
 
         // =========================================================================
-        // MINIMALIST SPONSORED AD STRIP
+        // FLOATING ANIMATED TRAVEL PERKS CAROUSEL (SUPPORTS MULTIPLE OFFERS)
         // =========================================================================
         let bannerLoaded = false;
         let nextUpcomingDestination = '';
+        let perkCarouselTimer = null;
+        let currentPerkSlide = 0;
 
         async function loadPromoBanner(forceRefresh = false) {
             if (bannerLoaded && !forceRefresh) return;
@@ -2530,47 +2578,100 @@
                 const snap = await withTimeout(getDoc(doc(dbCloud, "config", "banner")), 6000);
                 if (!snap.exists()) return;
                 const data = snap.data();
-                if (!data || data.active !== true || !data.linkUrl) return;
-
-                const cleanUrl = String(data.linkUrl).trim();
-                if (!/^https:\/\//i.test(cleanUrl)) return;
+                if (!data || data.active !== true) return;
 
                 const destCity = nextUpcomingDestination
                     ? nextUpcomingDestination.split(',')[0].trim()
                     : '';
 
-                const titleText = escapeHtml(
-                    destCity
-                        ? `${destCity} Travel eSIM Data`
-                        : (data.title || "Global Travel eSIM")
-                );
-                const subtitleText = escapeHtml(
-                    "Instant travel eSIMs for 200+ destinations worldwide — ready in 1 min."
-                );
-                const ctaText = escapeHtml(data.ctaText || "Get eSIM");
+                // Support an `items` array for multiple partner perks, or fall back to single fields
+                let slides = [];
+                if (Array.isArray(data.items) && data.items.length > 0) {
+                    slides = data.items.filter(item => item && item.active !== false && /^https:\/\//i.test(String(item.linkUrl || '').trim()));
+                } else if (data.linkUrl && /^https:\/\//i.test(String(data.linkUrl).trim())) {
+                    slides = [{
+                        tag: data.badge || "Travel Perk",
+                        icon: "📶",
+                        title: destCity ? `${destCity} Travel eSIM Data` : (data.title || "Stay Connected Worldwide"),
+                        subtitle: data.subtitle || "Instant travel eSIMs for 200+ destinations worldwide — ready in 1 min.",
+                        ctaText: data.ctaText || "Get eSIM",
+                        linkUrl: data.linkUrl
+                    }];
+                }
 
+                if (slides.length === 0) return;
                 bannerLoaded = true;
-                slot.innerHTML = `
-                    <a href="${escapeHtml(cleanUrl)}" target="_blank" rel="noopener noreferrer sponsored"
-                       class="sponsored-strip px-3.5 py-3 flex items-center justify-between gap-3 text-left">
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-1.5 mb-0.5">
-                                <span style="background: rgba(148, 163, 184, 0.15); color: #94a3b8;" class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0">
-                                    Sponsored
+                currentPerkSlide = 0;
+
+                const renderPerkSlide = (idx, animate = true) => {
+                    const item = slides[idx % slides.length];
+                    const cleanUrl = escapeHtml(String(item.linkUrl).trim());
+                    const tagText = escapeHtml(item.tag || "Travel Perk");
+                    const iconChar = escapeHtml(item.icon || "✦");
+                    const titleText = escapeHtml(item.title || "Traveler Benefit");
+                    const subText = escapeHtml(item.subtitle || "");
+                    const ctaText = escapeHtml(item.ctaText || "Explore");
+
+                    const dotsHtml = slides.length > 1
+                        ? `<div class="flex items-center justify-center gap-1.5 mt-2.5 pt-2 border-t border-white/5">
+                            ${slides.map((_, i) => `
+                                <button type="button" data-perk-dot="${i}" aria-label="Offer ${i + 1}"
+                                    style="width: ${i === idx ? '16px' : '6px'}; height: 6px; border-radius: 999px; transition: all 0.25s ease; background-color: ${i === idx ? '#5eead4' : 'rgba(148, 163, 184, 0.35)'};">
+                                </button>
+                            `).join('')}
+                           </div>`
+                        : '';
+
+                    slot.innerHTML = `
+                        <div class="partner-float-card p-3.5 text-left">
+                            <a href="${cleanUrl}" target="_blank" rel="noopener noreferrer sponsored"
+                               class="${animate ? 'perk-slide-anim' : ''} flex items-center justify-between gap-3">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5 mb-1">
+                                        <span style="background: rgba(94, 234, 212, 0.14); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.28);"
+                                              class="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full shrink-0 inline-flex items-center gap-1">
+                                            <span>${iconChar}</span><span>${tagText}</span>
+                                        </span>
+                                        <span class="text-xs font-extrabold text-white truncate">
+                                            ${titleText}
+                                        </span>
+                                    </div>
+                                    <p style="color: #cbd5e1;" class="text-[11px] leading-snug">
+                                        ${subText}
+                                    </p>
+                                </div>
+                                <span class="perk-pill-btn text-[11px] font-extrabold px-3 py-2 rounded-xl">
+                                    ${ctaText} ↗
                                 </span>
-                                <span class="text-xs font-bold text-slate-200 truncate">
-                                    ${titleText}
-                                </span>
-                            </div>
-                            <p style="color: #94a3b8;" class="text-[11px] leading-snug">
-                                ${subtitleText}
-                            </p>
+                            </a>
+                            ${dotsHtml}
                         </div>
-                        <span class="sponsored-pill-btn text-[11px] font-extrabold px-3 py-1.5 rounded-xl">
-                            ${ctaText} ↗
-                        </span>
-                    </a>
-                `;
+                    `;
+
+                    slot.querySelectorAll('[data-perk-dot]').forEach((dotBtn) => {
+                        dotBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            currentPerkSlide = Number(dotBtn.dataset.perkDot);
+                            renderPerkSlide(currentPerkSlide, true);
+                        });
+                    });
+                };
+
+                renderPerkSlide(0, false);
+
+                if (perkCarouselTimer) clearInterval(perkCarouselTimer);
+                if (slides.length > 1) {
+                    perkCarouselTimer = setInterval(() => {
+                        if (!document.getElementById('adBannerSlot')) {
+                            clearInterval(perkCarouselTimer);
+                            perkCarouselTimer = null;
+                            return;
+                        }
+                        currentPerkSlide = (currentPerkSlide + 1) % slides.length;
+                        renderPerkSlide(currentPerkSlide, true);
+                    }, 5500);
+                }
             } catch (err) {
                 console.warn("Promo banner skipped:", err);
             }
@@ -3215,7 +3316,7 @@
             for (const d of localDocs) await localDelete("documents", d.id);
         }
 
-        // --- REUSABLE TRIP DELETION HELPER (USED BY SWIPE-TO-DELETE & DETAIL VIEW) ---
+        // --- REUSABLE TRIP DELETION HELPER ---
         async function confirmAndDeleteTrip(trip, onCancelled) {
             const activeUser = currentUser || auth.currentUser;
             if (!trip || !trip.id || !activeUser) return false;
@@ -4018,7 +4119,6 @@
                 }
                 if (!isHorizontalSwipe) return;
 
-                // Only allow dragging left (negative dx)
                 if (dx < 0) {
                     didSwipe = true;
                     currentOffset = Math.max(dx, -135);
