@@ -50,6 +50,13 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+        /* Universal App Container (Mobile Full-Width -> Clean Centered Desktop Shell) */
+        .app-shell {
+            width: 100%;
+            max-width: 920px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         #brandSplash {
             position: fixed;
             inset: 0;
@@ -105,7 +112,7 @@
             box-shadow: none;
         }
         .glass {
-            background: rgba(11, 17, 32, 0.86);
+            background: rgba(11, 17, 32, 0.88);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(148, 163, 184, 0.14);
@@ -117,7 +124,6 @@
             border: 1px solid rgba(148, 163, 184, 0.18);
             box-shadow: 0 24px 48px -12px rgba(2, 6, 23, 0.75);
         }
-        /* Lively Tactile Card Physics */
         .tactile-btn {
             transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease;
             cursor: pointer;
@@ -312,48 +318,95 @@
         .deck-panel-anim {
             animation: deckPanelIn 0.2s ease-out forwards;
         }
+        /* Universal Tool Deck Strip: Horizontal Scroll on Mobile, Clean Multi-Column Grid on Desktop */
+        .hub-tools-strip {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .hub-tools-strip::-webkit-scrollbar {
+            display: none;
+        }
+        @media (min-width: 680px) {
+            .hub-tools-strip {
+                display: grid;
+                grid-template-columns: repeat(6, minmax(0, 1fr));
+                overflow-x: visible;
+                padding-bottom: 0;
+            }
+            .hub-tools-strip .tool-tab-chip {
+                text-align: center;
+                justify-content: center;
+            }
+        }
         .tool-tab-chip {
             flex-shrink: 0;
             background-color: rgba(15, 23, 42, 0.85);
             color: #94a3b8;
             border: 1px solid #334155;
             border-radius: 12px;
-            padding: 7px 12px;
+            padding: 8px 12px;
             font-size: 11px;
             font-weight: 700;
             transition: all 0.15s ease;
             cursor: pointer;
             white-space: nowrap;
             touch-action: manipulation;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         .tool-tab-chip.active {
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(16, 185, 129, 0.22));
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(16, 185, 129, 0.24));
             color: #ffffff;
             border-color: #38bdf8;
             box-shadow: 0 4px 12px -2px rgba(56, 189, 248, 0.35);
         }
-        .pip-traffic-window {
+        /* Universal Expandable PiP Windows (Traffic & Flight Status) */
+        .pip-window-base {
             position: fixed;
             bottom: 18px;
             right: 16px;
             left: 16px;
-            max-width: 440px;
+            max-width: 560px;
             margin: 0 auto;
             z-index: 10006;
             background-color: #0f172a;
-            border: 1px solid rgba(56, 189, 248, 0.5);
+            border: 1px solid rgba(56, 189, 248, 0.55);
             border-radius: 24px;
-            box-shadow: 0 24px 60px -10px rgba(2, 6, 23, 0.92), 0 0 0 1px rgba(255, 255, 255, 0.06);
+            box-shadow: 0 24px 64px -10px rgba(2, 6, 23, 0.94), 0 0 0 1px rgba(255, 255, 255, 0.08);
             overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .pip-window-base.pip-expanded {
+            top: 20px;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            max-width: 920px;
+            height: auto;
+            z-index: 10008;
+        }
+        .pip-body-compact {
+            height: 270px;
+        }
+        .pip-window-base.pip-expanded .pip-body-compact {
+            height: 100%;
+            flex: 1;
         }
         .pip-info-window {
             position: fixed;
             bottom: 18px;
             right: 16px;
             left: 16px;
-            max-width: 420px;
+            max-width: 440px;
             margin: 0 auto;
-            z-index: 10007;
+            z-index: 10009;
             background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
             border: 1px solid rgba(56, 189, 248, 0.55);
             border-radius: 24px;
@@ -621,7 +674,7 @@
             
             <h1 class="brand-wordmark text-5xl sm:text-6xl mb-2 select-none">Lintas<span class="brand-wordmark-dot"></span></h1>
             <p style="color: #e2e8f0;" class="text-base font-semibold tracking-tight mb-1">Breeze through borders.</p>
-            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-xs leading-relaxed">Offline travel QR passes, live traffic &amp; flight radar, Halal food finder &amp; voice translator.</p>
+            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-sm leading-relaxed">Offline travel QR passes, live traffic &amp; flight status, Halal food finder &amp; voice translator.</p>
 
             <!-- Glassmorphic Auth Card -->
             <div class="glass-auth-card w-full max-w-sm rounded-3xl p-5 space-y-3">
@@ -673,40 +726,42 @@
 
     <!-- DASHBOARD SCREEN -->
     <div id="dashboardScreen" class="hide flex-1 flex flex-col h-screen overflow-hidden" style="position: relative; z-index: 10;">
-        <div class="glass px-4 py-3.5 flex items-center justify-between sticky top-0 gap-2" style="z-index: 20;">
-            <div class="flex items-center gap-2.5 shrink-0">
-                <div class="app-icon-mini">
-                    <svg class="icon-svg-mini" viewBox="0 0 120 120">
-                        <circle cx="60" cy="60" r="42" fill="none" stroke="white" stroke-width="7"/>
-                        <ellipse cx="60" cy="60" rx="20" ry="42" fill="none" stroke="white" stroke-width="5.5"/>
-                        <line x1="18" y1="60" x2="102" y2="60" stroke="white" stroke-width="5.5"/>
-                        <path d="M26 78 C48 48, 72 38, 97 26" fill="none" stroke="#facc15" stroke-width="8.5" stroke-linecap="round"/>
-                        <path d="M81 21 L99 25 L92 42" fill="none" stroke="#facc15" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="26" cy="78" r="6" fill="#facc15"/>
-                    </svg>
+        <div class="glass sticky top-0" style="z-index: 20;">
+            <div class="app-shell px-4 sm:px-6 py-3.5 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5 shrink-0">
+                    <div class="app-icon-mini">
+                        <svg class="icon-svg-mini" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="42" fill="none" stroke="white" stroke-width="7"/>
+                            <ellipse cx="60" cy="60" rx="20" ry="42" fill="none" stroke="white" stroke-width="5.5"/>
+                            <line x1="18" y1="60" x2="102" y2="60" stroke="white" stroke-width="5.5"/>
+                            <path d="M26 78 C48 48, 72 38, 97 26" fill="none" stroke="#facc15" stroke-width="8.5" stroke-linecap="round"/>
+                            <path d="M81 21 L99 25 L92 42" fill="none" stroke="#facc15" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="26" cy="78" r="6" fill="#facc15"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="brand-wordmark-sm text-xl block leading-none">Lintas<span class="brand-wordmark-dot"></span></span>
+                        <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium">● Cloud Sync Active</span>
+                    </div>
                 </div>
-                <div>
-                    <span class="brand-wordmark-sm text-xl block leading-none">Lintas<span class="brand-wordmark-dot"></span></span>
-                    <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium">● Cloud Sync Active</span>
-                </div>
-            </div>
 
-            <div class="flex items-center gap-1.5 shrink-0">
-                <span id="userEmailDisplay" style="color: #cbd5e1;" class="text-xs font-medium max-w-[78px] truncate"></span>
-                <button id="seniorTextToggleBtn" type="button" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn px-2 py-2 rounded-xl text-[11px] font-extrabold text-sky-300 hover:text-white" title="Toggle Large Text Mode for Easy Reading">Aa</button>
-                <button id="refreshTripsBtn" type="button" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white" title="Sync now">↻</button>
-                <button id="openSettingsBtn" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn p-2 rounded-xl text-slate-300 hover:text-white" title="Account & Privacy Settings">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </button>
+                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <span id="userEmailDisplay" style="color: #cbd5e1;" class="text-xs font-medium max-w-[84px] sm:max-w-[160px] truncate"></span>
+                    <button id="seniorTextToggleBtn" type="button" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-[11px] font-extrabold text-sky-300 hover:text-white" title="Toggle Large Text Mode for Easy Reading">Aa</button>
+                    <button id="refreshTripsBtn" type="button" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white" title="Sync now">↻</button>
+                    <button id="openSettingsBtn" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn p-2 rounded-xl text-slate-300 hover:text-white" title="Account & Privacy Settings">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto no-scrollbar p-4 pb-28 max-w-2xl w-full mx-auto flex flex-col justify-between">
+        <div class="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 pb-28 app-shell flex flex-col justify-between">
             <div>
                 <div id="guestBanner" class="hide mb-4 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3">
                     <div class="text-left">
                         <p class="text-xs font-bold text-amber-300">Guest Mode • Local Device Only</p>
-                        <p style="color: #cbd5e1;" class="text-xs mt-0.5">Link Gmail to sync trips across phones.</p>
+                        <p style="color: #cbd5e1;" class="text-xs mt-0.5">Link Gmail to sync trips across phones &amp; desktop.</p>
                     </div>
                     <button id="upgradeGuestBtn" style="background-color: #ffffff; color: #0f172a;" class="tactile-btn shrink-0 text-xs font-bold px-3.5 py-2.5 rounded-xl shadow flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
@@ -730,12 +785,18 @@
                     </button>
                 </div>
 
-                <!-- NEXT UPCOMING / ACTIVE TRIP SPOTLIGHT CARD -->
-                <div id="spotlightSection" class="hide mb-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span id="spotlightHeading" class="text-[11px] font-bold uppercase tracking-wider text-sky-400">● Next Upcoming Trip</span>
+                <!-- TOP ROW: NEXT UPCOMING TRIP + TRAVEL PERKS (SIDE-BY-SIDE ON DESKTOP) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 items-stretch">
+                    <div id="spotlightSection" class="hide flex flex-col">
+                        <div class="flex items-center justify-between mb-2">
+                            <span id="spotlightHeading" class="text-[11px] font-bold uppercase tracking-wider text-sky-400">● Next Upcoming Trip</span>
+                        </div>
+                        <div id="spotlightCardSlot" class="flex-1 flex flex-col"></div>
                     </div>
-                    <div id="spotlightCardSlot"></div>
+
+                    <div id="adBannerOuter" class="flex flex-col justify-end">
+                        <div id="adBannerSlot"></div>
+                    </div>
                 </div>
 
                 <!-- MY TRIPS HEADER + QUICK FILTER PILLS -->
@@ -745,9 +806,9 @@
                         <span style="color: #64748b;" class="text-[11px] block">Swipe left on any trip to delete</span>
                     </div>
                     <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.14);" class="inline-flex items-center p-1 rounded-xl gap-1">
-                        <button type="button" data-filter="all" class="trip-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white">All</button>
-                        <button type="button" data-filter="upcoming" class="trip-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Upcoming</button>
-                        <button type="button" data-filter="past" class="trip-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Past</button>
+                        <button type="button" data-filter="all" class="trip-filter-btn px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white">All</button>
+                        <button type="button" data-filter="upcoming" class="trip-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Upcoming</button>
+                        <button type="button" data-filter="past" class="trip-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Past</button>
                     </div>
                 </div>
 
@@ -756,14 +817,12 @@
                     <p style="color: #94a3b8;" class="text-sm">Tap <strong>+ New Trip</strong> below to add your destination, start/end dates, and QR passes.</p>
                 </div>
 
-                <div id="tripsContainer" class="space-y-3"></div>
+                <!-- RESPONSIVE 1-COLUMN MOBILE / 2-COLUMN DESKTOP TRIPS GRID -->
+                <div id="tripsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
             </div>
 
-            <!-- FLOATING ANIMATED VISUAL TRAVEL PERKS CAROUSEL -->
-            <div id="adBannerSlot" class="mt-7"></div>
-
             <!-- CLEAN EXECUTIVE FOOTER BAR -->
-            <footer style="border-top: 1px solid rgba(148, 163, 184, 0.12);" class="mt-6 pt-4 pb-6 flex flex-col items-center gap-2 text-center">
+            <footer style="border-top: 1px solid rgba(148, 163, 184, 0.12);" class="mt-8 pt-4 pb-8 flex flex-col items-center gap-2 text-center">
                 <div class="flex flex-wrap items-center justify-center gap-2 text-[11px]">
                     <span class="font-semibold text-slate-400">Lintas • Independent Travel Utility</span>
                     <button type="button" data-info-key="appDisclaimer" style="background-color: rgba(30, 41, 59, 0.85); border: 1px solid rgba(56, 189, 248, 0.3);" class="tactile-btn px-2.5 py-1 rounded-full text-sky-300 font-semibold hover:text-white transition-colors">
@@ -780,7 +839,7 @@
         </div>
 
         <!-- FLOATING + NEW TRIP BUTTON -->
-        <button id="addTripBtn" type="button" class="fab-new-trip fixed bottom-6 right-5 font-bold py-3.5 px-5 rounded-full flex items-center gap-2 text-sm" style="z-index: 25;">
+        <button id="addTripBtn" type="button" class="fab-new-trip fixed bottom-6 right-5 sm:right-8 font-bold py-3.5 px-5 rounded-full flex items-center gap-2 text-sm" style="z-index: 25;">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
             <span>New Trip</span>
         </button>
@@ -788,21 +847,23 @@
 
     <!-- TRIP DETAIL SCREEN (PASSES + INTERACTIVE TRAVEL HUB DECK) -->
     <div id="tripDetailScreen" style="background-color: #0b1120; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
-        <div class="glass px-4 py-3 flex items-center justify-between gap-2" style="position: relative; z-index: 50;">
-            <div class="flex items-center gap-2 overflow-hidden">
-                <button id="backToTripsBtn" type="button" class="tactile-btn p-2 -ml-2 text-blue-400 shrink-0">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                <div class="overflow-hidden">
-                    <h2 id="tripDetailTitle" class="text-lg font-bold text-white truncate leading-tight">Trip Name</h2>
-                    <p id="tripDetailMeta" class="text-xs text-sky-300 truncate"></p>
+        <div class="glass" style="position: relative; z-index: 50;">
+            <div class="app-shell px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 overflow-hidden">
+                    <button id="backToTripsBtn" type="button" class="tactile-btn p-2 -ml-2 text-blue-400 shrink-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <div class="overflow-hidden">
+                        <h2 id="tripDetailTitle" class="text-lg font-bold text-white truncate leading-tight">Trip Name</h2>
+                        <p id="tripDetailMeta" class="text-xs text-sky-300 truncate"></p>
+                    </div>
                 </div>
+                <button id="deleteTripBtn" type="button" class="tactile-btn shrink-0 whitespace-nowrap text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30">Delete Trip</button>
             </div>
-            <button id="deleteTripBtn" type="button" class="tactile-btn shrink-0 whitespace-nowrap text-red-400 text-xs font-semibold px-3 py-2 rounded-xl bg-red-900/30 border border-red-500/30">Delete Trip</button>
         </div>
 
         <!-- SINGLE-LINE GLASSMORPHIC DUAL-PILL SWITCHER (PASSES vs TRAVEL HUB) -->
-        <div style="background-color: #0b1120; border-bottom: 1px solid rgba(148, 163, 184, 0.14);" class="px-4 py-2.5 max-w-2xl w-full mx-auto shrink-0">
+        <div style="background-color: #0b1120; border-bottom: 1px solid rgba(148, 163, 184, 0.14);" class="px-4 sm:px-6 py-2.5 app-shell shrink-0">
             <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.18);" class="grid grid-cols-2 p-1 rounded-2xl gap-1.5 shadow-inner">
                 <button id="tabPassesBtn" type="button" class="passes-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0">
                     <span class="whitespace-nowrap truncate">🎫 Passes</span>
@@ -815,24 +876,24 @@
             </div>
         </div>
         
-        <div id="tripDetailScrollArea" class="flex-1 overflow-y-auto no-scrollbar p-4 pb-24 max-w-2xl w-full mx-auto">
+        <div id="tripDetailScrollArea" class="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 pb-24 app-shell">
             <!-- TAB 1: PASSES & QRs -->
             <div id="tripPassesTab">
-                <button id="addDocTopBtn" type="button" class="w-full btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
+                <button id="addDocTopBtn" type="button" class="w-full max-w-md mx-auto btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
                     + Add QR Pass / Document
                 </button>
 
-                <div id="emptyDocsState" class="text-center py-14 card-dark rounded-2xl p-6">
+                <div id="emptyDocsState" class="text-center py-14 card-dark rounded-2xl p-6 max-w-lg mx-auto">
                     <p style="color: #94a3b8;" class="text-sm mb-2">No passes added to this trip yet.</p>
                     <p style="color: #64748b;" class="text-xs">Upload EES QR, MDAC, ferry/flight passes, or booking receipts for instant offline access.</p>
                 </div>
-                <div id="docsContainer" class="grid grid-cols-2 gap-3"></div>
+                <div id="docsContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5"></div>
             </div>
 
             <!-- TAB 2: INTERACTIVE TRAVEL HUB DECK -->
-            <div id="tripGuideTab" class="hide space-y-3.5">
-                <!-- COMPACT DESTINATION OVERVIEW + INTERACTIVE TOOL TABS -->
-                <div class="hub-hero-card rounded-3xl p-4 shadow-xl">
+            <div id="tripGuideTab" class="hide space-y-4">
+                <!-- COMPACT DESTINATION OVERVIEW + UNIVERSAL TOOL TABS -->
+                <div class="hub-hero-card rounded-3xl p-4 sm:p-5 shadow-xl">
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0 flex-1 text-left">
                             <div class="flex items-center gap-1.5 mb-1">
@@ -840,12 +901,12 @@
                                 <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">Destination Hub</span>
                                 <button type="button" data-info-key="generalHub" class="info-i-btn" aria-label="Travel Hub disclaimer">i</button>
                             </div>
-                            <h3 id="hubHeroCity" class="text-xl font-black text-white leading-tight truncate">Destination</h3>
+                            <h3 id="hubHeroCity" class="text-xl sm:text-2xl font-black text-white leading-tight truncate">Destination</h3>
                             <p id="hubHeroSub" style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">Local time, currency &amp; essential travel info</p>
                         </div>
-                        <div style="background: rgba(15, 23, 42, 0.78); border: 1px solid rgba(56, 189, 248, 0.35);" class="rounded-2xl px-3 py-2 text-right shrink-0">
+                        <div style="background: rgba(15, 23, 42, 0.78); border: 1px solid rgba(56, 189, 248, 0.35);" class="rounded-2xl px-3.5 py-2 text-right shrink-0">
                             <span style="color: #94a3b8;" class="block text-[9px] font-bold uppercase tracking-wider">Local Time</span>
-                            <span id="hubLiveClock" class="text-sm font-black text-sky-300 tabular-nums whitespace-nowrap">--:--</span>
+                            <span id="hubLiveClock" class="text-sm sm:text-base font-black text-sky-300 tabular-nums whitespace-nowrap">--:--</span>
                         </div>
                     </div>
 
@@ -860,8 +921,8 @@
                         </span>
                     </div>
 
-                    <!-- INTERACTIVE TOOL SELECTOR -->
-                    <div class="dest-chip-strip mt-3 pt-3" style="border-top: 1px solid rgba(148, 163, 184, 0.16);">
+                    <!-- UNIVERSAL TOOL SELECTOR (SCROLLABLE ON MOBILE, FULL GRID ON DESKTOP) -->
+                    <div class="hub-tools-strip mt-3.5 pt-3" style="border-top: 1px solid rgba(148, 163, 184, 0.16);">
                         <button id="deckTabRadar" type="button" data-deck="secRadar" class="tool-tab-chip active">🚦 Border Traffic</button>
                         <button type="button" data-deck="secFx" class="tool-tab-chip">💱 Currency</button>
                         <button type="button" data-deck="secFood" class="tool-tab-chip">🍜 Halal Eats</button>
@@ -871,9 +932,9 @@
                     </div>
                 </div>
 
-                <!-- DECK PANEL 1: LIVE LAND BORDER TRAFFIC (WITH FLOATING PiP PREVIEW) OR FLIGHT RADAR -->
+                <!-- DECK PANEL 1: LIVE LAND BORDER TRAFFIC (WITH EXPANDABLE PiP) OR FLIGHT STATUS (WITH EXPANDABLE PiP) -->
                 <div id="secRadar" class="hub-deck-panel deck-panel-anim">
-                    <div id="driveBorderCard" class="card-border-traffic rounded-3xl p-4 shadow-lg">
+                    <div id="driveBorderCard" class="card-border-traffic rounded-3xl p-4 sm:p-5 shadow-lg">
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="text-base shrink-0">🚦</span>
@@ -885,7 +946,7 @@
                         <p id="borderPostTitle" class="text-xs font-extrabold text-white leading-snug"></p>
                         <p id="borderPostDesc" style="color: #cbd5e1;" class="text-xs mt-1 leading-relaxed"></p>
 
-                        <div class="grid grid-cols-2 gap-2 mt-3.5">
+                        <div class="grid grid-cols-2 gap-2.5 mt-3.5">
                             <button id="openGooglePipBtn" type="button"
                                class="btn-primary py-2.5 px-3 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                                 <span>🗺️ Google PiP</span>
@@ -903,7 +964,7 @@
                         </div>
                     </div>
 
-                    <div id="flightRadarCard" class="hide card-flight-radar rounded-3xl p-4 shadow-lg">
+                    <div id="flightRadarCard" class="hide card-flight-radar rounded-3xl p-4 sm:p-5 shadow-lg">
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="text-base shrink-0">✈️</span>
@@ -918,16 +979,16 @@
                             🛂 <strong>Flight Tip:</strong> Arrive at terminal 2.5 hrs before departure; keep power banks in cabin carry-on only.
                         </div>
                         <div class="mt-3 flex gap-2">
-                            <input type="text" id="flightCodeInput" placeholder="Flight No. (e.g., BI873, AK510)" class="input-dark flex-1 rounded-xl px-3 py-2 text-xs uppercase font-bold">
-                            <button id="checkFlightBtn" type="button" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-extrabold shrink-0 inline-flex items-center gap-1 whitespace-nowrap">
-                                <span>Track</span><span>↗</span>
+                            <input type="text" id="flightCodeInput" placeholder="Flight No. (e.g., BI872, AK510)" class="input-dark flex-1 rounded-xl px-3 py-2 text-xs uppercase font-bold">
+                            <button id="checkFlightBtn" type="button" class="btn-primary px-4 py-2 rounded-xl text-xs font-extrabold shrink-0 inline-flex items-center gap-1.5 whitespace-nowrap">
+                                <span>Track PiP</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- DECK PANEL 2: CURRENCY CONVERTER + SPLIT BILL CALCULATOR -->
-                <div id="secFx" class="hide hub-deck-panel deck-panel-anim card-fx rounded-3xl p-4 shadow-lg">
+                <div id="secFx" class="hide hub-deck-panel deck-panel-anim card-fx rounded-3xl p-4 sm:p-5 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-3">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">💱</span>
@@ -964,7 +1025,6 @@
                         <span id="fxResultText" class="text-lg font-black text-sky-300 whitespace-nowrap">—</span>
                     </div>
 
-                    <!-- Group Split Bill Helper -->
                     <div style="background-color: #0f172a; border: 1px solid #334155;" class="mt-2.5 rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
                             <span style="color: #94a3b8;" class="text-[11px] font-semibold">Split bill:</span>
@@ -986,7 +1046,7 @@
                 </div>
 
                 <!-- DECK PANEL 3: IN-APP HALAL FOOD SEARCH & LIVE MAP PREVIEW -->
-                <div id="secFood" class="hide hub-deck-panel deck-panel-anim card-food rounded-3xl p-4 shadow-lg">
+                <div id="secFood" class="hide hub-deck-panel deck-panel-anim card-food rounded-3xl p-4 sm:p-5 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🍜</span>
@@ -1017,14 +1077,14 @@
                                 <button id="closeFoodMapBtn" type="button" class="text-xs font-bold text-slate-400 hover:text-white px-1">✕</button>
                             </div>
                         </div>
-                        <iframe id="inAppFoodMapIframe" src="" class="w-full h-48 border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Halal Eatery Map"></iframe>
+                        <iframe id="inAppFoodMapIframe" src="" class="w-full h-56 border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Halal Eatery Map"></iframe>
                     </div>
 
-                    <div id="guideFoodList" class="space-y-2.5"></div>
+                    <div id="guideFoodList" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
                 </div>
 
                 <!-- DECK PANEL 4: IN-APP LIVE TEXT & VOICE TRANSLATOR + PHRASES -->
-                <div id="secPhrases" class="hide hub-deck-panel deck-panel-anim card-phrase rounded-3xl p-4 shadow-lg">
+                <div id="secPhrases" class="hide hub-deck-panel deck-panel-anim card-phrase rounded-3xl p-4 sm:p-5 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🗣️</span>
@@ -1057,11 +1117,11 @@
                     </div>
 
                     <p style="color: #94a3b8;" class="text-[10px] font-bold uppercase tracking-wider mb-2">Quick Travel Phrases</p>
-                    <div id="guidePhrasesList" class="space-y-2"></div>
+                    <div id="guidePhrasesList" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
                 </div>
 
                 <!-- DECK PANEL 5: LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
-                <div id="secTransit" class="hide hub-deck-panel deck-panel-anim card-dark rounded-3xl p-4 shadow-lg">
+                <div id="secTransit" class="hide hub-deck-panel deck-panel-anim card-dark rounded-3xl p-4 sm:p-5 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">⛴️</span>
@@ -1072,11 +1132,11 @@
                             <span>Transit Map</span><span>↗</span>
                         </a>
                     </div>
-                    <div id="guideTransitBody" class="space-y-2.5 text-xs"></div>
+                    <div id="guideTransitBody" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs"></div>
                 </div>
 
                 <!-- DECK PANEL 6: STAY ADDRESS & EMERGENCY CONTACTS -->
-                <div id="secDriver" class="hide hub-deck-panel deck-panel-anim card-dark rounded-3xl p-4 space-y-3 shadow-lg">
+                <div id="secDriver" class="hide hub-deck-panel deck-panel-anim card-dark rounded-3xl p-4 sm:p-5 space-y-3 shadow-lg">
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base shrink-0">🚕</span>
@@ -1087,8 +1147,10 @@
                             <span>Show Driver</span><span>⛶</span>
                         </button>
                     </div>
-                    <input type="text" id="hotelNameInput" placeholder="Hotel / Airbnb Name" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
-                    <input type="text" id="hotelAddrInput" placeholder="Full Street Address (for taxi / Grab)" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <input type="text" id="hotelNameInput" placeholder="Hotel / Airbnb Name" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
+                        <input type="text" id="hotelAddrInput" placeholder="Full Street Address (for taxi / Grab)" class="input-dark w-full rounded-xl px-3 py-2 text-xs">
+                    </div>
 
                     <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-3">
                         <p class="text-xs font-extrabold text-red-300 mb-1.5">🚨 Local SOS &amp; Diplomatic Hotline</p>
@@ -1096,6 +1158,49 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- FLOATING PiP AT-A-GLANCE FLIGHT TRACKER WINDOW (NO REDIRECT + ENLARGEABLE) -->
+    <div id="pipFlightModal" class="hide pip-window-base animate-pop">
+        <div class="px-3.5 py-2.5 flex items-center justify-between gap-2 bg-slate-900 border-b border-slate-800 shrink-0">
+            <div class="flex items-center gap-1.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-sky-400 shrink-0"></span>
+                <span id="pipFlightTitle" class="text-xs font-extrabold text-white truncate">Flight Tracker</span>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button id="pipFlightFr24Btn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-sky-500 text-slate-950">FR24</button>
+                <button id="pipFlightFaBtn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300">FlightAware</button>
+                <button id="expandPipFlightBtn" type="button" class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-slate-800 text-sky-300 border border-sky-400/35 whitespace-nowrap" title="Enlarge or shrink window">⛶ Expand</button>
+                <button id="closePipFlightBtn" type="button" class="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-bold">✕</button>
+            </div>
+        </div>
+        <div class="relative w-full pip-body-compact bg-slate-950 flex flex-col">
+            <iframe id="pipFlightIframe" src="" class="w-full flex-1 border-0 bg-white" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Live Flight Tracker"></iframe>
+            <div class="px-3 py-2 bg-slate-900/95 border-t border-slate-800 flex items-center justify-between gap-2 text-[11px] shrink-0">
+                <span style="color: #94a3b8;" class="truncate">Live aviation feed • Tap Expand for full radar</span>
+                <a id="pipFlightExtLink" href="https://www.google.com" target="_blank" rel="noopener noreferrer" class="text-sky-400 font-bold whitespace-nowrap shrink-0">Google Status ↗</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING PiP AT-A-GLANCE TRAFFIC WINDOW (GOOGLE TRAFFIC / WAZE LIVE + ENLARGEABLE) -->
+    <div id="pipTrafficModal" class="hide pip-window-base animate-pop">
+        <div class="px-3.5 py-2.5 flex items-center justify-between gap-2 bg-slate-900 border-b border-slate-800 shrink-0">
+            <div class="flex items-center gap-1.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                <span id="pipWindowTitle" class="text-xs font-extrabold text-white truncate">Live Traffic PiP</span>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button id="pipSwitchGoogleBtn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-blue-600 text-white">Google</button>
+                <button id="pipSwitchWazeBtn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300">Waze</button>
+                <button id="expandPipTrafficBtn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-slate-800 text-sky-300 border border-sky-400/35 whitespace-nowrap">⛶ Expand</button>
+                <a id="pipFullOpenLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/35 whitespace-nowrap">App ↗</a>
+                <button id="closePipTrafficBtn" type="button" class="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-bold">✕</button>
+            </div>
+        </div>
+        <div class="relative w-full pip-body-compact bg-slate-950">
+            <iframe id="pipTrafficIframe" src="" class="w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Live Border Traffic Map"></iframe>
         </div>
     </div>
 
@@ -1121,35 +1226,16 @@
         </div>
     </div>
 
-    <!-- FLOATING PiP AT-A-GLANCE TRAFFIC WINDOW (GOOGLE TRAFFIC / WAZE LIVE) -->
-    <div id="pipTrafficModal" class="hide pip-traffic-window animate-pop">
-        <div class="px-3.5 py-2.5 flex items-center justify-between gap-2 bg-slate-900 border-b border-slate-800">
-            <div class="flex items-center gap-1.5 min-w-0">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
-                <span id="pipWindowTitle" class="text-xs font-extrabold text-white truncate">Live Traffic PiP</span>
-            </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-                <button id="pipSwitchGoogleBtn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-extrabold bg-blue-600 text-white">Google</button>
-                <button id="pipSwitchWazeBtn" type="button" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300">Waze</button>
-                <a id="pipFullOpenLink" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/35 whitespace-nowrap">Full ↗</a>
-                <button id="closePipTrafficBtn" type="button" class="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-bold">✕</button>
-            </div>
-        </div>
-        <div class="relative w-full h-60 bg-slate-950">
-            <iframe id="pipTrafficIframe" src="" class="w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Live Border Traffic Map"></iframe>
-        </div>
-    </div>
-
     <!-- FULL-SCREEN "SHOW TO TAXI DRIVER" CARD -->
     <div id="driverCardModal" style="z-index: 10005;" class="hide fixed inset-0 bg-slate-950 flex flex-col justify-between p-6 text-center">
-        <div class="flex justify-between items-center">
+        <div class="app-shell flex justify-between items-center">
             <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Lintas • Driver Card</span>
             <button id="closeDriverCardBtn" type="button" class="px-4 py-2 rounded-full bg-slate-800 text-white text-xs font-bold">Close ✕</button>
         </div>
-        <div class="my-auto space-y-4">
+        <div class="my-auto space-y-4 max-w-2xl mx-auto">
             <p style="color: #94a3b8;" class="text-xs uppercase tracking-widest">Please take me to:</p>
-            <h2 id="driverHotelName" class="text-3xl sm:text-4xl font-extrabold text-white leading-tight break-words">My Hotel</h2>
-            <p id="driverHotelAddr" class="text-lg sm:text-xl font-semibold text-sky-300 leading-relaxed break-words">No address entered yet</p>
+            <h2 id="driverHotelName" class="text-3xl sm:text-5xl font-extrabold text-white leading-tight break-words">My Hotel</h2>
+            <p id="driverHotelAddr" class="text-lg sm:text-2xl font-semibold text-sky-300 leading-relaxed break-words">No address entered yet</p>
         </div>
         <p style="color: #64748b;" class="text-xs">Saved on your device for offline access</p>
     </div>
@@ -1168,13 +1254,13 @@
         </div>
 
         <div id="gallerySwipeArea" class="flex-1 relative flex items-center justify-center overflow-auto p-2">
-            <button id="prevDocBtn" type="button" aria-label="Previous pass" style="background: rgba(30, 41, 59, 0.8); z-index: 15;" class="hide nav-arrow-btn absolute left-3 p-2.5 rounded-full text-white border border-white/15 shadow-lg active:scale-90">
+            <button id="prevDocBtn" type="button" aria-label="Previous pass" style="background: rgba(30, 41, 59, 0.8); z-index: 15;" class="hide nav-arrow-btn absolute left-3 sm:left-8 p-2.5 rounded-full text-white border border-white/15 shadow-lg active:scale-90">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
             </button>
 
             <img id="viewerImage" src="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
 
-            <button id="nextDocBtn" type="button" aria-label="Next pass" style="background: rgba(30, 41, 59, 0.8); z-index: 15;" class="hide nav-arrow-btn absolute right-3 p-2.5 rounded-full text-white border border-white/15 shadow-lg active:scale-90">
+            <button id="nextDocBtn" type="button" aria-label="Next pass" style="background: rgba(30, 41, 59, 0.8); z-index: 15;" class="hide nav-arrow-btn absolute right-3 sm:right-8 p-2.5 rounded-full text-white border border-white/15 shadow-lg active:scale-90">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
             </button>
         </div>
@@ -1187,7 +1273,7 @@
 
     <!-- ADD DOCUMENT MODAL -->
     <div id="newDocModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-4 pb-12 overflow-y-auto">
-        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-5 shadow-2xl my-auto">
+        <div class="modal-card animate-pop w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-white">Add Travel Pass</h3>
                 <button id="closeDocModalBtn" type="button" style="color: #94a3b8;" class="text-sm font-medium hover:text-white p-1">Close</button>
@@ -1273,7 +1359,7 @@
 
     <!-- NEW TRIP MODAL -->
     <div id="newTripModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5 overflow-y-auto">
-        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-6 shadow-2xl my-auto">
+        <div class="modal-card animate-pop w-full max-w-md rounded-3xl p-6 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-white">Create New Trip</h3>
                 <button id="closeTripModalBtn" type="button" style="color: #94a3b8;" class="text-sm font-medium hover:text-white p-1">Close</button>
@@ -1330,14 +1416,14 @@
                 </div>
             </div>
 
-            <p style="color: #64748b;" class="text-xs mb-5">Unlocks live border traffic or flight radar, Travel Hub &amp; auto-cleans 30 days after Trip End Date.</p>
+            <p style="color: #64748b;" class="text-xs mb-5">Unlocks live border traffic or flight status, Travel Hub &amp; auto-cleans 30 days after Trip End Date.</p>
             <button id="saveTripBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl">Create Trip</button>
         </div>
     </div>
 
     <!-- GOOGLE VS GUEST POP-UP -->
     <div id="benefitsModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5">
-        <div class="modal-card animate-pop w-full max-w-xs rounded-3xl p-5 shadow-2xl text-left">
+        <div class="modal-card animate-pop w-full max-w-sm rounded-3xl p-5 shadow-2xl text-left">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base font-bold text-white">Google vs. Guest</h3>
                 <button id="closeBenefitsBtn" type="button" style="color: #94a3b8;" class="p-1 rounded-lg hover:text-white">
@@ -1352,7 +1438,7 @@
                         <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Recommended</span>
                     </div>
                     <ul style="color: #cbd5e1;" class="text-xs space-y-1.5">
-                        <li>✓ Syncs trips across iPhone &amp; Android</li>
+                        <li>✓ Syncs trips across iPhone, Android &amp; Desktop</li>
                         <li>✓ Stays signed in for 15m (or Face ID protected)</li>
                         <li>✓ Auto-cleans 30d after trip end date</li>
                     </ul>
@@ -1418,7 +1504,7 @@
                 </button>
             </div>
             <div style="color: #cbd5e1;" class="overflow-y-auto text-xs space-y-3 pr-1 leading-relaxed">
-                <p><strong>1. Independence, User Responsibility &amp; Third-Party Providers:</strong> Lintas is an independent personal travel organizer not affiliated with any government, border authority, or third-party data provider. All uploaded QR passes and files remain under the user's sole control and responsibility, not Lintas. Live traffic maps, flight statuses, currency rates, weather forecasts, Halal eatery maps, and translations are supplied by external providers (Google Maps, Waze, ExchangeRate-API, Open-Meteo, Aladhan, and MyMemory); Lintas makes no guarantees regarding accuracy and assumes no liability for inaccurate third-party information.</p>
+                <p><strong>1. Independence, User Responsibility &amp; Third-Party Providers:</strong> Lintas is an independent personal travel organizer not affiliated with any government, border authority, or third-party data provider. All uploaded QR passes and files remain under the user's sole control and responsibility, not Lintas. Live traffic maps, flight statuses, currency rates, weather forecasts, Halal eatery maps, and translations are supplied by external providers (Google Maps, Waze, Flightradar24, FlightAware, ExchangeRate-API, Open-Meteo, Aladhan, and MyMemory); Lintas makes no guarantees regarding accuracy and assumes no liability for inaccurate third-party information.</p>
                 <p><strong>2. Storage, Session Grace &amp; Retention (PDPO Compliance):</strong> Guest Mode stores passes strictly on your local device. Google Sign-In encrypts and syncs compressed QR passes to your private Firebase account with offline availability. Active sessions remain unlocked for 15 minutes across app closes unless Face ID / Fingerprint protection is enabled (which verifies biometrics on every cold open and after timeout). Tapping Sign Out immediately clears your session and removes biometric access. Trips and passes auto-delete 30 days after your trip end date.</p>
                 <p><strong>3. Location Privacy:</strong> Lintas never stores or tracks your location history. Login-screen weather and Solat prayer times look up approximate city location via Open-Meteo and Aladhan APIs without saving coordinates.</p>
                 <p><strong>4. Prohibited Documents &amp; Automated Filter:</strong> Users must not upload passports, national identity cards (IC), or bank cards. Lintas runs a multi-layer on-device check before upload and blocks Bruneian or foreign passports and IDs.</p>
@@ -1583,8 +1669,8 @@
             },
             flightRadar: {
                 title: "Flight Status & Airport Info",
-                provider: "Google Flight Status & Airport Guides",
-                body: "Live flight tracking queries public aviation status feeds via Google Search. Always verify boarding gate changes, terminal assignments, and check-in cutoffs directly with your airline."
+                provider: "Flightradar24, FlightAware & Airport Guides",
+                body: "Live flight tracking embeds public aviation status feeds from Flightradar24 and FlightAware. Always verify boarding gate changes, terminal assignments, and check-in cutoffs directly with your airline."
             },
             currencyFx: {
                 title: "Currency Converter",
@@ -2207,7 +2293,7 @@
             if (matches.length === 0) {
                 const customTerm = (document.getElementById('halalSearchInput')?.value || '').trim() || 'Halal food';
                 foodEl.innerHTML = `
-                    <div style="background-color: #0f172a; border: 1px solid rgba(52, 211, 153, 0.3);" class="rounded-2xl p-3.5 text-center space-y-2">
+                    <div style="background-color: #0f172a; border: 1px solid rgba(52, 211, 153, 0.3);" class="col-span-full rounded-2xl p-3.5 text-center space-y-2">
                         <p class="text-xs font-bold text-white">No saved preset for "${escapeHtml(customTerm)}"</p>
                         <p style="color: #94a3b8;" class="text-[11px]">Search live inside the app map for "${escapeHtml(customTerm)}" in ${escapeHtml(currentPipGuide.cityTitle)}.</p>
                         <button type="button" id="searchCustomHalalMapBtn" class="promo-cta-btn px-4 py-2 rounded-xl text-xs font-extrabold">
@@ -2404,11 +2490,82 @@
             });
         });
 
-        // Floating PiP Traffic Window Controller
+        // =========================================================================
+        // IN-APP EXPANDABLE FLIGHT TRACKER PiP WINDOW (NO REDIRECT)
+        // =========================================================================
+        let activeTrackedFlightCode = "";
+
+        function openFlightPip(provider = "fr24") {
+            closeTrafficPip();
+            closeProviderInfoPip();
+            const rawCode = document.getElementById('flightCodeInput')?.value.trim().toUpperCase().replace(/\s+/g, '') || "";
+            const airportCode = document.getElementById('guideAirportCode')?.textContent.trim().toUpperCase() || "KUL";
+            activeTrackedFlightCode = rawCode;
+
+            const modal = document.getElementById('pipFlightModal');
+            const iframe = document.getElementById('pipFlightIframe');
+            const titleEl = document.getElementById('pipFlightTitle');
+            const extLink = document.getElementById('pipFlightExtLink');
+            const frBtn = document.getElementById('pipFlightFr24Btn');
+            const faBtn = document.getElementById('pipFlightFaBtn');
+
+            const googleStatusQuery = rawCode ? `${rawCode} flight status` : `${airportCode} airport arrivals departures`;
+            extLink.href = `https://www.google.com/search?q=${encodeURIComponent(googleStatusQuery)}`;
+
+            if (provider === "fa") {
+                titleEl.textContent = rawCode ? `FlightAware • ${rawCode}` : `FlightAware • ${airportCode}`;
+                iframe.src = rawCode
+                    ? `https://www.flightaware.com/live/flight/${encodeURIComponent(rawCode)}`
+                    : `https://www.flightaware.com/live/airport/${encodeURIComponent(airportCode)}`;
+                faBtn.className = 'px-2 py-1 rounded-lg text-[10px] font-extrabold bg-sky-500 text-slate-950';
+                frBtn.className = 'px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300';
+            } else {
+                titleEl.textContent = rawCode ? `FlightRadar24 • ${rawCode}` : `FlightRadar24 • ${airportCode}`;
+                iframe.src = rawCode
+                    ? `https://www.flightradar24.com/data/flights/${encodeURIComponent(rawCode.toLowerCase())}`
+                    : `https://www.flightradar24.com/data/airports/${encodeURIComponent(airportCode.toLowerCase())}`;
+                frBtn.className = 'px-2 py-1 rounded-lg text-[10px] font-extrabold bg-sky-500 text-slate-950';
+                faBtn.className = 'px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300';
+            }
+
+            modal.classList.remove('hide');
+        }
+
+        function closeFlightPip() {
+            const modal = document.getElementById('pipFlightModal');
+            const iframe = document.getElementById('pipFlightIframe');
+            const expBtn = document.getElementById('expandPipFlightBtn');
+            modal.classList.remove('pip-expanded');
+            modal.classList.add('hide');
+            if (expBtn) expBtn.textContent = "⛶ Expand";
+            if (iframe) iframe.src = '';
+        }
+
+        document.getElementById('checkFlightBtn').addEventListener('click', () => openFlightPip('fr24'));
+        document.getElementById('flightCodeInput')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                openFlightPip('fr24');
+            }
+        });
+        document.getElementById('pipFlightFr24Btn').addEventListener('click', () => openFlightPip('fr24'));
+        document.getElementById('pipFlightFaBtn').addEventListener('click', () => openFlightPip('fa'));
+        document.getElementById('closePipFlightBtn').addEventListener('click', closeFlightPip);
+        document.getElementById('expandPipFlightBtn').addEventListener('click', () => {
+            const modal = document.getElementById('pipFlightModal');
+            const expBtn = document.getElementById('expandPipFlightBtn');
+            const expanded = modal.classList.toggle('pip-expanded');
+            expBtn.textContent = expanded ? "🗕 Compact" : "⛶ Expand";
+        });
+
+        // =========================================================================
+        // FLOATING EXPANDABLE PiP TRAFFIC WINDOW (GOOGLE TRAFFIC / WAZE LIVE)
+        // =========================================================================
         let currentPipGuide = null;
 
         function openTrafficPip(providerName) {
             if (!currentPipGuide) return;
+            closeFlightPip();
             closeProviderInfoPip();
             const modal = document.getElementById('pipTrafficModal');
             const iframe = document.getElementById('pipTrafficIframe');
@@ -2449,7 +2606,10 @@
         function closeTrafficPip() {
             const modal = document.getElementById('pipTrafficModal');
             const iframe = document.getElementById('pipTrafficIframe');
+            const expBtn = document.getElementById('expandPipTrafficBtn');
+            modal.classList.remove('pip-expanded');
             modal.classList.add('hide');
+            if (expBtn) expBtn.textContent = "⛶ Expand";
             if (iframe) iframe.src = '';
         }
 
@@ -2458,6 +2618,12 @@
         document.getElementById('pipSwitchGoogleBtn').addEventListener('click', () => openTrafficPip('google'));
         document.getElementById('pipSwitchWazeBtn').addEventListener('click', () => openTrafficPip('waze'));
         document.getElementById('closePipTrafficBtn').addEventListener('click', closeTrafficPip);
+        document.getElementById('expandPipTrafficBtn').addEventListener('click', () => {
+            const modal = document.getElementById('pipTrafficModal');
+            const expBtn = document.getElementById('expandPipTrafficBtn');
+            const expanded = modal.classList.toggle('pip-expanded');
+            expBtn.textContent = expanded ? "🗕 Compact" : "⛶ Expand";
+        });
 
         // Travel Mode Switcher inside Travel Hub (Drive/Border vs Flight)
         let activeOpenTrip = null;
@@ -2470,6 +2636,7 @@
             const deckRadarTab = document.getElementById('deckTabRadar');
 
             if (isDrive) {
+                closeFlightPip();
                 driveCard.classList.remove('hide');
                 flightCard.classList.add('hide');
                 driveBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-amber-500 text-slate-950 transition-all whitespace-nowrap';
@@ -2643,6 +2810,7 @@
                 passesBtn.className = 'py-2.5 px-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5 min-w-0';
             } else {
                 closeTrafficPip();
+                closeFlightPip();
                 closeProviderInfoPip();
                 passesTab.classList.remove('hide');
                 guideTab.classList.add('hide');
@@ -2653,12 +2821,6 @@
 
         document.getElementById('tabPassesBtn').addEventListener('click', () => setTripDetailTab('passes'));
         document.getElementById('tabGuideBtn').addEventListener('click', () => setTripDetailTab('hub'));
-
-        document.getElementById('checkFlightBtn').addEventListener('click', () => {
-            const code = document.getElementById('flightCodeInput').value.trim().toUpperCase().replace(/\s+/g, '');
-            const query = code ? `${code} flight status` : `${document.getElementById('guideAirportCode').textContent} flight arrivals departures`;
-            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank', 'noopener,noreferrer');
-        });
 
         document.getElementById('showDriverBtn').addEventListener('click', () => {
             const name = document.getElementById('hotelNameInput').value.trim() || "Hotel / Accommodation";
@@ -2741,7 +2903,7 @@
                         : '';
 
                     slot.innerHTML = `
-                        <div class="partner-float-card p-3.5 text-left">
+                        <div class="partner-float-card p-3.5 sm:p-4 text-left h-full flex flex-col justify-between">
                             ${mediaHtml}
                             <a href="${cleanUrl}" target="_blank" rel="noopener noreferrer sponsored"
                                class="perk-content-layer ${animate ? 'perk-slide-anim' : ''} flex items-center justify-between gap-3">
@@ -3465,6 +3627,7 @@
 
                 if (currentTripId === trip.id) {
                     closeTrafficPip();
+                    closeFlightPip();
                     closeProviderInfoPip();
                     if (hubClockTimer) {
                         clearInterval(hubClockTimer);
@@ -3820,6 +3983,7 @@
             clearInactivityWatch();
             clearTimeout(arrowHideTimer);
             closeTrafficPip();
+            closeFlightPip();
             closeProviderInfoPip();
             if (hubClockTimer) {
                 clearInterval(hubClockTimer);
@@ -4137,6 +4301,7 @@
             clearStaleBiometricProfile();
             modals.settings.classList.add('hide');
             closeTrafficPip();
+            closeFlightPip();
             closeProviderInfoPip();
             currentTripId = null;
             currentUser = null;
@@ -4163,6 +4328,7 @@
                 await wipeAllUserData(activeUser.uid);
                 modals.settings.classList.add('hide');
                 closeTrafficPip();
+                closeFlightPip();
                 closeProviderInfoPip();
                 currentTripId = null;
                 await deleteUser(auth.currentUser);
@@ -4183,9 +4349,9 @@
                 currentTripFilter = btn.dataset.filter || 'all';
                 document.querySelectorAll('.trip-filter-btn').forEach((b) => {
                     if (b === btn) {
-                        b.className = 'trip-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white';
+                        b.className = 'trip-filter-btn px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white';
                     } else {
-                        b.className = 'trip-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white';
+                        b.className = 'trip-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white';
                     }
                 });
                 await loadTrips();
@@ -4327,20 +4493,22 @@
 
                     const heroWxId = `hero_wx_${t.id}`;
                     const heroCard = document.createElement('div');
-                    heroCard.className = 'spotlight-card rounded-3xl p-4 cursor-pointer';
+                    heroCard.className = 'spotlight-card rounded-3xl p-4 cursor-pointer flex-1 flex flex-col justify-between';
                     heroCard.innerHTML = `
-                        <div class="flex items-start justify-between gap-2 mb-3">
-                            <div class="overflow-hidden">
-                                <h3 class="font-bold text-lg text-white truncate">${escapeHtml(t.name)}</h3>
-                                <p class="text-xs text-slate-300 truncate mt-0.5">${t.location ? `📍 ${escapeHtml(t.location)}` : '🌍 Personal Travel Folder'}</p>
+                        <div>
+                            <div class="flex items-start justify-between gap-2 mb-3">
+                                <div class="overflow-hidden">
+                                    <h3 class="font-bold text-lg text-white truncate">${escapeHtml(t.name)}</h3>
+                                    <p class="text-xs text-slate-300 truncate mt-0.5">${t.location ? `📍 ${escapeHtml(t.location)}` : '🌍 Personal Travel Folder'}</p>
+                                </div>
+                                <span style="${tl.badgeStyle}" class="shrink-0 whitespace-nowrap text-[11px] font-bold px-2.5 py-1 rounded-full">
+                                    ${tl.statusLabel}
+                                </span>
                             </div>
-                            <span style="${tl.badgeStyle}" class="shrink-0 whitespace-nowrap text-[11px] font-bold px-2.5 py-1 rounded-full">
-                                ${tl.statusLabel}
-                            </span>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2 mb-3">
-                            ${tl.dateRange ? `<span style="background-color: #0f172a; border: 1px solid #334155;" class="text-xs font-medium text-slate-200 px-2.5 py-1 rounded-xl">📅 ${tl.dateRange}</span>` : ''}
-                            <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                                ${tl.dateRange ? `<span style="background-color: #0f172a; border: 1px solid #334155;" class="text-xs font-medium text-slate-200 px-2.5 py-1 rounded-xl">📅 ${tl.dateRange}</span>` : ''}
+                                <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
+                            </div>
                         </div>
                         <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-2.5 flex items-center justify-between text-xs font-bold text-sky-400">
                             <span>Passes &amp; Travel Hub</span>
@@ -4409,7 +4577,7 @@
                     swipeBg.innerHTML = `<span class="inline-flex items-center gap-1.5"><span>🗑️</span><span>Delete</span></span>`;
 
                     const fgCard = document.createElement('div');
-                    fgCard.className = 'trip-swipe-fg p-4 cursor-pointer space-y-2';
+                    fgCard.className = 'trip-swipe-fg p-4 cursor-pointer space-y-2 h-full flex flex-col justify-between';
                     fgCard.innerHTML = `
                         <div class="flex items-start justify-between gap-2">
                             <div class="overflow-hidden">
@@ -4583,7 +4751,7 @@
                     el.className = 'card-dark rounded-2xl overflow-hidden cursor-pointer active:opacity-80 relative';
                     el.innerHTML = `
                         <div class="relative">
-                            <img src="${d.imageData}" class="w-full h-36 object-cover bg-black">
+                            <img src="${d.imageData}" class="w-full h-36 sm:h-44 object-cover bg-black">
                             <span style="background: rgba(15,23,42,0.85);" class="absolute bottom-2 right-2 text-[10px] font-semibold text-white px-2 py-0.5 rounded-md">Tap to view</span>
                         </div>
                         <div class="p-3">
@@ -5006,6 +5174,7 @@
         };
         document.getElementById('backToTripsBtn').onclick = () => {
             closeTrafficPip();
+            closeFlightPip();
             closeProviderInfoPip();
             if (hubClockTimer) {
                 clearInterval(hubClockTimer);
