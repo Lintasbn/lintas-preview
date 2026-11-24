@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Lintas">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#060b16">
     <link rel="manifest" href="manifest.json">
     <title>Lintas</title>
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
@@ -20,8 +20,48 @@
     <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
+        :root {
+            --bg-void: #060b16;
+            --bg-surface: rgba(15, 23, 42, 0.78);
+            --bg-elevated: rgba(22, 33, 56, 0.88);
+            --accent-primary: #38bdf8;
+            --accent-secondary: #10b981;
+            --accent-glow: rgba(56, 189, 248, 0.32);
+            --accent-gradient: linear-gradient(135deg, #0ea5e9 0%, #2563eb 52%, #10b981 100%);
+            --btn-gradient: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+            --border-subtle: rgba(148, 163, 184, 0.15);
+            --border-glow: rgba(56, 189, 248, 0.48);
+        }
+        /* Theme 2: Royal Gold & Obsidian */
+        html[data-theme="gold"] {
+            --accent-primary: #fbbf24;
+            --accent-secondary: #f59e0b;
+            --accent-glow: rgba(251, 191, 36, 0.32);
+            --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 55%, #0ea5e9 100%);
+            --btn-gradient: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+            --border-glow: rgba(251, 191, 36, 0.52);
+        }
+        /* Theme 3: Emerald Oasis */
+        html[data-theme="emerald"] {
+            --accent-primary: #34d399;
+            --accent-secondary: #14b8a6;
+            --accent-glow: rgba(52, 211, 153, 0.32);
+            --accent-gradient: linear-gradient(135deg, #10b981 0%, #0d9488 55%, #0284c7 100%);
+            --btn-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --border-glow: rgba(52, 211, 153, 0.52);
+        }
+        /* Theme 4: Neon Horizon */
+        html[data-theme="sunset"] {
+            --accent-primary: #f472b6;
+            --accent-secondary: #818cf8;
+            --accent-glow: rgba(244, 114, 182, 0.32);
+            --accent-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 55%, #3b82f6 100%);
+            --btn-gradient: linear-gradient(135deg, #ec4899 0%, #7c3aed 100%);
+            --border-glow: rgba(244, 114, 182, 0.52);
+        }
+
         html, body {
-            background-color: #0b1120;
+            background-color: var(--bg-void);
             color: #f8fafc;
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
@@ -50,17 +90,54 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        /* Universal App Container (Mobile Full-Width -> Clean Centered Desktop Shell) */
+        /* Universal App Container (Mobile Full-Width -> Centered 960px Desktop Shell) */
         .app-shell {
             width: 100%;
-            max-width: 920px;
+            max-width: 960px;
             margin-left: auto;
             margin-right: auto;
         }
+
+        /* Live Breathing Aurora Background Orbs */
+        @keyframes auroraFloat1 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(28px, 18px) scale(1.08); }
+        }
+        @keyframes auroraFloat2 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(-24px, -16px) scale(1.06); }
+        }
+        .aurora-orb-1 {
+            position: fixed;
+            top: -110px;
+            left: 12%;
+            width: 420px;
+            height: 420px;
+            border-radius: 999px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            filter: blur(28px);
+            animation: auroraFloat1 11s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .aurora-orb-2 {
+            position: fixed;
+            bottom: -120px;
+            right: 8%;
+            width: 380px;
+            height: 380px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.16) 0%, transparent 70%);
+            filter: blur(32px);
+            animation: auroraFloat2 13s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         #brandSplash {
             position: fixed;
             inset: 0;
-            background-color: #0b1120;
+            background-color: #060b16;
             z-index: 20000;
             display: flex;
             flex-direction: column;
@@ -81,7 +158,7 @@
             background: linear-gradient(180deg, #ffffff 25%, #bae6fd 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 6px 20px rgba(56, 189, 248, 0.25));
+            filter: drop-shadow(0 6px 24px var(--accent-glow));
             display: inline-flex;
             align-items: baseline;
         }
@@ -92,7 +169,7 @@
             border-radius: 999px;
             background: linear-gradient(135deg, #fde047, #f59e0b);
             margin-left: 0.05em;
-            box-shadow: 0 0 12px rgba(253, 224, 71, 0.7);
+            box-shadow: 0 0 14px rgba(253, 224, 71, 0.85);
             -webkit-text-fill-color: initial;
         }
         .brand-wordmark-sm {
@@ -112,41 +189,96 @@
             box-shadow: none;
         }
         .glass {
-            background: rgba(11, 17, 32, 0.88);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(6, 11, 22, 0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border-bottom: 1px solid rgba(148, 163, 184, 0.14);
         }
         .glass-auth-card {
-            background: rgba(30, 41, 59, 0.62);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            box-shadow: 0 24px 48px -12px rgba(2, 6, 23, 0.75);
+            background: rgba(15, 23, 42, 0.68);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 28px 56px -12px rgba(2, 6, 23, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
         .tactile-btn {
-            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease;
+            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
             touch-action: manipulation;
         }
         .tactile-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.94);
         }
         .card-dark {
-            background: linear-gradient(165deg, rgba(30, 41, 59, 0.92) 0%, rgba(15, 23, 42, 0.96) 100%);
-            border: 1px solid rgba(148, 163, 184, 0.14);
-            transition: border-color 0.18s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(165deg, rgba(22, 33, 56, 0.86) 0%, rgba(11, 18, 33, 0.94) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 10px 26px -10px rgba(2, 6, 23, 0.7);
+            transition: border-color 0.2s ease, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
         }
         .card-dark:hover {
-            border-color: rgba(56, 189, 248, 0.38);
+            border-color: var(--border-glow);
+            box-shadow: 0 14px 32px -10px var(--accent-glow);
         }
+
+        /* Holographic Boarding-Pass Spotlight Card */
+        @keyframes holoSweep {
+            0% { transform: translateX(-140%) skewX(-22deg); }
+            55%, 100% { transform: translateX(260%) skewX(-22deg); }
+        }
+        .boarding-pass-hero {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, rgba(17, 29, 52, 0.96) 0%, rgba(9, 15, 29, 0.99) 100%);
+            border: 1px solid var(--border-glow);
+            box-shadow: 0 0 36px -8px var(--accent-glow), 0 20px 38px -14px rgba(2, 6, 23, 0.9);
+            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .boarding-pass-hero::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 38%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+            animation: holoSweep 6.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .boarding-pass-hero:active {
+            transform: scale(0.98);
+        }
+        .ticket-divider {
+            position: relative;
+            border-top: 1.5px dashed rgba(148, 163, 184, 0.24);
+            margin: 12px 0;
+        }
+        .ticket-divider::before, .ticket-divider::after {
+            content: "";
+            position: absolute;
+            top: -8px;
+            width: 15px;
+            height: 15px;
+            border-radius: 999px;
+            background-color: var(--bg-void);
+            border: 1px solid var(--border-glow);
+        }
+        .ticket-divider::before { left: -24px; }
+        .ticket-divider::after { right: -24px; }
+
         /* Swipe-to-Delete Trip Wrapper & Foreground Card */
+        @keyframes cardCascadeIn {
+            0% { opacity: 0; transform: translateY(10px) scale(0.985); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
         .trip-swipe-wrap {
             position: relative;
             overflow: hidden;
             border-radius: 1.25rem;
             background: linear-gradient(135deg, #ef4444, #991b1b);
             touch-action: pan-y;
+            animation: cardCascadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) backwards;
         }
         .trip-swipe-bg {
             position: absolute;
@@ -164,55 +296,50 @@
         .trip-swipe-fg {
             position: relative;
             z-index: 2;
-            background: linear-gradient(165deg, #1e293b 0%, #131c31 100%);
+            background: linear-gradient(165deg, rgba(22, 33, 56, 0.96) 0%, rgba(12, 19, 36, 0.98) 100%);
             border: 1px solid rgba(148, 163, 184, 0.14);
             border-radius: 1.25rem;
             will-change: transform;
+            transition: border-color 0.2s ease;
         }
-        .spotlight-card {
-            background: linear-gradient(135deg, rgba(14, 116, 144, 0.32) 0%, rgba(30, 41, 59, 0.96) 45%, rgba(15, 23, 42, 0.99) 100%);
-            border: 1px solid rgba(56, 189, 248, 0.52);
-            box-shadow: 0 0 32px -6px rgba(56, 189, 248, 0.28), 0 18px 34px -12px rgba(2, 6, 23, 0.85);
-            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .spotlight-card:active {
-            transform: scale(0.98);
+        .trip-swipe-fg:hover {
+            border-color: var(--border-glow);
         }
         .hub-hero-card {
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, rgba(14, 116, 144, 0.44) 0%, rgba(15, 23, 42, 0.96) 55%, rgba(6, 95, 70, 0.40) 100%);
-            border: 1px solid rgba(56, 189, 248, 0.44);
-            box-shadow: 0 14px 32px -10px rgba(14, 165, 233, 0.28);
+            background: linear-gradient(135deg, rgba(14, 116, 144, 0.36) 0%, rgba(12, 19, 36, 0.96) 55%, rgba(6, 95, 70, 0.34) 100%);
+            border: 1px solid var(--border-glow);
+            box-shadow: 0 16px 36px -10px var(--accent-glow);
         }
         .hub-tab-active {
-            background: linear-gradient(135deg, #0ea5e9, #10b981);
+            background: var(--accent-gradient);
             color: #ffffff;
-            box-shadow: 0 6px 18px -4px rgba(16, 185, 129, 0.55);
+            box-shadow: 0 6px 20px -4px var(--accent-glow);
         }
         .passes-tab-active {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: var(--btn-gradient);
             color: #ffffff;
-            box-shadow: 0 6px 18px -4px rgba(37, 99, 235, 0.55);
+            box-shadow: 0 6px 20px -4px var(--accent-glow);
         }
         .card-border-traffic {
-            background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(120, 53, 15, 0.24) 100%);
+            background: linear-gradient(160deg, rgba(22, 33, 56, 0.96) 0%, rgba(120, 53, 15, 0.24) 100%);
             border: 1px solid rgba(251, 191, 36, 0.35);
         }
         .card-flight-radar {
-            background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(30, 58, 138, 0.28) 100%);
+            background: linear-gradient(160deg, rgba(22, 33, 56, 0.96) 0%, rgba(30, 58, 138, 0.28) 100%);
             border: 1px solid rgba(56, 189, 248, 0.35);
         }
         .card-fx {
-            background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(15, 23, 42, 0.98) 100%);
+            background: linear-gradient(160deg, rgba(22, 33, 56, 0.96) 0%, rgba(11, 18, 33, 0.98) 100%);
             border: 1px solid rgba(56, 189, 248, 0.28);
         }
         .card-food {
-            background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(6, 78, 59, 0.22) 100%);
+            background: linear-gradient(160deg, rgba(22, 33, 56, 0.96) 0%, rgba(6, 78, 59, 0.22) 100%);
             border: 1px solid rgba(52, 211, 153, 0.28);
         }
         .card-phrase {
-            background: linear-gradient(160deg, rgba(30, 41, 59, 0.96) 0%, rgba(88, 28, 135, 0.22) 100%);
+            background: linear-gradient(160deg, rgba(22, 33, 56, 0.96) 0%, rgba(88, 28, 135, 0.22) 100%);
             border: 1px solid rgba(192, 132, 252, 0.28);
         }
         .info-i-btn {
@@ -265,9 +392,9 @@
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(19, 78, 74, 0.38) 55%, rgba(12, 74, 110, 0.42) 100%);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(94, 234, 212, 0.32);
-            border-radius: 22px;
-            box-shadow: 0 16px 34px -10px rgba(2, 6, 23, 0.85), 0 0 24px -8px rgba(45, 212, 191, 0.24);
+            border: 1px solid rgba(94, 234, 212, 0.34);
+            border-radius: 24px;
+            box-shadow: 0 18px 36px -10px rgba(2, 6, 23, 0.85), 0 0 24px -8px rgba(45, 212, 191, 0.24);
             animation: floatGentle 4.8s ease-in-out infinite;
             transition: border-color 0.25s ease, transform 0.15s ease;
         }
@@ -288,7 +415,7 @@
         .perk-bg-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(100deg, rgba(11, 17, 32, 0.95) 18%, rgba(11, 17, 32, 0.74) 68%, rgba(11, 17, 32, 0.42) 100%);
+            background: linear-gradient(100deg, rgba(6, 11, 22, 0.95) 18%, rgba(6, 11, 22, 0.74) 68%, rgba(6, 11, 22, 0.42) 100%);
             pointer-events: none;
             z-index: 1;
         }
@@ -312,13 +439,13 @@
             box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.45);
         }
         @keyframes deckPanelIn {
-            0% { opacity: 0; transform: translateY(6px); }
+            0% { opacity: 0; transform: translateY(8px); }
             100% { opacity: 1; transform: translateY(0); }
         }
         .deck-panel-anim {
-            animation: deckPanelIn 0.2s ease-out forwards;
+            animation: deckPanelIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        /* Universal Tool Deck Strip: Horizontal Scroll on Mobile, Clean Multi-Column Grid on Desktop */
+        /* Universal Tool Deck Strip: Horizontal Scroll on Mobile, Clean 6-Column Grid on Desktop */
         .hub-tools-strip {
             display: flex;
             gap: 8px;
@@ -362,8 +489,29 @@
         .tool-tab-chip.active {
             background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(16, 185, 129, 0.24));
             color: #ffffff;
-            border-color: #38bdf8;
-            box-shadow: 0 4px 12px -2px rgba(56, 189, 248, 0.35);
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 14px -2px var(--accent-glow);
+        }
+        /* Pre-Trip Readiness Pill Strip */
+        .prep-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 11px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            background-color: rgba(15, 23, 42, 0.88);
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.16s ease;
+            user-select: none;
+        }
+        .prep-pill.checked {
+            background-color: rgba(16, 185, 129, 0.18);
+            border-color: rgba(52, 211, 153, 0.55);
+            color: #6ee7b7;
         }
         /* Universal Expandable PiP Windows (Traffic & Flight Status) */
         .pip-window-base {
@@ -374,8 +522,8 @@
             max-width: 560px;
             margin: 0 auto;
             z-index: 10006;
-            background-color: #0f172a;
-            border: 1px solid rgba(56, 189, 248, 0.55);
+            background-color: #0b1120;
+            border: 1px solid var(--border-glow);
             border-radius: 24px;
             box-shadow: 0 24px 64px -10px rgba(2, 6, 23, 0.94), 0 0 0 1px rgba(255, 255, 255, 0.08);
             overflow: hidden;
@@ -388,7 +536,7 @@
             bottom: 20px;
             left: 16px;
             right: 16px;
-            max-width: 920px;
+            max-width: 960px;
             height: auto;
             z-index: 10008;
         }
@@ -408,20 +556,21 @@
             margin: 0 auto;
             z-index: 10009;
             background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid rgba(56, 189, 248, 0.55);
+            border: 1px solid var(--border-glow);
             border-radius: 24px;
             box-shadow: 0 24px 60px -10px rgba(2, 6, 23, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.08);
             overflow: hidden;
         }
         .modal-card {
-            background-color: #1e293b;
-            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: linear-gradient(165deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 28px 60px -12px rgba(2, 6, 23, 0.92);
         }
         .input-dark {
-            background-color: #0f172a !important;
+            background-color: #090f1d !important;
             color: #f8fafc !important;
             border: 1px solid #334155 !important;
-            caret-color: #3b82f6;
+            caret-color: var(--accent-primary);
             color-scheme: dark;
             min-width: 0;
             min-height: 44px;
@@ -433,7 +582,7 @@
             opacity: 1;
         }
         .input-dark:focus {
-            border-color: #38bdf8 !important;
+            border-color: var(--accent-primary) !important;
             outline: none;
         }
         .dest-chip-strip {
@@ -449,7 +598,7 @@
         }
         .dest-chip {
             flex-shrink: 0;
-            background-color: #0f172a;
+            background-color: #090f1d;
             color: #cbd5e1;
             border: 1px solid #334155;
             border-radius: 999px;
@@ -466,31 +615,32 @@
         .dest-chip.active {
             background-color: rgba(56, 189, 248, 0.18);
             color: #7dd3fc;
-            border-color: #38bdf8;
+            border-color: var(--accent-primary);
         }
         .upload-box {
-            background-color: #0f172a;
+            background-color: #090f1d;
             border: 1.5px dashed #334155;
             transition: border-color 0.15s ease, transform 0.1s ease;
         }
         .upload-box:active {
             transform: scale(0.98);
-            border-color: #3b82f6;
+            border-color: var(--accent-primary);
         }
         .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: var(--btn-gradient);
             color: #ffffff;
-            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+            box-shadow: 0 8px 22px -6px var(--accent-glow);
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
             cursor: pointer;
             touch-action: manipulation;
         }
         .btn-primary:active { transform: scale(0.96); opacity: 0.92; }
         .btn-biometric {
-            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            background: var(--accent-gradient);
             color: #ffffff;
             border: 1px solid rgba(186, 230, 253, 0.38);
-            box-shadow: 0 10px 26px -6px rgba(14, 165, 233, 0.55);
-            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+            box-shadow: 0 10px 26px -6px var(--accent-glow);
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
             cursor: pointer;
             touch-action: manipulation;
         }
@@ -499,24 +649,24 @@
             background-color: rgba(30, 41, 59, 0.9);
             color: #e2e8f0;
             border: 1px solid rgba(148, 163, 184, 0.25);
-            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s;
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s;
             cursor: pointer;
             touch-action: manipulation;
         }
         .btn-guest:active { transform: scale(0.96); background-color: rgba(51, 65, 85, 0.9); }
         .fab-new-trip {
-            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            background: var(--accent-gradient);
             color: #ffffff;
-            box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.65);
-            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 12px 30px -4px var(--accent-glow);
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
             touch-action: manipulation;
         }
         .fab-new-trip:active { transform: scale(0.93); }
         .hide { display: none !important; }
         .modal-overlay {
             background: rgba(2, 6, 23, 0.88);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         .nav-arrow-btn {
             transition: opacity 0.35s ease, transform 0.15s ease;
@@ -646,15 +796,14 @@
         })();
     </script>
 
-    <!-- Subtle Ambient Background Glow -->
-    <div class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index: 0;">
-        <div style="background: radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%);" class="w-96 h-96 mx-auto -mt-20"></div>
-    </div>
+    <!-- Live Ambient Aurora Mesh Orbs -->
+    <div class="aurora-orb-1"></div>
+    <div class="aurora-orb-2"></div>
 
     <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="flex-1 flex flex-col justify-between p-6 text-center relative" style="z-index: 10;">
         <div class="pt-1 flex justify-center items-center gap-1.5 px-2">
-            <button id="localContextPill" type="button" style="background-color: rgba(30, 41, 59, 0.72); border: 1px solid rgba(148, 163, 184, 0.18);" class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 px-3.5 py-1.5 rounded-2xl text-[11px] font-medium text-slate-300 hover:text-white hover:border-blue-400/40 transition-colors max-w-full leading-snug" title="Tap to refresh with precise GPS">
+            <button id="localContextPill" type="button" style="background-color: rgba(15, 23, 42, 0.78); border: 1px solid rgba(148, 163, 184, 0.2);" class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 px-3.5 py-1.5 rounded-2xl text-[11px] font-medium text-slate-300 hover:text-white hover:border-blue-400/40 transition-colors max-w-full leading-snug" title="Tap to refresh with precise GPS">
                 <span id="localContextText">Loading local weather &amp; Solat...</span>
             </button>
             <button type="button" data-info-key="weatherSolat" class="info-i-btn" aria-label="Weather and Solat provider info">i</button>
@@ -674,7 +823,7 @@
             
             <h1 class="brand-wordmark text-5xl sm:text-6xl mb-2 select-none">Lintas<span class="brand-wordmark-dot"></span></h1>
             <p style="color: #e2e8f0;" class="text-base font-semibold tracking-tight mb-1">Breeze through borders.</p>
-            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-sm leading-relaxed">Offline travel QR passes, live traffic &amp; flight status, Halal food finder &amp; voice translator.</p>
+            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-sm leading-relaxed">Offline travel QR passes, live traffic &amp; flight radar, Halal food finder &amp; voice translator.</p>
 
             <!-- Glassmorphic Auth Card -->
             <div class="glass-auth-card w-full max-w-sm rounded-3xl p-5 space-y-3">
@@ -746,10 +895,11 @@
                 </div>
 
                 <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                    <span id="userEmailDisplay" style="color: #cbd5e1;" class="text-xs font-medium max-w-[84px] sm:max-w-[160px] truncate"></span>
-                    <button id="seniorTextToggleBtn" type="button" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-[11px] font-extrabold text-sky-300 hover:text-white" title="Toggle Large Text Mode for Easy Reading">Aa</button>
-                    <button id="refreshTripsBtn" type="button" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white" title="Sync now">↻</button>
-                    <button id="openSettingsBtn" style="background-color: #1e293b; border: 1px solid #334155;" class="tactile-btn p-2 rounded-xl text-slate-300 hover:text-white" title="Account & Privacy Settings">
+                    <span id="userEmailDisplay" style="color: #cbd5e1;" class="text-xs font-medium max-w-[74px] sm:max-w-[150px] truncate"></span>
+                    <button id="themeCycleBtn" type="button" style="background-color: #162138; border: 1px solid #334155;" class="tactile-btn px-2 py-2 rounded-xl text-xs" title="Switch Accent Theme">🎨</button>
+                    <button id="seniorTextToggleBtn" type="button" style="background-color: #162138; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-[11px] font-extrabold text-sky-300 hover:text-white" title="Toggle Large Text Mode for Easy Reading">Aa</button>
+                    <button id="refreshTripsBtn" type="button" style="background-color: #162138; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white" title="Sync now">↻</button>
+                    <button id="openSettingsBtn" style="background-color: #162138; border: 1px solid #334155;" class="tactile-btn p-2 rounded-xl text-slate-300 hover:text-white" title="Account & Privacy Settings">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     </button>
                 </div>
@@ -785,11 +935,11 @@
                     </button>
                 </div>
 
-                <!-- TOP ROW: NEXT UPCOMING TRIP + TRAVEL PERKS (SIDE-BY-SIDE ON DESKTOP) -->
+                <!-- TOP ROW: HOLOGRAPHIC BOARDING-PASS SPOTLIGHT + TRAVEL PERKS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 items-stretch">
                     <div id="spotlightSection" class="hide flex flex-col">
                         <div class="flex items-center justify-between mb-2">
-                            <span id="spotlightHeading" class="text-[11px] font-bold uppercase tracking-wider text-sky-400">● Next Upcoming Trip</span>
+                            <span id="spotlightHeading" class="text-[11px] font-bold uppercase tracking-wider text-sky-400">● Next Boarding Pass</span>
                         </div>
                         <div id="spotlightCardSlot" class="flex-1 flex flex-col"></div>
                     </div>
@@ -805,7 +955,7 @@
                         <h2 class="text-xl font-bold text-white leading-tight">My Trips</h2>
                         <span style="color: #64748b;" class="text-[11px] block">Swipe left on any trip to delete</span>
                     </div>
-                    <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.14);" class="inline-flex items-center p-1 rounded-xl gap-1">
+                    <div style="background-color: #162138; border: 1px solid rgba(148, 163, 184, 0.16);" class="inline-flex items-center p-1 rounded-xl gap-1">
                         <button type="button" data-filter="all" class="trip-filter-btn px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white">All</button>
                         <button type="button" data-filter="upcoming" class="trip-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Upcoming</button>
                         <button type="button" data-filter="past" class="trip-filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Past</button>
@@ -825,10 +975,10 @@
             <footer style="border-top: 1px solid rgba(148, 163, 184, 0.12);" class="mt-8 pt-4 pb-8 flex flex-col items-center gap-2 text-center">
                 <div class="flex flex-wrap items-center justify-center gap-2 text-[11px]">
                     <span class="font-semibold text-slate-400">Lintas • Independent Travel Utility</span>
-                    <button type="button" data-info-key="appDisclaimer" style="background-color: rgba(30, 41, 59, 0.85); border: 1px solid rgba(56, 189, 248, 0.3);" class="tactile-btn px-2.5 py-1 rounded-full text-sky-300 font-semibold hover:text-white transition-colors">
+                    <button type="button" data-info-key="appDisclaimer" style="background-color: rgba(22, 33, 56, 0.85); border: 1px solid rgba(56, 189, 248, 0.3);" class="tactile-btn px-2.5 py-1 rounded-full text-sky-300 font-semibold hover:text-white transition-colors">
                         Terms &amp; Disclaimer
                     </button>
-                    <button type="button" id="footerPrivacyBtn" style="background-color: rgba(30, 41, 59, 0.85); border: 1px solid rgba(148, 163, 184, 0.22);" class="tactile-btn px-2.5 py-1 rounded-full text-slate-300 font-semibold hover:text-white transition-colors">
+                    <button type="button" id="footerPrivacyBtn" style="background-color: rgba(22, 33, 56, 0.85); border: 1px solid rgba(148, 163, 184, 0.22);" class="tactile-btn px-2.5 py-1 rounded-full text-slate-300 font-semibold hover:text-white transition-colors">
                         Privacy &amp; PDPO
                     </button>
                 </div>
@@ -846,7 +996,7 @@
     </div>
 
     <!-- TRIP DETAIL SCREEN (PASSES + INTERACTIVE TRAVEL HUB DECK) -->
-    <div id="tripDetailScreen" style="background-color: #0b1120; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
+    <div id="tripDetailScreen" style="background-color: #060b16; z-index: 40;" class="hide fixed inset-0 flex flex-col h-screen">
         <div class="glass" style="position: relative; z-index: 50;">
             <div class="app-shell px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2 overflow-hidden">
@@ -863,8 +1013,8 @@
         </div>
 
         <!-- SINGLE-LINE GLASSMORPHIC DUAL-PILL SWITCHER (PASSES vs TRAVEL HUB) -->
-        <div style="background-color: #0b1120; border-bottom: 1px solid rgba(148, 163, 184, 0.14);" class="px-4 sm:px-6 py-2.5 app-shell shrink-0">
-            <div style="background-color: #1e293b; border: 1px solid rgba(148, 163, 184, 0.18);" class="grid grid-cols-2 p-1 rounded-2xl gap-1.5 shadow-inner">
+        <div style="background-color: #060b16; border-bottom: 1px solid rgba(148, 163, 184, 0.14);" class="px-4 sm:px-6 py-2.5 app-shell shrink-0">
+            <div style="background-color: #162138; border: 1px solid rgba(148, 163, 184, 0.18);" class="grid grid-cols-2 p-1 rounded-2xl gap-1.5 shadow-inner">
                 <button id="tabPassesBtn" type="button" class="passes-tab-active py-2.5 px-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 min-w-0">
                     <span class="whitespace-nowrap truncate">🎫 Passes</span>
                     <span id="passesCountPill" class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white shrink-0">0</span>
@@ -877,11 +1027,20 @@
         </div>
         
         <div id="tripDetailScrollArea" class="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 pb-24 app-shell">
-            <!-- TAB 1: PASSES & QRs -->
+            <!-- TAB 1: PASSES & QRs + SMART PRE-TRIP CHECKLIST -->
             <div id="tripPassesTab">
-                <button id="addDocTopBtn" type="button" class="w-full max-w-md mx-auto btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-5">
+                <button id="addDocTopBtn" type="button" class="w-full max-w-md mx-auto btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-4">
                     + Add QR Pass / Document
                 </button>
+
+                <!-- INTERACTIVE PRE-TRIP READINESS CHECKLIST -->
+                <div class="card-dark rounded-2xl p-3.5 mb-5">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-300">✓ Pre-Trip Readiness</span>
+                        <span id="prepProgressText" class="text-[11px] font-bold text-emerald-300">0 / 5 Ready</span>
+                    </div>
+                    <div id="prepChecklistContainer" class="flex flex-wrap gap-1.5"></div>
+                </div>
 
                 <div id="emptyDocsState" class="text-center py-14 card-dark rounded-2xl p-6 max-w-lg mx-auto">
                     <p style="color: #94a3b8;" class="text-sm mb-2">No passes added to this trip yet.</p>
@@ -904,7 +1063,7 @@
                             <h3 id="hubHeroCity" class="text-xl sm:text-2xl font-black text-white leading-tight truncate">Destination</h3>
                             <p id="hubHeroSub" style="color: #cbd5e1;" class="text-xs mt-0.5 leading-snug">Local time, currency &amp; essential travel info</p>
                         </div>
-                        <div style="background: rgba(15, 23, 42, 0.78); border: 1px solid rgba(56, 189, 248, 0.35);" class="rounded-2xl px-3.5 py-2 text-right shrink-0">
+                        <div style="background: rgba(9, 15, 29, 0.82); border: 1px solid rgba(56, 189, 248, 0.35);" class="rounded-2xl px-3.5 py-2 text-right shrink-0">
                             <span style="color: #94a3b8;" class="block text-[9px] font-bold uppercase tracking-wider">Local Time</span>
                             <span id="hubLiveClock" class="text-sm sm:text-base font-black text-sky-300 tabular-nums whitespace-nowrap">--:--</span>
                         </div>
@@ -912,11 +1071,11 @@
 
                     <!-- TRAVEL MODE SWITCHER + EXCHANGE RATE -->
                     <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
-                        <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.22);" class="inline-flex p-1 rounded-xl gap-1">
+                        <div style="background: rgba(9, 15, 29, 0.85); border: 1px solid rgba(148, 163, 184, 0.22);" class="inline-flex p-1 rounded-xl gap-1">
                             <button id="modeDriveBtn" type="button" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all whitespace-nowrap">🚗 Drive / Border</button>
                             <button id="modeFlightBtn" type="button" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap">✈️ Flight</button>
                         </div>
-                        <span id="hubRateChip" style="background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(52, 211, 153, 0.35);" class="text-[11px] font-bold text-emerald-300 px-2.5 py-1 rounded-xl whitespace-nowrap">
+                        <span id="hubRateChip" style="background: rgba(9, 15, 29, 0.85); border: 1px solid rgba(52, 211, 153, 0.35);" class="text-[11px] font-bold text-emerald-300 px-2.5 py-1 rounded-xl whitespace-nowrap">
                             💱 1 BND = —
                         </span>
                     </div>
@@ -952,7 +1111,7 @@
                                 <span>🗺️ Google PiP</span>
                             </button>
                             <button id="openWazePipBtn" type="button"
-                               style="background-color: #0f172a; border: 1px solid rgba(56, 189, 248, 0.45);"
+                               style="background-color: #090f1d; border: 1px solid rgba(56, 189, 248, 0.45);"
                                class="tactile-btn py-2.5 px-3 rounded-xl text-xs font-extrabold text-sky-300 inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                                 <span>🚗 Waze PiP</span>
                             </button>
@@ -975,7 +1134,7 @@
                         </div>
                         <p id="guideAirportName" class="text-xs font-extrabold text-white leading-snug"></p>
                         <p id="guideAirportTransfer" style="color: #cbd5e1;" class="text-xs mt-1 leading-relaxed"></p>
-                        <div style="background-color: #0f172a; border: 1px solid #334155;" class="mt-2.5 rounded-xl px-3 py-2 text-[11px] text-amber-200 leading-snug">
+                        <div style="background-color: #090f1d; border: 1px solid #334155;" class="mt-2.5 rounded-xl px-3 py-2 text-[11px] text-amber-200 leading-snug">
                             🛂 <strong>Flight Tip:</strong> Arrive at terminal 2.5 hrs before departure; keep power banks in cabin carry-on only.
                         </div>
                         <div class="mt-3 flex gap-2">
@@ -1020,12 +1179,12 @@
                             <select id="fxToSelect" class="input-dark w-full rounded-xl px-2 py-2 text-xs font-bold text-center"></select>
                         </div>
                     </div>
-                    <div style="background-color: #0f172a; border: 1px solid rgba(56, 189, 248, 0.35);" class="mt-3 rounded-2xl px-3.5 py-3 flex items-center justify-between gap-2">
+                    <div style="background-color: #090f1d; border: 1px solid rgba(56, 189, 248, 0.35);" class="mt-3 rounded-2xl px-3.5 py-3 flex items-center justify-between gap-2">
                         <span style="color: #94a3b8;" class="text-xs font-medium whitespace-nowrap">Converted Amount</span>
                         <span id="fxResultText" class="text-lg font-black text-sky-300 whitespace-nowrap">—</span>
                     </div>
 
-                    <div style="background-color: #0f172a; border: 1px solid #334155;" class="mt-2.5 rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2">
+                    <div style="background-color: #090f1d; border: 1px solid #334155;" class="mt-2.5 rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
                             <span style="color: #94a3b8;" class="text-[11px] font-semibold">Split bill:</span>
                             <select id="fxSplitCount" class="bg-slate-800 text-white text-xs font-bold rounded-lg px-2 py-1 border border-slate-700">
@@ -1094,7 +1253,7 @@
                         <span id="phraseLangBadge" class="shrink-0 whitespace-nowrap text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/35">Live</span>
                     </div>
 
-                    <div style="background-color: #0f172a; border: 1px solid rgba(192, 132, 252, 0.35);" class="rounded-2xl p-3 mb-3 space-y-2">
+                    <div style="background-color: #090f1d; border: 1px solid rgba(192, 132, 252, 0.35);" class="rounded-2xl p-3 mb-3 space-y-2">
                         <div class="flex items-center justify-between gap-2">
                             <span style="color: #94a3b8;" class="text-[10px] font-bold uppercase">Translate to <strong id="translatorTargetLabel" class="text-purple-300">Local</strong></span>
                             <button id="voiceMicBtn" type="button" class="tactile-btn px-2.5 py-1 rounded-lg bg-slate-800 border border-purple-400/35 text-[11px] font-extrabold text-purple-200 inline-flex items-center gap-1">
@@ -1154,7 +1313,7 @@
 
                     <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-3">
                         <p class="text-xs font-extrabold text-red-300 mb-1.5">🚨 Local SOS &amp; Diplomatic Hotline</p>
-                        <div id="guideEmergencyBox" style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-2xl p-3 text-xs space-y-1 leading-relaxed"></div>
+                        <div id="guideEmergencyBox" style="background-color: #090f1d; border: 1px solid #334155;" class="rounded-2xl p-3 text-xs space-y-1 leading-relaxed"></div>
                     </div>
                 </div>
             </div>
@@ -1214,7 +1373,7 @@
             <button id="closePipInfoBtn" type="button" class="p-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-bold shrink-0">✕</button>
         </div>
         <div class="p-4 space-y-2.5 text-left">
-            <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-xl px-3 py-2 flex items-center justify-between gap-2">
+            <div style="background-color: #090f1d; border: 1px solid #334155;" class="rounded-xl px-3 py-2 flex items-center justify-between gap-2">
                 <span style="color: #94a3b8;" class="text-[11px] font-semibold">Information Provider</span>
                 <span id="pipInfoProvider" class="text-[11px] font-extrabold text-sky-300 text-right">Third-Party Provider</span>
             </div>
@@ -1308,7 +1467,7 @@
                 <input type="file" id="docCameraFallbackInput" accept="image/*" capture="environment" class="hide">
             </div>
 
-            <div style="background-color: #0f172a;" class="rounded-xl px-3.5 py-2.5 mb-4 border border-slate-800 text-center overflow-hidden">
+            <div style="background-color: #090f1d;" class="rounded-xl px-3.5 py-2.5 mb-4 border border-slate-800 text-center overflow-hidden">
                 <p class="text-xs font-semibold text-slate-300 leading-snug" id="fileStatusText">No image selected yet</p>
                 <p id="fileSubText" style="color: #64748b;" class="text-[11px] mt-0.5 leading-snug">Auto-compressed (~60 KB) &amp; scanned on-device for IDs</p>
             </div>
@@ -1369,7 +1528,7 @@
             <input type="text" id="tripNameInput" placeholder="e.g., Weekend Getaway, Seoul Holiday" class="input-dark w-full rounded-xl px-4 py-3 mb-3.5 text-sm">
 
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">How Are You Traveling?</label>
-            <div style="background-color: #0f172a; border: 1px solid #334155;" class="grid grid-cols-2 p-1 rounded-xl gap-1 mb-3.5">
+            <div style="background-color: #090f1d; border: 1px solid #334155;" class="grid grid-cols-2 p-1 rounded-xl gap-1 mb-3.5">
                 <button type="button" id="newTripModeFlightBtn" class="py-2 px-3 rounded-lg text-xs font-extrabold bg-blue-600 text-white transition-all">✈️ Flight</button>
                 <button type="button" id="newTripModeDriveBtn" class="py-2 px-3 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all">🚗 Drive / Border</button>
             </div>
@@ -1432,7 +1591,7 @@
             </div>
 
             <div class="space-y-2.5 mb-5">
-                <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-blue-500/30">
+                <div style="background-color: #090f1d;" class="p-3.5 rounded-2xl border border-blue-500/30">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-sm font-bold text-white">Google Sign-In</span>
                         <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Recommended</span>
@@ -1444,7 +1603,7 @@
                     </ul>
                 </div>
 
-                <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-slate-700/70">
+                <div style="background-color: #090f1d;" class="p-3.5 rounded-2xl border border-slate-700/70">
                     <span class="text-sm font-bold text-slate-200 block mb-1">Guest Mode</span>
                     <p style="color: #94a3b8;" class="text-xs">Instant offline access with no login needed. Passes stay strictly on this device only.</p>
                 </div>
@@ -1464,7 +1623,7 @@
                 </button>
             </div>
 
-            <div style="background-color: #0f172a;" class="p-3.5 rounded-2xl border border-slate-700/70 mb-4">
+            <div style="background-color: #090f1d;" class="p-3.5 rounded-2xl border border-slate-700/70 mb-4">
                 <p style="color: #94a3b8;" class="text-xs">Signed in as</p>
                 <p id="settingsUserLabel" class="text-sm font-bold text-white mt-0.5 truncate">Traveler</p>
                 <p id="settingsStorageMode" class="text-[11px] text-emerald-400 mt-1">✓ Cloud Sync + 15m Session Grace Active</p>
@@ -1592,6 +1751,21 @@
         const TAB_UNLOCKED_KEY = "lintas_tab_unlocked";
         const BIO_CRED_KEY = "lintas_biometric_cred_v1";
         const SENIOR_MODE_KEY = "lintas_senior_mode_v1";
+        const THEME_KEY = "lintas_accent_theme_v1";
+
+        // 4-Theme Live Accent Switcher (Aurora Cyan, Royal Gold, Emerald Oasis, Neon Horizon)
+        const THEMES = ["cyan", "gold", "emerald", "sunset"];
+        function applyAccentTheme(themeName) {
+            const clean = THEMES.includes(themeName) ? themeName : "cyan";
+            document.documentElement.setAttribute("data-theme", clean);
+            localStorage.setItem(THEME_KEY, clean);
+        }
+        applyAccentTheme(localStorage.getItem(THEME_KEY) || "cyan");
+        document.getElementById('themeCycleBtn')?.addEventListener('click', () => {
+            const cur = localStorage.getItem(THEME_KEY) || "cyan";
+            const next = THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
+            applyAccentTheme(next);
+        });
 
         // Senior-Friendly Large View Toggle
         function applySeniorTextMode(enabled) {
@@ -1606,7 +1780,7 @@
             } else {
                 document.documentElement.classList.remove('senior-mode');
                 if (btn) {
-                    btn.style.backgroundColor = '#1e293b';
+                    btn.style.backgroundColor = '#162138';
                     btn.style.borderColor = '#334155';
                     btn.style.color = '#7dd3fc';
                 }
@@ -2142,6 +2316,54 @@
         }
 
         // =========================================================================
+        // INTERACTIVE PRE-TRIP READINESS CHECKLIST (PER TRIP, OFFLINE SAVED)
+        // =========================================================================
+        const PREP_ITEMS = [
+            { id: "passport", label: "🛂 Passport >6m" },
+            { id: "arrival", label: "📲 MDAC / EES QR" },
+            { id: "esim", label: "📶 eSIM / Roaming" },
+            { id: "takaful", label: "🛡️ Travel Cover" },
+            { id: "powerbank", label: "🔋 Cabin Powerbank" }
+        ];
+
+        function renderPreTripChecklist(tripId) {
+            const container = document.getElementById('prepChecklistContainer');
+            const progressText = document.getElementById('prepProgressText');
+            if (!container || !tripId) return;
+
+            const storageKey = `lintas_prep_${tripId}`;
+            let checkedMap = {};
+            try { checkedMap = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch (_) {}
+
+            const updateUI = () => {
+                let doneCount = 0;
+                PREP_ITEMS.forEach(item => { if (checkedMap[item.id]) doneCount++; });
+                if (progressText) progressText.textContent = `${doneCount} / ${PREP_ITEMS.length} Ready`;
+
+                container.innerHTML = PREP_ITEMS.map(item => {
+                    const isDone = !!checkedMap[item.id];
+                    return `
+                        <button type="button" data-prep-id="${item.id}" class="prep-pill tactile-btn ${isDone ? 'checked' : ''}">
+                            <span>${isDone ? '✓' : '○'}</span>
+                            <span>${escapeHtml(item.label)}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                container.querySelectorAll('[data-prep-id]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const pid = btn.dataset.prepId;
+                        checkedMap[pid] = !checkedMap[pid];
+                        localStorage.setItem(storageKey, JSON.stringify(checkedMap));
+                        updateUI();
+                    });
+                });
+            };
+
+            updateUI();
+        }
+
+        // =========================================================================
         // TAP-TO-SPEAK OFFLINE VOICE SYNTHESIZER + LIVE VOICE/TEXT TRANSLATOR
         // =========================================================================
         function speakPhrase(text, langCode) {
@@ -2293,7 +2515,7 @@
             if (matches.length === 0) {
                 const customTerm = (document.getElementById('halalSearchInput')?.value || '').trim() || 'Halal food';
                 foodEl.innerHTML = `
-                    <div style="background-color: #0f172a; border: 1px solid rgba(52, 211, 153, 0.3);" class="col-span-full rounded-2xl p-3.5 text-center space-y-2">
+                    <div style="background-color: #090f1d; border: 1px solid rgba(52, 211, 153, 0.3);" class="col-span-full rounded-2xl p-3.5 text-center space-y-2">
                         <p class="text-xs font-bold text-white">No saved preset for "${escapeHtml(customTerm)}"</p>
                         <p style="color: #94a3b8;" class="text-[11px]">Search live inside the app map for "${escapeHtml(customTerm)}" in ${escapeHtml(currentPipGuide.cityTitle)}.</p>
                         <button type="button" id="searchCustomHalalMapBtn" class="promo-cta-btn px-4 py-2 rounded-xl text-xs font-extrabold">
@@ -2308,7 +2530,7 @@
             }
 
             foodEl.innerHTML = matches.map((spot) => `
-                <div style="background-color: #0f172a; border: 1px solid rgba(52, 211, 153, 0.25);" class="rounded-2xl p-3 flex items-start justify-between gap-2.5">
+                <div style="background-color: #090f1d; border: 1px solid rgba(52, 211, 153, 0.25);" class="rounded-2xl p-3 flex items-start justify-between gap-2.5">
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-1.5 mb-0.5">
                             <span class="text-[10px] font-extrabold text-emerald-300">${escapeHtml(spot.tag)}</span>
@@ -2493,14 +2715,11 @@
         // =========================================================================
         // IN-APP EXPANDABLE FLIGHT TRACKER PiP WINDOW (NO REDIRECT)
         // =========================================================================
-        let activeTrackedFlightCode = "";
-
         function openFlightPip(provider = "fr24") {
             closeTrafficPip();
             closeProviderInfoPip();
             const rawCode = document.getElementById('flightCodeInput')?.value.trim().toUpperCase().replace(/\s+/g, '') || "";
             const airportCode = document.getElementById('guideAirportCode')?.textContent.trim().toUpperCase() || "KUL";
-            activeTrackedFlightCode = rawCode;
 
             const modal = document.getElementById('pipFlightModal');
             const iframe = document.getElementById('pipFlightIframe');
@@ -2727,11 +2946,11 @@
             document.getElementById('guideTransitMapLink').href = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
             document.getElementById('guideTransitBody').innerHTML = `
-                <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-2xl p-3">
+                <div style="background-color: #090f1d; border: 1px solid #334155;" class="rounded-2xl p-3">
                     <span class="font-extrabold text-sky-300 block mb-0.5">⛴️ Ferry &amp; Water Crossing</span>
                     <p style="color: #cbd5e1;" class="leading-relaxed">${escapeHtml(guide.ferryInfo)}</p>
                 </div>
-                <div style="background-color: #0f172a; border: 1px solid #334155;" class="rounded-2xl p-3">
+                <div style="background-color: #090f1d; border: 1px solid #334155;" class="rounded-2xl p-3">
                     <span class="font-extrabold text-emerald-300 block mb-0.5">🚌 Public Bus, Rail &amp; Ride-Hailing</span>
                     <p style="color: #cbd5e1;" class="leading-relaxed">${escapeHtml(guide.busInfo)}</p>
                 </div>
@@ -2754,7 +2973,7 @@
 
             const phrasesEl = document.getElementById('guidePhrasesList');
             phrasesEl.innerHTML = (guide.phrases || []).map((p, idx) => `
-                <div style="background-color: #0f172a; border: 1px solid rgba(192, 132, 252, 0.25);" class="rounded-2xl p-3 flex items-center justify-between gap-3">
+                <div style="background-color: #090f1d; border: 1px solid rgba(192, 132, 252, 0.25);" class="rounded-2xl p-3 flex items-center justify-between gap-3">
                     <div class="min-w-0 flex-1">
                         <p style="color: #94a3b8;" class="text-[11px] font-semibold leading-snug">${escapeHtml(p.en)}</p>
                         <p class="text-sm font-extrabold text-white mt-0.5 leading-snug break-words">${escapeHtml(p.local)}</p>
@@ -2909,7 +3128,7 @@
                                class="perk-content-layer ${animate ? 'perk-slide-anim' : ''} flex items-center justify-between gap-3">
                                 <div class="min-w-0 flex-1">
                                     <div class="mb-1">
-                                        <span style="background: rgba(15, 23, 42, 0.78); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.35);"
+                                        <span style="background: rgba(9, 15, 29, 0.8); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.35);"
                                               class="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full inline-flex items-center gap-1 whitespace-nowrap backdrop-blur-sm">
                                             <span>${iconChar}</span><span>${tagText}</span>
                                         </span>
@@ -3355,7 +3574,8 @@
                     dateRange: '',
                     statusLabel: 'Flexible Dates',
                     badgeStyle: 'background: rgba(56, 189, 248, 0.14); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.3);',
-                    sortKey: Number.MAX_SAFE_INTEGER
+                    sortKey: Number.MAX_SAFE_INTEGER,
+                    progressPct: 15
                 };
             }
 
@@ -3370,7 +3590,8 @@
                     dateRange: startStr,
                     statusLabel: startStr,
                     badgeStyle: 'background: rgba(56, 189, 248, 0.14); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.3);',
-                    sortKey: Number.MAX_SAFE_INTEGER
+                    sortKey: Number.MAX_SAFE_INTEGER,
+                    progressPct: 15
                 };
             }
 
@@ -3386,27 +3607,32 @@
                     dateRange,
                     statusLabel: 'Completed',
                     badgeStyle: 'background: rgba(30, 41, 59, 0.9); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.25);',
-                    sortKey: start.getTime()
+                    sortKey: start.getTime(),
+                    progressPct: 100
                 };
             }
 
             if (diffStart <= 0 && diffEnd >= 0) {
                 const dayNum = Math.abs(diffStart) + 1;
+                const pct = Math.min(100, Math.max(15, Math.round((dayNum / totalDays) * 100)));
                 return {
                     category: 'active',
                     dateRange,
                     statusLabel: totalDays > 1 ? `Active • Day ${dayNum} of ${totalDays}` : 'Active Today',
-                    badgeStyle: 'background: rgba(16, 185, 129, 0.16); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.35);',
-                    sortKey: start.getTime()
+                    badgeStyle: 'background: rgba(16, 185, 129, 0.18); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4);',
+                    sortKey: start.getTime(),
+                    progressPct: pct
                 };
             }
 
+            const countdownPct = Math.max(12, Math.min(92, Math.round(100 - Math.min(diffStart, 90))));
             return {
                 category: 'upcoming',
                 dateRange,
                 statusLabel: diffStart === 1 ? 'Starts tomorrow' : `Starts in ${diffStart}d`,
-                badgeStyle: 'background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.32);',
-                sortKey: start.getTime()
+                badgeStyle: 'background: rgba(56, 189, 248, 0.16); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.35);',
+                sortKey: start.getTime(),
+                progressPct: countdownPct
             };
         }
 
@@ -4483,36 +4709,73 @@
                     : '';
                 loadPromoBanner(true);
 
+                // HOLOGRAPHIC BOARDING-PASS SPOTLIGHT CARD
                 if (upcomingOrActive.length > 0 && currentTripFilter !== 'past') {
                     const hero = upcomingOrActive[0];
                     const t = hero.trip;
                     const tl = hero.timeline;
+                    const guide = getDestinationGuide(t.location || t.name);
+                    const isDriveTrip = (t.travelMode || guide.defaultMode) === 'drive';
+                    const destCode = isDriveTrip ? 'CIQ' : (guide.airportCode || 'DEST');
+
                     spotlightSection.classList.remove('hide');
                     document.getElementById('spotlightHeading').textContent =
-                        tl.category === 'active' ? '● Active Trip Right Now' : '● Next Upcoming Trip';
+                        tl.category === 'active' ? '● Active Boarding Pass' : '● Next Boarding Pass';
 
                     const heroWxId = `hero_wx_${t.id}`;
                     const heroCard = document.createElement('div');
-                    heroCard.className = 'spotlight-card rounded-3xl p-4 cursor-pointer flex-1 flex flex-col justify-between';
+                    heroCard.className = 'boarding-pass-hero rounded-3xl p-4 sm:p-5 cursor-pointer flex-1 flex flex-col justify-between';
                     heroCard.innerHTML = `
                         <div>
                             <div class="flex items-start justify-between gap-2 mb-3">
                                 <div class="overflow-hidden">
-                                    <h3 class="font-bold text-lg text-white truncate">${escapeHtml(t.name)}</h3>
-                                    <p class="text-xs text-slate-300 truncate mt-0.5">${t.location ? `📍 ${escapeHtml(t.location)}` : '🌍 Personal Travel Folder'}</p>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-sky-400 block mb-0.5">${isDriveTrip ? 'OVERLAND PASS' : 'FLIGHT PASS'}</span>
+                                    <h3 class="font-black text-lg text-white truncate">${escapeHtml(t.name)}</h3>
                                 </div>
                                 <span style="${tl.badgeStyle}" class="shrink-0 whitespace-nowrap text-[11px] font-bold px-2.5 py-1 rounded-full">
                                     ${tl.statusLabel}
                                 </span>
                             </div>
-                            <div class="flex flex-wrap items-center gap-2 mb-3">
-                                ${tl.dateRange ? `<span style="background-color: #0f172a; border: 1px solid #334155;" class="text-xs font-medium text-slate-200 px-2.5 py-1 rounded-xl">📅 ${tl.dateRange}</span>` : ''}
-                                <span id="${heroWxId}" style="background-color: #0f172a; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
+
+                            <!-- Aviation Route Arc (BWN -> DEST) -->
+                            <div style="background-color: rgba(6, 11, 22, 0.72); border: 1px solid rgba(148, 163, 184, 0.16);" class="rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2">
+                                <div class="text-left">
+                                    <span class="text-base font-black text-white tracking-tight block leading-none">BWN</span>
+                                    <span style="color: #94a3b8;" class="text-[10px]">Brunei</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center px-2">
+                                    <div class="w-full flex items-center gap-1.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                                        <div class="flex-1 border-t border-dashed border-sky-400/50"></div>
+                                        <span class="text-xs">${isDriveTrip ? '🚗' : '✈️'}</span>
+                                        <div class="flex-1 border-t border-dashed border-sky-400/50"></div>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                    </div>
+                                    <span style="color: #7dd3fc;" class="text-[10px] font-semibold truncate max-w-[130px] mt-0.5">${t.location ? escapeHtml(t.location.split(',')[0]) : 'Destination'}</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-base font-black text-emerald-300 tracking-tight block leading-none">${escapeHtml(destCode)}</span>
+                                    <span style="color: #94a3b8;" class="text-[10px]">${isDriveTrip ? 'Border' : 'Arrival'}</span>
+                                </div>
+                            </div>
+
+                            <!-- Countdown Progress Telemetry -->
+                            <div class="mt-3">
+                                <div class="w-full h-1.5 rounded-full bg-slate-900 overflow-hidden">
+                                    <div style="width: ${tl.progressPct}%; background: var(--accent-gradient);" class="h-full rounded-full transition-all duration-500"></div>
+                                </div>
+                            </div>
+
+                            <div class="ticket-divider"></div>
+
+                            <div class="flex flex-wrap items-center gap-2">
+                                ${tl.dateRange ? `<span style="background-color: #090f1d; border: 1px solid #334155;" class="text-xs font-medium text-slate-200 px-2.5 py-1 rounded-xl">📅 ${tl.dateRange}</span>` : ''}
+                                <span id="${heroWxId}" style="background-color: #090f1d; border: 1px solid #334155;" class="${t.weatherSummary ? '' : 'hide'} text-xs font-medium text-amber-200 px-2.5 py-1 rounded-xl">${t.weatherSummary || ''}</span>
                             </div>
                         </div>
-                        <div style="border-top: 1px solid rgba(148, 163, 184, 0.14);" class="pt-2.5 flex items-center justify-between text-xs font-bold text-sky-400">
+                        <div class="pt-3 mt-2 flex items-center justify-between text-xs font-extrabold text-sky-400">
                             <span>Passes &amp; Travel Hub</span>
-                            <span>Open Trip →</span>
+                            <span>Open Boarding Pass →</span>
                         </div>
                     `;
                     heroCard.onclick = () => openTrip(t);
@@ -4554,12 +4817,13 @@
                 document.getElementById('emptyTripsState').classList.add('hide');
                 const now = Date.now();
 
-                for (const { trip, timeline } of filtered) {
+                filtered.forEach(({ trip, timeline }, idx) => {
                     const endStr = trip.endDate || trip.startDate || trip.travelDate;
                     const endBaseMs = endStr ? new Date(endStr + 'T23:59:59').getTime() : (trip.createdAt || now);
                     const exp = trip.expiresAt || (endBaseMs + RETENTION_MS);
                     const daysLeft = Math.max(1, Math.ceil((exp - now) / (24 * 60 * 60 * 1000)));
                     const storageTag = isCloudUser() ? "Cloud Synced" : "Device Only";
+                    const modeIcon = (trip.travelMode === 'drive') ? '🚗' : '✈️';
 
                     let weatherText = trip.weatherSummary || '';
                     let metaParts = [];
@@ -4571,6 +4835,7 @@
 
                     const swipeWrap = document.createElement('div');
                     swipeWrap.className = 'trip-swipe-wrap shadow-sm';
+                    swipeWrap.style.animationDelay = `${Math.min(idx * 45, 270)}ms`;
 
                     const swipeBg = document.createElement('div');
                     swipeBg.className = 'trip-swipe-bg';
@@ -4581,7 +4846,10 @@
                     fgCard.innerHTML = `
                         <div class="flex items-start justify-between gap-2">
                             <div class="overflow-hidden">
-                                <h3 class="font-bold text-base text-white truncate">${escapeHtml(trip.name)}</h3>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs">${modeIcon}</span>
+                                    <h3 class="font-bold text-base text-white truncate">${escapeHtml(trip.name)}</h3>
+                                </div>
                                 <p id="${metaElId}" class="${metaParts.length > 0 ? '' : 'hide'} text-xs text-sky-300 font-medium mt-0.5 truncate">${escapeHtml(metaParts.join(' • '))}</p>
                             </div>
                             <span style="${timeline.badgeStyle}" class="shrink-0 whitespace-nowrap text-[10px] font-bold px-2.5 py-0.5 rounded-full">
@@ -4618,7 +4886,7 @@
                             }
                         });
                     }
-                }
+                });
             } finally {
                 isLoadingTrips = false;
             }
@@ -4723,6 +4991,7 @@
             document.getElementById('tripDetailMeta').textContent = parts.join(' • ');
 
             setTripDetailTab('passes');
+            renderPreTripChecklist(trip.id);
             renderTripGuideForTrip(trip);
             showScreen('tripDetail');
             await loadDocuments(trip.id);
@@ -4752,7 +5021,7 @@
                     el.innerHTML = `
                         <div class="relative">
                             <img src="${d.imageData}" class="w-full h-36 sm:h-44 object-cover bg-black">
-                            <span style="background: rgba(15,23,42,0.85);" class="absolute bottom-2 right-2 text-[10px] font-semibold text-white px-2 py-0.5 rounded-md">Tap to view</span>
+                            <span style="background: rgba(9,15,29,0.85);" class="absolute bottom-2 right-2 text-[10px] font-semibold text-white px-2 py-0.5 rounded-md">Tap to view</span>
                         </div>
                         <div class="p-3">
                             <h4 class="font-bold text-sm text-white truncate">${escapeHtml(d.name)}</h4>
