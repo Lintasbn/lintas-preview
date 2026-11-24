@@ -189,7 +189,7 @@
             box-shadow: none;
         }
         .glass {
-            background: rgba(6, 11, 22, 0.82);
+            background: rgba(6, 11, 22, 0.84);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             border-bottom: 1px solid rgba(148, 163, 184, 0.14);
@@ -222,7 +222,7 @@
             box-shadow: 0 14px 32px -10px var(--accent-glow);
         }
 
-        /* Holographic Boarding-Pass Spotlight Card */
+        /* Holographic Travel-Pass Spotlight Card */
         @keyframes holoSweep {
             0% { transform: translateX(-140%) skewX(-22deg); }
             55%, 100% { transform: translateX(260%) skewX(-22deg); }
@@ -334,6 +334,10 @@
             background: linear-gradient(160deg, rgba(22, 33, 56, 0.96) 0%, rgba(11, 18, 33, 0.98) 100%);
             border: 1px solid rgba(56, 189, 248, 0.28);
         }
+        .card-expense {
+            background: linear-gradient(160deg, rgba(22, 33, 56, 0.96) 0%, rgba(6, 95, 70, 0.24) 100%);
+            border: 1px solid rgba(52, 211, 153, 0.32);
+        }
         .card-food {
             background: linear-gradient(160deg, rgba(22, 33, 56, 0.96) 0%, rgba(6, 78, 59, 0.22) 100%);
             border: 1px solid rgba(52, 211, 153, 0.28);
@@ -368,7 +372,8 @@
             color: #ffffff;
             transform: scale(0.94);
         }
-        /* Floating, Calm & Animated Travel Perks Carousel with Ken Burns Visuals */
+
+        /* Floating, Lively & Animated Travel Perks Carousel with Ken Burns + Shimmer */
         @keyframes floatGentle {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-4px); }
@@ -378,13 +383,17 @@
             100% { opacity: 1; transform: translateX(0); }
         }
         @keyframes ctaSoftGlow {
-            0%, 100% { box-shadow: 0 4px 14px -2px rgba(45, 212, 191, 0.28); }
-            50% { box-shadow: 0 6px 20px -2px rgba(45, 212, 191, 0.55); }
+            0%, 100% { box-shadow: 0 4px 14px -2px rgba(45, 212, 191, 0.32); }
+            50% { box-shadow: 0 6px 22px -2px rgba(45, 212, 191, 0.65); }
         }
         @keyframes slowKenBurns {
             0% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.09) translate(-1.5%, -1%); }
+            50% { transform: scale(1.1) translate(-1.5%, -1%); }
             100% { transform: scale(1) translate(0, 0); }
+        }
+        @keyframes badgePulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(1.35); }
         }
         .partner-float-card {
             position: relative;
@@ -392,14 +401,33 @@
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(19, 78, 74, 0.38) 55%, rgba(12, 74, 110, 0.42) 100%);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(94, 234, 212, 0.34);
+            border: 1px solid rgba(94, 234, 212, 0.36);
             border-radius: 24px;
-            box-shadow: 0 18px 36px -10px rgba(2, 6, 23, 0.85), 0 0 24px -8px rgba(45, 212, 191, 0.24);
+            box-shadow: 0 18px 36px -10px rgba(2, 6, 23, 0.85), 0 0 24px -8px rgba(45, 212, 191, 0.26);
             animation: floatGentle 4.8s ease-in-out infinite;
             transition: border-color 0.25s ease, transform 0.15s ease;
         }
+        .partner-float-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 34%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(94, 234, 212, 0.12), transparent);
+            animation: holoSweep 5.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
         .partner-float-card:active {
             transform: scale(0.985);
+        }
+        .perk-live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background-color: #5eead4;
+            animation: badgePulseDot 1.8s ease-in-out infinite;
         }
         .perk-bg-media {
             position: absolute;
@@ -407,7 +435,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.46;
+            opacity: 0.48;
             animation: slowKenBurns 14s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
@@ -415,7 +443,7 @@
         .perk-bg-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(100deg, rgba(6, 11, 22, 0.95) 18%, rgba(6, 11, 22, 0.74) 68%, rgba(6, 11, 22, 0.42) 100%);
+            background: linear-gradient(100deg, rgba(6, 11, 22, 0.95) 18%, rgba(6, 11, 22, 0.72) 68%, rgba(6, 11, 22, 0.40) 100%);
             pointer-events: none;
             z-index: 1;
         }
@@ -445,10 +473,10 @@
         .deck-panel-anim {
             animation: deckPanelIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        /* Universal Tool Deck Strip: Horizontal Scroll on Mobile, Clean 6-Column Grid on Desktop */
+        /* Universal Tool Deck Strip: Horizontal Scroll on Mobile, Clean 7-Column Grid on Desktop */
         .hub-tools-strip {
             display: flex;
-            gap: 8px;
+            gap: 7px;
             overflow-x: auto;
             padding-bottom: 4px;
             scrollbar-width: none;
@@ -457,16 +485,18 @@
         .hub-tools-strip::-webkit-scrollbar {
             display: none;
         }
-        @media (min-width: 680px) {
+        @media (min-width: 740px) {
             .hub-tools-strip {
                 display: grid;
-                grid-template-columns: repeat(6, minmax(0, 1fr));
+                grid-template-columns: repeat(7, minmax(0, 1fr));
                 overflow-x: visible;
                 padding-bottom: 0;
             }
             .hub-tools-strip .tool-tab-chip {
                 text-align: center;
                 justify-content: center;
+                padding-left: 6px;
+                padding-right: 6px;
             }
         }
         .tool-tab-chip {
@@ -475,7 +505,7 @@
             color: #94a3b8;
             border: 1px solid #334155;
             border-radius: 12px;
-            padding: 8px 12px;
+            padding: 8px 11px;
             font-size: 11px;
             font-weight: 700;
             transition: all 0.15s ease;
@@ -484,7 +514,7 @@
             touch-action: manipulation;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
         .tool-tab-chip.active {
             background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(16, 185, 129, 0.24));
@@ -823,7 +853,7 @@
             
             <h1 class="brand-wordmark text-5xl sm:text-6xl mb-2 select-none">Lintas<span class="brand-wordmark-dot"></span></h1>
             <p style="color: #e2e8f0;" class="text-base font-semibold tracking-tight mb-1">Breeze through borders.</p>
-            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-sm leading-relaxed">Offline travel QR passes, live traffic &amp; flight radar, Halal food finder &amp; voice translator.</p>
+            <p style="color: #94a3b8;" class="text-xs sm:text-sm mb-6 max-w-sm leading-relaxed">Offline travel QR passes, live traffic &amp; flight status, Halal food finder, expense tracker &amp; voice translator.</p>
 
             <!-- Glassmorphic Auth Card -->
             <div class="glass-auth-card w-full max-w-sm rounded-3xl p-5 space-y-3">
@@ -877,7 +907,7 @@
     <div id="dashboardScreen" class="hide flex-1 flex flex-col h-screen overflow-hidden" style="position: relative; z-index: 10;">
         <div class="glass sticky top-0" style="z-index: 20;">
             <div class="app-shell px-4 sm:px-6 py-3.5 flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2.5 shrink-0">
+                <div class="flex items-center gap-2.5 min-w-0">
                     <div class="app-icon-mini">
                         <svg class="icon-svg-mini" viewBox="0 0 120 120">
                             <circle cx="60" cy="60" r="42" fill="none" stroke="white" stroke-width="7"/>
@@ -888,14 +918,14 @@
                             <circle cx="26" cy="78" r="6" fill="#facc15"/>
                         </svg>
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <span class="brand-wordmark-sm text-xl block leading-none">Lintas<span class="brand-wordmark-dot"></span></span>
-                        <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium">● Cloud Sync Active</span>
+                        <span id="syncStatusBadge" class="text-[10px] text-emerald-400 font-medium whitespace-nowrap block truncate">● Cloud Sync Active</span>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                    <span id="userEmailDisplay" style="color: #cbd5e1;" class="text-xs font-medium max-w-[74px] sm:max-w-[150px] truncate"></span>
+                    <span id="userEmailDisplay" style="color: #cbd5e1;" class="hidden sm:inline text-xs font-medium max-w-[140px] truncate"></span>
                     <button id="themeCycleBtn" type="button" style="background-color: #162138; border: 1px solid #334155;" class="tactile-btn px-2 py-2 rounded-xl text-xs" title="Switch Accent Theme">🎨</button>
                     <button id="seniorTextToggleBtn" type="button" style="background-color: #162138; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-[11px] font-extrabold text-sky-300 hover:text-white" title="Toggle Large Text Mode for Easy Reading">Aa</button>
                     <button id="refreshTripsBtn" type="button" style="background-color: #162138; border: 1px solid #334155;" class="tactile-btn px-2.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white" title="Sync now">↻</button>
@@ -935,11 +965,11 @@
                     </button>
                 </div>
 
-                <!-- TOP ROW: HOLOGRAPHIC BOARDING-PASS SPOTLIGHT + TRAVEL PERKS -->
+                <!-- TOP ROW: MODE-AWARE TRAVEL PASS SPOTLIGHT + ANIMATED TRAVEL PERKS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 items-stretch">
                     <div id="spotlightSection" class="hide flex flex-col">
                         <div class="flex items-center justify-between mb-2">
-                            <span id="spotlightHeading" class="text-[11px] font-bold uppercase tracking-wider text-sky-400">● Next Boarding Pass</span>
+                            <span id="spotlightHeading" class="text-[11px] font-bold uppercase tracking-wider text-sky-400">● Next Travel Pass</span>
                         </div>
                         <div id="spotlightCardSlot" class="flex-1 flex flex-col"></div>
                     </div>
@@ -1027,13 +1057,13 @@
         </div>
         
         <div id="tripDetailScrollArea" class="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 pb-24 app-shell">
-            <!-- TAB 1: PASSES & QRs + SMART PRE-TRIP CHECKLIST -->
+            <!-- TAB 1: PASSES & QRs + MODE-AWARE PRE-TRIP CHECKLIST -->
             <div id="tripPassesTab">
                 <button id="addDocTopBtn" type="button" class="w-full max-w-md mx-auto btn-primary font-bold py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-4">
                     + Add QR Pass / Document
                 </button>
 
-                <!-- INTERACTIVE PRE-TRIP READINESS CHECKLIST -->
+                <!-- MODE-AWARE PRE-TRIP READINESS CHECKLIST -->
                 <div class="card-dark rounded-2xl p-3.5 mb-5">
                     <div class="flex items-center justify-between gap-2 mb-2">
                         <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-300">✓ Pre-Trip Readiness</span>
@@ -1044,14 +1074,14 @@
 
                 <div id="emptyDocsState" class="text-center py-14 card-dark rounded-2xl p-6 max-w-lg mx-auto">
                     <p style="color: #94a3b8;" class="text-sm mb-2">No passes added to this trip yet.</p>
-                    <p style="color: #64748b;" class="text-xs">Upload EES QR, MDAC, ferry/flight passes, or booking receipts for instant offline access.</p>
+                    <p style="color: #64748b;" class="text-xs">Upload EES QR, MDAC, ferry/flight/train passes, or booking receipts for instant offline access.</p>
                 </div>
                 <div id="docsContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5"></div>
             </div>
 
             <!-- TAB 2: INTERACTIVE TRAVEL HUB DECK -->
             <div id="tripGuideTab" class="hide space-y-4">
-                <!-- COMPACT DESTINATION OVERVIEW + UNIVERSAL TOOL TABS -->
+                <!-- COMPACT DESTINATION OVERVIEW + PLUG VOLTAGE + UNIVERSAL TOOL TABS -->
                 <div class="hub-hero-card rounded-3xl p-4 sm:p-5 shadow-xl">
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0 flex-1 text-left">
@@ -1069,29 +1099,37 @@
                         </div>
                     </div>
 
-                    <!-- TRAVEL MODE SWITCHER + EXCHANGE RATE -->
+                    <!-- 4-MODE TRAVEL SWITCHER + EXCHANGE RATE + POWER PLUG BADGE -->
                     <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
                         <div style="background: rgba(9, 15, 29, 0.85); border: 1px solid rgba(148, 163, 184, 0.22);" class="inline-flex p-1 rounded-xl gap-1">
-                            <button id="modeDriveBtn" type="button" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all whitespace-nowrap">🚗 Drive / Border</button>
-                            <button id="modeFlightBtn" type="button" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap">✈️ Flight</button>
+                            <button id="modeDriveBtn" type="button" class="px-2 py-1 rounded-lg text-[11px] font-extrabold transition-all whitespace-nowrap">🚗 Drive</button>
+                            <button id="modeFlightBtn" type="button" class="px-2 py-1 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap">✈️ Flight</button>
+                            <button id="modeFerryBtn" type="button" class="px-2 py-1 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap">⛴️ Ferry</button>
+                            <button id="modeTrainBtn" type="button" class="px-2 py-1 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap">🚆 Train</button>
                         </div>
-                        <span id="hubRateChip" style="background: rgba(9, 15, 29, 0.85); border: 1px solid rgba(52, 211, 153, 0.35);" class="text-[11px] font-bold text-emerald-300 px-2.5 py-1 rounded-xl whitespace-nowrap">
-                            💱 1 BND = —
-                        </span>
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <span id="hubPlugChip" style="background: rgba(9, 15, 29, 0.85); border: 1px solid rgba(251, 191, 36, 0.35);" class="text-[11px] font-bold text-amber-300 px-2.5 py-1 rounded-xl whitespace-nowrap">
+                                🔌 Type G • 240V
+                            </span>
+                            <span id="hubRateChip" style="background: rgba(9, 15, 29, 0.85); border: 1px solid rgba(52, 211, 153, 0.35);" class="text-[11px] font-bold text-emerald-300 px-2.5 py-1 rounded-xl whitespace-nowrap">
+                                💱 1 BND = —
+                            </span>
+                        </div>
                     </div>
 
-                    <!-- UNIVERSAL TOOL SELECTOR (SCROLLABLE ON MOBILE, FULL GRID ON DESKTOP) -->
+                    <!-- UNIVERSAL TOOL SELECTOR (7 TABS: SCROLLABLE ON MOBILE, FULL GRID ON DESKTOP) -->
                     <div class="hub-tools-strip mt-3.5 pt-3" style="border-top: 1px solid rgba(148, 163, 184, 0.16);">
                         <button id="deckTabRadar" type="button" data-deck="secRadar" class="tool-tab-chip active">🚦 Border Traffic</button>
                         <button type="button" data-deck="secFx" class="tool-tab-chip">💱 Currency</button>
+                        <button type="button" data-deck="secExpense" class="tool-tab-chip">💸 Expenses</button>
                         <button type="button" data-deck="secFood" class="tool-tab-chip">🍜 Halal Eats</button>
                         <button type="button" data-deck="secPhrases" class="tool-tab-chip">🗣️ Translator</button>
-                        <button type="button" data-deck="secTransit" class="tool-tab-chip">⛴️ Ferry &amp; Bus</button>
+                        <button type="button" data-deck="secTransit" class="tool-tab-chip">⛴️ Transit</button>
                         <button type="button" data-deck="secDriver" class="tool-tab-chip">🚕 Taxi &amp; SOS</button>
                     </div>
                 </div>
 
-                <!-- DECK PANEL 1: LIVE LAND BORDER TRAFFIC (WITH EXPANDABLE PiP) OR FLIGHT STATUS (WITH EXPANDABLE PiP) -->
+                <!-- DECK PANEL 1: LIVE BORDER TRAFFIC OR FLIGHT STATUS -->
                 <div id="secRadar" class="hub-deck-panel deck-panel-anim">
                     <div id="driveBorderCard" class="card-border-traffic rounded-3xl p-4 sm:p-5 shadow-lg">
                         <div class="flex items-center justify-between gap-2 mb-2">
@@ -1204,7 +1242,27 @@
                     </p>
                 </div>
 
-                <!-- DECK PANEL 3: IN-APP HALAL FOOD SEARCH & LIVE MAP PREVIEW -->
+                <!-- DECK PANEL 3: TRIP EXPENSE & BUDGET TRACKER (AUTO-CONVERTS TO BND) -->
+                <div id="secExpense" class="hide hub-deck-panel deck-panel-anim card-expense rounded-3xl p-4 sm:p-5 shadow-lg">
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-base shrink-0">💸</span>
+                            <h3 class="text-sm font-extrabold text-white truncate">Trip Expense Tracker</h3>
+                        </div>
+                        <span id="expenseTotalBadge" class="shrink-0 whitespace-nowrap text-xs font-black px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">Total: 0.00 BND</span>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-2 mb-3">
+                        <input type="text" id="expLabelInput" placeholder="Item (e.g., Dinner, Grab, Shopping)" class="input-dark col-span-6 rounded-xl px-3 py-2 text-xs">
+                        <input type="number" id="expAmountInput" min="0" step="any" placeholder="Amount" class="input-dark col-span-3 rounded-xl px-2.5 py-2 text-xs font-bold">
+                        <button id="addExpenseBtn" type="button" class="btn-primary col-span-3 rounded-xl text-xs font-extrabold whitespace-nowrap">+ Add</button>
+                    </div>
+                    <p style="color: #94a3b8;" class="text-[11px] mb-2.5">Amounts logged in <strong id="expLocalCurrLabel" class="text-sky-300">MYR</strong> automatically convert to <strong>BND</strong> offline.</p>
+
+                    <div id="expenseItemsList" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar"></div>
+                </div>
+
+                <!-- DECK PANEL 4: IN-APP HALAL FOOD SEARCH & LIVE MAP PREVIEW -->
                 <div id="secFood" class="hide hub-deck-panel deck-panel-anim card-food rounded-3xl p-4 sm:p-5 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
@@ -1242,7 +1300,7 @@
                     <div id="guideFoodList" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
                 </div>
 
-                <!-- DECK PANEL 4: IN-APP LIVE TEXT & VOICE TRANSLATOR + PHRASES -->
+                <!-- DECK PANEL 5: IN-APP LIVE TEXT & VOICE TRANSLATOR + PHRASES -->
                 <div id="secPhrases" class="hide hub-deck-panel deck-panel-anim card-phrase rounded-3xl p-4 sm:p-5 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
@@ -1279,7 +1337,7 @@
                     <div id="guidePhrasesList" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
                 </div>
 
-                <!-- DECK PANEL 5: LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
+                <!-- DECK PANEL 6: LOCAL FERRY, PUBLIC BUS & RIDE-HAILING -->
                 <div id="secTransit" class="hide hub-deck-panel deck-panel-anim card-dark rounded-3xl p-4 sm:p-5 shadow-lg">
                     <div class="flex items-center justify-between gap-2 mb-2.5">
                         <div class="flex items-center gap-2 min-w-0">
@@ -1294,7 +1352,7 @@
                     <div id="guideTransitBody" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs"></div>
                 </div>
 
-                <!-- DECK PANEL 6: STAY ADDRESS & EMERGENCY CONTACTS -->
+                <!-- DECK PANEL 7: STAY ADDRESS & EMERGENCY CONTACTS -->
                 <div id="secDriver" class="hide hub-deck-panel deck-panel-anim card-dark rounded-3xl p-4 sm:p-5 space-y-3 shadow-lg">
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2 min-w-0">
@@ -1316,6 +1374,9 @@
                         <div id="guideEmergencyBox" style="background-color: #090f1d; border: 1px solid #334155;" class="rounded-2xl p-3 text-xs space-y-1 leading-relaxed"></div>
                     </div>
                 </div>
+
+                <!-- CONTEXTUAL DESTINATION TRAVEL PERK SLOT (INSIDE TRAVEL HUB) -->
+                <div id="hubContextualPerkSlot"></div>
             </div>
         </div>
     </div>
@@ -1448,7 +1509,7 @@
             </div>
 
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">1. Pass Label</label>
-            <input type="text" id="docNameInput" placeholder="e.g., EES QR, MDAC, Boarding Pass" class="input-dark w-full rounded-xl px-4 py-3 mb-4 text-sm">
+            <input type="text" id="docNameInput" placeholder="e.g., EES QR, MDAC, Ferry / Boarding Pass" class="input-dark w-full rounded-xl px-4 py-3 mb-4 text-sm">
             
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">2. Select or Capture QR Pass</label>
             <div class="grid grid-cols-2 gap-2.5 mb-3">
@@ -1516,7 +1577,7 @@
         </div>
     </div>
 
-    <!-- NEW TRIP MODAL -->
+    <!-- NEW TRIP MODAL (4 TRAVEL MODES: FLIGHT, DRIVE/BORDER, FERRY, TRAIN) -->
     <div id="newTripModal" style="z-index: 9999;" class="hide fixed inset-0 modal-overlay flex items-center justify-center p-5 overflow-y-auto">
         <div class="modal-card animate-pop w-full max-w-md rounded-3xl p-6 shadow-2xl my-auto">
             <div class="flex justify-between items-center mb-4">
@@ -1525,12 +1586,14 @@
             </div>
 
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Trip Title *</label>
-            <input type="text" id="tripNameInput" placeholder="e.g., Weekend Getaway, Seoul Holiday" class="input-dark w-full rounded-xl px-4 py-3 mb-3.5 text-sm">
+            <input type="text" id="tripNameInput" placeholder="e.g., Miri Weekend, Labuan Ferry, Seoul Holiday" class="input-dark w-full rounded-xl px-4 py-3 mb-3.5 text-sm">
 
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">How Are You Traveling?</label>
-            <div style="background-color: #090f1d; border: 1px solid #334155;" class="grid grid-cols-2 p-1 rounded-xl gap-1 mb-3.5">
-                <button type="button" id="newTripModeFlightBtn" class="py-2 px-3 rounded-lg text-xs font-extrabold bg-blue-600 text-white transition-all">✈️ Flight</button>
-                <button type="button" id="newTripModeDriveBtn" class="py-2 px-3 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all">🚗 Drive / Border</button>
+            <div style="background-color: #090f1d; border: 1px solid #334155;" class="grid grid-cols-4 p-1 rounded-xl gap-1 mb-3.5">
+                <button type="button" data-new-mode="flight" class="new-trip-mode-btn py-2 px-1.5 rounded-lg text-[11px] font-extrabold bg-blue-600 text-white transition-all whitespace-nowrap">✈️ Flight</button>
+                <button type="button" data-new-mode="drive" class="new-trip-mode-btn py-2 px-1.5 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap">🚗 Drive</button>
+                <button type="button" data-new-mode="ferry" class="new-trip-mode-btn py-2 px-1.5 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap">⛴️ Ferry</button>
+                <button type="button" data-new-mode="train" class="new-trip-mode-btn py-2 px-1.5 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap">🚆 Train</button>
             </div>
 
             <label style="color: #94a3b8;" class="block text-xs font-semibold uppercase tracking-wider mb-1.5">Destination City (Optional)</label>
@@ -1541,6 +1604,7 @@
                 <button type="button" class="dest-chip" data-dest="Miri" data-mode="drive">🇲🇾 Miri</button>
                 <button type="button" class="dest-chip" data-dest="Limbang" data-mode="drive">🇲🇾 Limbang</button>
                 <button type="button" class="dest-chip" data-dest="Lawas" data-mode="drive">🇲🇾 Lawas</button>
+                <button type="button" class="dest-chip" data-dest="Labuan" data-mode="ferry">🇲🇾 Labuan</button>
                 <button type="button" class="dest-chip" data-dest="Kota Kinabalu" data-mode="flight">🇲🇾 Kota Kinabalu</button>
                 <button type="button" class="dest-chip" data-dest="Kuala Lumpur" data-mode="flight">🇲🇾 Kuala Lumpur</button>
                 <button type="button" class="dest-chip" data-dest="Kuching" data-mode="flight">🇲🇾 Kuching</button>
@@ -1575,7 +1639,7 @@
                 </div>
             </div>
 
-            <p style="color: #64748b;" class="text-xs mb-5">Unlocks live border traffic or flight status, Travel Hub &amp; auto-cleans 30 days after Trip End Date.</p>
+            <p style="color: #64748b;" class="text-xs mb-5">Tailors your pass card, live traffic/flight tools, expense tracker &amp; auto-cleans 30 days after Trip End Date.</p>
             <button id="saveTripBtn" type="button" class="w-full btn-primary font-bold py-3.5 rounded-xl">Create Trip</button>
         </div>
     </div>
@@ -1753,7 +1817,7 @@
         const SENIOR_MODE_KEY = "lintas_senior_mode_v1";
         const THEME_KEY = "lintas_accent_theme_v1";
 
-        // 4-Theme Live Accent Switcher (Aurora Cyan, Royal Gold, Emerald Oasis, Neon Horizon)
+        // 4-Theme Live Accent Switcher
         const THEMES = ["cyan", "gold", "emerald", "sunset"];
         function applyAccentTheme(themeName) {
             const clean = THEMES.includes(themeName) ? themeName : "cyan";
@@ -1815,6 +1879,50 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
+        }
+
+        // =========================================================================
+        // 4-MODE TRAVEL PASS METADATA HELPER (FLIGHT, DRIVE, FERRY, TRAIN)
+        // =========================================================================
+        function getTravelModeMeta(mode, airportCode = "DEST") {
+            switch (mode) {
+                case "drive":
+                    return {
+                        icon: "🚗",
+                        spotlightHeading: "● Next Border Pass",
+                        ticketBadge: "OVERLAND / CIQ PASS",
+                        destCode: "CIQ",
+                        destSub: "Checkpoint",
+                        ctaLabel: "Open Border Pass →"
+                    };
+                case "ferry":
+                    return {
+                        icon: "⛴️",
+                        spotlightHeading: "● Next Ferry Pass",
+                        ticketBadge: "FERRY / JETTY PASS",
+                        destCode: "JTY",
+                        destSub: "Terminal",
+                        ctaLabel: "Open Ferry Pass →"
+                    };
+                case "train":
+                    return {
+                        icon: "🚆",
+                        spotlightHeading: "● Next Rail Pass",
+                        ticketBadge: "TRAIN / RAIL PASS",
+                        destCode: "STN",
+                        destSub: "Station",
+                        ctaLabel: "Open Rail Pass →"
+                    };
+                default:
+                    return {
+                        icon: "✈️",
+                        spotlightHeading: "● Next Flight Pass",
+                        ticketBadge: "FLIGHT PASS",
+                        destCode: airportCode || "DEST",
+                        destSub: "Arrival",
+                        ctaLabel: "Open Flight Pass →"
+                    };
+            }
         }
 
         // =========================================================================
@@ -1898,12 +2006,13 @@
         document.getElementById('ackPipInfoBtn').addEventListener('click', closeProviderInfoPip);
 
         // =========================================================================
-        // DESTINATION INTELLIGENCE DATABASE (BORDER TRAFFIC, AIRPORT, FERRY, FOOD)
+        // DESTINATION INTELLIGENCE DATABASE (PLUGS, BORDER, AIRPORT, FERRY, FOOD)
         // =========================================================================
         const DESTINATION_GUIDES = {
             "miri": {
                 defaultMode: "drive",
                 currency: "MYR",
+                plugInfo: "🔌 Type G • 240V",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
                 langShort: "ms",
@@ -1933,6 +2042,7 @@
             "limbang": {
                 defaultMode: "drive",
                 currency: "MYR",
+                plugInfo: "🔌 Type G • 240V",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
                 langShort: "ms",
@@ -1960,6 +2070,7 @@
             "lawas": {
                 defaultMode: "drive",
                 currency: "MYR",
+                plugInfo: "🔌 Type G • 240V",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
                 langShort: "ms",
@@ -1982,9 +2093,38 @@
                     { name: "Restoran Taj Mahal / Lawas Central", tag: "Halal • Nasi & Roti", cat: "nasi", price: "$", note: "Tahai smoked fish dishes, roti canai & nasi campur." }
                 ]
             },
+            "labuan": {
+                defaultMode: "ferry",
+                currency: "MYR",
+                plugInfo: "🔌 Type G • 240V",
+                timeZone: "Asia/Kuching",
+                langCode: "ms-MY",
+                langShort: "ms",
+                langLabel: "Melayu",
+                borderPost: "Serasa / Labuan Ferry",
+                borderTitle: "Serasa Ferry Terminal (Brunei) ↔ Labuan International Ferry Terminal",
+                borderDesc: "Fast passenger ferry crossing (~1 hr 15 mins) & vehicle Ro-Ro ferry from Serasa Terminal, Muara. Check terminal arrival 45 mins prior.",
+                borderLat: 5.2767,
+                borderLng: 115.2417,
+                airportCode: "LBU",
+                airportName: "Labuan Airport (LBU)",
+                airportTransfer: "~10 mins to Labuan Town & Financial Park via Grab or local taxi.",
+                ferryInfo: "Labuan International Ferry Terminal connects to Serasa (Brunei), Menumbok (Sabah), Kota Kinabalu & Lawas.",
+                busInfo: "Compact duty-free island — Grab and local taxis serve UMSKAL, Layang-Layangan & Chimney Museum.",
+                emergency: "Emergency: 999 • Brunei Consulate General in Kota Kinabalu: +60 10-241 6112",
+                phrases: [
+                    { en: "Where is the ferry terminal?", local: "Di mana terminal feri?", phonetic: "Dee ma-na ter-mi-nal fe-ri?" },
+                    { en: "Is this Halal?", local: "Ini Halal?", phonetic: "Ee-nee Ha-lal?" }
+                ],
+                food: [
+                    { name: "Anjung Ketam Tanjung Aru (Labuan)", tag: "Halal • Seafood", cat: "seafood", price: "$$", note: "Fresh steamed crabs, butter prawns & grilled fish by the beach." },
+                    { name: "Mawilla Yacht Club / Waterfront Stalls", tag: "Halal • Local & Grill", cat: "bbq", price: "$", note: "Evening satay, chicken wings & sea breeze near the ferry terminal." }
+                ]
+            },
             "kota kinabalu": {
                 defaultMode: "flight",
                 currency: "MYR",
+                plugInfo: "🔌 Type G • 240V",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
                 langShort: "ms",
@@ -2014,6 +2154,7 @@
             "kuala lumpur": {
                 defaultMode: "flight",
                 currency: "MYR",
+                plugInfo: "🔌 Type G • 240V",
                 timeZone: "Asia/Kuala_Lumpur",
                 langCode: "ms-MY",
                 langShort: "ms",
@@ -2043,6 +2184,7 @@
             "kuching": {
                 defaultMode: "flight",
                 currency: "MYR",
+                plugInfo: "🔌 Type G • 240V",
                 timeZone: "Asia/Kuching",
                 langCode: "ms-MY",
                 langShort: "ms",
@@ -2071,6 +2213,7 @@
             "singapore": {
                 defaultMode: "flight",
                 currency: "SGD",
+                plugInfo: "🔌 Type G • 230V",
                 timeZone: "Asia/Singapore",
                 langCode: "en-SG",
                 langShort: "ms",
@@ -2099,6 +2242,7 @@
             "seoul": {
                 defaultMode: "flight",
                 currency: "KRW",
+                plugInfo: "🔌 Type C/F • 220V",
                 timeZone: "Asia/Seoul",
                 langCode: "ko-KR",
                 langShort: "ko",
@@ -2129,6 +2273,7 @@
             "tokyo": {
                 defaultMode: "flight",
                 currency: "JPY",
+                plugInfo: "🔌 Type A • 100V",
                 timeZone: "Asia/Tokyo",
                 langCode: "ja-JP",
                 langShort: "ja",
@@ -2158,6 +2303,7 @@
             "bangkok": {
                 defaultMode: "flight",
                 currency: "THB",
+                plugInfo: "🔌 Type A/B/C • 220V",
                 timeZone: "Asia/Bangkok",
                 langCode: "th-TH",
                 langShort: "th",
@@ -2187,6 +2333,7 @@
             "jakarta": {
                 defaultMode: "flight",
                 currency: "IDR",
+                plugInfo: "🔌 Type C/F • 230V",
                 timeZone: "Asia/Jakarta",
                 langCode: "id-ID",
                 langShort: "id",
@@ -2215,6 +2362,7 @@
             "london": {
                 defaultMode: "flight",
                 currency: "GBP",
+                plugInfo: "🔌 Type G • 230V",
                 timeZone: "Europe/London",
                 langCode: "en-GB",
                 langShort: "en",
@@ -2262,6 +2410,12 @@
                 /melbourne|sydney|perth/i.test(raw) ? "AUD" :
                 /malaysia|labuan|sandakan|tawau|sipitang/i.test(raw) ? "MYR" : "USD";
 
+            const plugGuess =
+                /tokyo|osaka|kyoto|taipei|manila|cebu/i.test(raw) ? "🔌 Type A/B • 100–120V" :
+                /hong kong|dubai|abu dhabi|jeddah|makkah|madinah|riyadh|malaysia/i.test(raw) ? "🔌 Type G • 230–240V" :
+                /melbourne|sydney|perth/i.test(raw) ? "🔌 Type I • 230V" :
+                "🔌 Type C/F • 220V";
+
             const tzGuess =
                 /surabaya|bali|balikpapan/i.test(raw) ? "Asia/Makassar" :
                 /ho chi minh|hanoi/i.test(raw) ? "Asia/Ho_Chi_Minh" :
@@ -2287,9 +2441,10 @@
 
             const displayCity = raw || "Your Destination";
             return {
-                defaultMode: /miri|limbang|lawas|sipitang|labuan|pontianak/i.test(raw) ? "drive" : "flight",
+                defaultMode: /miri|limbang|lawas|sipitang|pontianak/i.test(raw) ? "drive" : (/labuan/i.test(raw) ? "ferry" : "flight"),
                 cityTitle: displayCity,
                 currency: currencyGuess,
+                plugInfo: plugGuess,
                 timeZone: tzGuess,
                 langCode: langGuess.code,
                 langShort: langGuess.short,
@@ -2316,31 +2471,52 @@
         }
 
         // =========================================================================
-        // INTERACTIVE PRE-TRIP READINESS CHECKLIST (PER TRIP, OFFLINE SAVED)
+        // MODE-AWARE PRE-TRIP READINESS CHECKLIST (PER TRIP, OFFLINE SAVED)
         // =========================================================================
-        const PREP_ITEMS = [
-            { id: "passport", label: "🛂 Passport >6m" },
-            { id: "arrival", label: "📲 MDAC / EES QR" },
-            { id: "esim", label: "📶 eSIM / Roaming" },
-            { id: "takaful", label: "🛡️ Travel Cover" },
-            { id: "powerbank", label: "🔋 Cabin Powerbank" }
-        ];
+        function getPrepItemsForMode(mode) {
+            if (mode === 'drive') {
+                return [
+                    { id: "passport", label: "🛂 Passport >6m" },
+                    { id: "vep", label: "🚗 Vehicle E-Pass / VEP" },
+                    { id: "mdac", label: "📲 MDAC / Border QR" },
+                    { id: "carins", label: "🛡️ Car & Travel Cover" },
+                    { id: "tng", label: "💳 Touch 'n Go / Cash" }
+                ];
+            }
+            if (mode === 'ferry' || mode === 'train') {
+                return [
+                    { id: "passport", label: "🛂 Passport >6m" },
+                    { id: "ticket", label: "🎫 E-Ticket QR" },
+                    { id: "arrival", label: "📲 Arrival Card QR" },
+                    { id: "esim", label: "📶 eSIM / Roaming" },
+                    { id: "cash", label: "💵 Local Cash / Card" }
+                ];
+            }
+            return [
+                { id: "passport", label: "🛂 Passport >6m" },
+                { id: "arrival", label: "📲 MDAC / EES QR" },
+                { id: "esim", label: "📶 eSIM / Roaming" },
+                { id: "takaful", label: "🛡️ Travel Cover" },
+                { id: "powerbank", label: "🔋 Cabin Powerbank" }
+            ];
+        }
 
-        function renderPreTripChecklist(tripId) {
+        function renderPreTripChecklist(tripId, travelMode = 'flight') {
             const container = document.getElementById('prepChecklistContainer');
             const progressText = document.getElementById('prepProgressText');
             if (!container || !tripId) return;
 
+            const items = getPrepItemsForMode(travelMode);
             const storageKey = `lintas_prep_${tripId}`;
             let checkedMap = {};
             try { checkedMap = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch (_) {}
 
             const updateUI = () => {
                 let doneCount = 0;
-                PREP_ITEMS.forEach(item => { if (checkedMap[item.id]) doneCount++; });
-                if (progressText) progressText.textContent = `${doneCount} / ${PREP_ITEMS.length} Ready`;
+                items.forEach(item => { if (checkedMap[item.id]) doneCount++; });
+                if (progressText) progressText.textContent = `${doneCount} / ${items.length} Ready`;
 
-                container.innerHTML = PREP_ITEMS.map(item => {
+                container.innerHTML = items.map(item => {
                     const isDone = !!checkedMap[item.id];
                     return `
                         <button type="button" data-prep-id="${item.id}" class="prep-pill tactile-btn ${isDone ? 'checked' : ''}">
@@ -2362,6 +2538,77 @@
 
             updateUI();
         }
+
+        // =========================================================================
+        // IN-TRIP EXPENSE & BUDGET TRACKER (AUTO-CONVERTS LOCAL CURRENCY TO BND)
+        // =========================================================================
+        function renderTripExpenses(tripId, localCurrency) {
+            const listEl = document.getElementById('expenseItemsList');
+            const totalEl = document.getElementById('expenseTotalBadge');
+            const currLabel = document.getElementById('expLocalCurrLabel');
+            if (!listEl || !tripId) return;
+
+            const curr = localCurrency || 'MYR';
+            if (currLabel) currLabel.textContent = curr;
+
+            const storageKey = `lintas_expenses_${tripId}`;
+            let items = [];
+            try { items = JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch (_) {}
+
+            const rateToLocal = activeFxRates[curr] || 1;
+            let totalBnd = 0;
+
+            if (items.length === 0) {
+                if (totalEl) totalEl.textContent = `Total: 0.00 BND`;
+                listEl.innerHTML = `<p style="color: #64748b;" class="text-xs text-center py-4">No expenses logged yet. Add meals, rides, or shopping above.</p>`;
+                return;
+            }
+
+            listEl.innerHTML = items.map((exp, idx) => {
+                const bndVal = exp.amount / rateToLocal;
+                totalBnd += bndVal;
+                return `
+                    <div style="background-color: #090f1d; border: 1px solid #334155;" class="rounded-xl px-3 py-2 flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <p class="text-xs font-bold text-white truncate">${escapeHtml(exp.label)}</p>
+                            <p style="color: #94a3b8;" class="text-[10px]">${exp.amount.toLocaleString()} ${escapeHtml(exp.currency || curr)} • ≈ ${bndVal.toFixed(2)} BND</p>
+                        </div>
+                        <button type="button" data-del-exp="${idx}" class="text-red-400 hover:text-red-300 text-xs font-bold px-2 py-1">✕</button>
+                    </div>
+                `;
+            }).join('');
+
+            if (totalEl) totalEl.textContent = `Total: ${totalBnd.toFixed(2)} BND`;
+
+            listEl.querySelectorAll('[data-del-exp]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const i = Number(btn.dataset.delExp);
+                    items.splice(i, 1);
+                    localStorage.setItem(storageKey, JSON.stringify(items));
+                    renderTripExpenses(tripId, curr);
+                });
+            });
+        }
+
+        document.getElementById('addExpenseBtn')?.addEventListener('click', () => {
+            if (!activeOpenTrip || !currentPipGuide) return;
+            const labelEl = document.getElementById('expLabelInput');
+            const amtEl = document.getElementById('expAmountInput');
+            const label = (labelEl?.value || '').trim() || 'Travel Expense';
+            const amount = parseFloat(amtEl?.value || '0');
+            if (isNaN(amount) || amount <= 0) return;
+
+            const curr = currentPipGuide.currency || 'MYR';
+            const storageKey = `lintas_expenses_${activeOpenTrip.id}`;
+            let items = [];
+            try { items = JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch (_) {}
+            items.unshift({ label, amount, currency: curr, ts: Date.now() });
+            localStorage.setItem(storageKey, JSON.stringify(items));
+
+            labelEl.value = '';
+            amtEl.value = '';
+            renderTripExpenses(activeOpenTrip.id, curr);
+        });
 
         // =========================================================================
         // TAP-TO-SPEAK OFFLINE VOICE SYNTHESIZER + LIVE VOICE/TEXT TRANSLATOR
@@ -2620,6 +2867,9 @@
                 } catch (_) {}
             }
             recalcCurrency();
+            if (activeOpenTrip && currentPipGuide) {
+                renderTripExpenses(activeOpenTrip.id, currentPipGuide.currency);
+            }
         }
 
         function populateCurrencyDropdowns(targetCurrency = "MYR") {
@@ -2844,34 +3094,52 @@
             expBtn.textContent = expanded ? "🗕 Compact" : "⛶ Expand";
         });
 
-        // Travel Mode Switcher inside Travel Hub (Drive/Border vs Flight)
+        // 4-Mode Travel Switcher inside Travel Hub (Drive, Flight, Ferry, Train)
         let activeOpenTrip = null;
         function applyTripTravelMode(mode) {
-            const isDrive = mode === 'drive';
             const driveCard = document.getElementById('driveBorderCard');
             const flightCard = document.getElementById('flightRadarCard');
-            const driveBtn = document.getElementById('modeDriveBtn');
-            const flightBtn = document.getElementById('modeFlightBtn');
+            const modeBtns = {
+                drive: document.getElementById('modeDriveBtn'),
+                flight: document.getElementById('modeFlightBtn'),
+                ferry: document.getElementById('modeFerryBtn'),
+                train: document.getElementById('modeTrainBtn')
+            };
             const deckRadarTab = document.getElementById('deckTabRadar');
 
-            if (isDrive) {
+            Object.entries(modeBtns).forEach(([key, btn]) => {
+                if (!btn) return;
+                if (key === mode) {
+                    btn.className = key === 'drive'
+                        ? 'px-2 py-1 rounded-lg text-[11px] font-extrabold bg-amber-500 text-slate-950 transition-all whitespace-nowrap'
+                        : 'px-2 py-1 rounded-lg text-[11px] font-extrabold bg-sky-500 text-slate-950 transition-all whitespace-nowrap';
+                } else {
+                    btn.className = 'px-2 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap';
+                }
+            });
+
+            if (mode === 'drive') {
                 closeFlightPip();
                 driveCard.classList.remove('hide');
                 flightCard.classList.add('hide');
-                driveBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-amber-500 text-slate-950 transition-all whitespace-nowrap';
-                flightBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap';
                 if (deckRadarTab) deckRadarTab.textContent = '🚦 Border Traffic';
+            } else if (mode === 'ferry' || mode === 'train') {
+                closeFlightPip();
+                closeTrafficPip();
+                driveCard.classList.add('hide');
+                flightCard.classList.add('hide');
+                if (deckRadarTab) deckRadarTab.textContent = mode === 'ferry' ? '⛴️ Ferry Info' : '🚆 Rail Info';
+                activateHubDeck('secTransit');
             } else {
                 closeTrafficPip();
                 flightCard.classList.remove('hide');
                 driveCard.classList.add('hide');
-                flightBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-sky-500 text-slate-950 transition-all whitespace-nowrap';
-                driveBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap';
                 if (deckRadarTab) deckRadarTab.textContent = '✈️ Flight Status';
             }
 
             if (activeOpenTrip && activeOpenTrip.id) {
                 localStorage.setItem(`lintas_mode_${activeOpenTrip.id}`, mode);
+                renderPreTripChecklist(activeOpenTrip.id, mode);
             }
         }
 
@@ -2883,6 +3151,12 @@
             applyTripTravelMode('flight');
             activateHubDeck('secRadar');
         });
+        document.getElementById('modeFerryBtn').addEventListener('click', () => {
+            applyTripTravelMode('ferry');
+        });
+        document.getElementById('modeTrainBtn').addEventListener('click', () => {
+            applyTripTravelMode('train');
+        });
 
         let hubClockTimer = null;
 
@@ -2893,6 +3167,7 @@
 
             document.getElementById('hubBadgePill').textContent = guide.airportCode;
             document.getElementById('hubHeroCity').textContent = guide.cityTitle;
+            document.getElementById('hubPlugChip').textContent = guide.plugInfo || "🔌 Type G • 240V";
             document.getElementById('hubHeroSub').textContent = trip.weatherSummary
                 ? `${trip.weatherSummary} • ${guide.currency} • ${guide.langLabel}`
                 : `${guide.currency} • ${guide.langLabel} • Ready`;
@@ -2901,7 +3176,9 @@
             const titleImpliesDrive = /road\s*trip|drive|driving|overland|border|ciq/i.test(trip.name || '');
             const resolvedMode = savedOverride || trip.travelMode || (titleImpliesDrive ? 'drive' : guide.defaultMode) || 'flight';
             applyTripTravelMode(resolvedMode);
-            activateHubDeck('secRadar');
+            if (resolvedMode === 'drive' || resolvedMode === 'flight') {
+                activateHubDeck('secRadar');
+            }
 
             document.getElementById('borderPostBadge').textContent = guide.borderPost.toUpperCase();
             document.getElementById('borderPostTitle').textContent = guide.borderTitle;
@@ -2937,6 +3214,7 @@
 
             populateCurrencyDropdowns(guide.currency);
             initCurrencyRates();
+            renderTripExpenses(trip.id, guide.currency);
 
             document.getElementById('guideAirportCode').textContent = guide.airportCode;
             document.getElementById('guideAirportName').textContent = guide.airportName;
@@ -3014,6 +3292,8 @@
                 <p class="font-bold text-white">${escapeHtml(guide.emergency)}</p>
                 <p style="color: #94a3b8;" class="text-[11px]">Brunei MFA 24-Hr Ops Room: +673 238 3374 / +673 871 6001</p>
             `;
+
+            renderContextualHubPerk(guide.cityTitle);
         }
 
         function setTripDetailTab(mode) {
@@ -3053,13 +3333,43 @@
         });
 
         // =========================================================================
-        // FLOATING ANIMATED VISUAL TRAVEL PERKS CAROUSEL (KEN BURNS + MULTI-OFFER)
+        // FLOATING ANIMATED VISUAL TRAVEL PERKS CAROUSEL + CONTEXTUAL HUB PERK
         // =========================================================================
         const DEFAULT_PERK_IMAGE = "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=900&q=80";
         let bannerLoaded = false;
         let nextUpcomingDestination = '';
         let perkCarouselTimer = null;
         let currentPerkSlide = 0;
+        let activePartnerUrl = "";
+        let activePartnerCta = "Get eSIM";
+
+        function renderContextualHubPerk(cityTitle) {
+            const hubSlot = document.getElementById('hubContextualPerkSlot');
+            if (!hubSlot) return;
+            if (!activePartnerUrl) {
+                hubSlot.innerHTML = '';
+                return;
+            }
+            const cleanCity = escapeHtml(cityTitle || 'Destination');
+            hubSlot.innerHTML = `
+                <div class="partner-float-card p-3.5 text-left mt-2">
+                    <a href="${escapeHtml(activePartnerUrl)}" target="_blank" rel="noopener noreferrer sponsored"
+                       class="perk-content-layer flex items-center justify-between gap-3">
+                        <div class="min-w-0 flex-1">
+                            <span style="background: rgba(9, 15, 29, 0.8); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.35);"
+                                  class="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full inline-flex items-center gap-1.5 mb-1">
+                                <span class="perk-live-dot"></span><span>${cleanCity} Essential</span>
+                            </span>
+                            <h4 class="text-xs font-extrabold text-white truncate">Instant ${cleanCity} Travel eSIM &amp; Roaming</h4>
+                            <p style="color: #cbd5e1;" class="text-[11px] truncate">Activate before landing • Zero physical SIM swap</p>
+                        </div>
+                        <span class="perk-pill-btn text-[11px] font-extrabold px-3 py-2 rounded-xl">
+                            ${escapeHtml(activePartnerCta)} ↗
+                        </span>
+                    </a>
+                </div>
+            `;
+        }
 
         async function loadPromoBanner(forceRefresh = false) {
             if (bannerLoaded && !forceRefresh) return;
@@ -3092,6 +3402,8 @@
                 }
 
                 if (slides.length === 0) return;
+                activePartnerUrl = String(slides[0].linkUrl || '').trim();
+                activePartnerCta = String(slides[0].ctaText || 'Get eSIM').trim();
                 bannerLoaded = true;
                 currentPerkSlide = 0;
 
@@ -3099,7 +3411,6 @@
                     const item = slides[idx % slides.length];
                     const cleanUrl = escapeHtml(String(item.linkUrl).trim());
                     const tagText = escapeHtml(item.tag || "Travel Perk");
-                    const iconChar = escapeHtml(item.icon || "✦");
                     const titleText = escapeHtml(item.title || "Traveler Benefit");
                     const subText = escapeHtml(item.subtitle || "");
                     const ctaText = escapeHtml(item.ctaText || "Explore");
@@ -3129,8 +3440,8 @@
                                 <div class="min-w-0 flex-1">
                                     <div class="mb-1">
                                         <span style="background: rgba(9, 15, 29, 0.8); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.35);"
-                                              class="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full inline-flex items-center gap-1 whitespace-nowrap backdrop-blur-sm">
-                                            <span>${iconChar}</span><span>${tagText}</span>
+                                              class="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full inline-flex items-center gap-1.5 whitespace-nowrap backdrop-blur-sm">
+                                            <span class="perk-live-dot"></span><span>${tagText}</span>
                                         </span>
                                     </div>
                                     <h4 class="text-sm font-extrabold text-white leading-snug truncate drop-shadow">
@@ -4146,22 +4457,25 @@
             privacy: document.getElementById('privacyModal')
         };
 
-        // --- CREATE NEW TRIP: TRAVEL MODE & QUICK-TAP DESTINATION CHIPS ---
+        // --- CREATE NEW TRIP: 4-MODE SELECTOR & QUICK-TAP DESTINATION CHIPS ---
         function setNewTripMode(mode) {
-            selectedNewTripMode = mode === 'drive' ? 'drive' : 'flight';
-            const fBtn = document.getElementById('newTripModeFlightBtn');
-            const dBtn = document.getElementById('newTripModeDriveBtn');
-            if (selectedNewTripMode === 'drive') {
-                dBtn.className = 'py-2 px-3 rounded-lg text-xs font-extrabold bg-amber-500 text-slate-950 transition-all';
-                fBtn.className = 'py-2 px-3 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all';
-            } else {
-                fBtn.className = 'py-2 px-3 rounded-lg text-xs font-extrabold bg-blue-600 text-white transition-all';
-                dBtn.className = 'py-2 px-3 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all';
-            }
+            const validModes = ['flight', 'drive', 'ferry', 'train'];
+            selectedNewTripMode = validModes.includes(mode) ? mode : 'flight';
+            document.querySelectorAll('.new-trip-mode-btn').forEach((btn) => {
+                const m = btn.dataset.newMode;
+                if (m === selectedNewTripMode) {
+                    btn.className = m === 'drive'
+                        ? 'new-trip-mode-btn py-2 px-1.5 rounded-lg text-[11px] font-extrabold bg-amber-500 text-slate-950 transition-all whitespace-nowrap'
+                        : 'new-trip-mode-btn py-2 px-1.5 rounded-lg text-[11px] font-extrabold bg-blue-600 text-white transition-all whitespace-nowrap';
+                } else {
+                    btn.className = 'new-trip-mode-btn py-2 px-1.5 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap';
+                }
+            });
         }
 
-        document.getElementById('newTripModeFlightBtn').addEventListener('click', () => setNewTripMode('flight'));
-        document.getElementById('newTripModeDriveBtn').addEventListener('click', () => setNewTripMode('drive'));
+        document.querySelectorAll('.new-trip-mode-btn').forEach((btn) => {
+            btn.addEventListener('click', () => setNewTripMode(btn.dataset.newMode));
+        });
 
         const tripLocationInputEl = document.getElementById('tripLocationInput');
         const tripNameInputEl = document.getElementById('tripNameInput');
@@ -4709,18 +5023,19 @@
                     : '';
                 loadPromoBanner(true);
 
-                // HOLOGRAPHIC BOARDING-PASS SPOTLIGHT CARD
+                // MODE-AWARE HOLOGRAPHIC TRAVEL PASS SPOTLIGHT CARD
                 if (upcomingOrActive.length > 0 && currentTripFilter !== 'past') {
                     const hero = upcomingOrActive[0];
                     const t = hero.trip;
                     const tl = hero.timeline;
                     const guide = getDestinationGuide(t.location || t.name);
-                    const isDriveTrip = (t.travelMode || guide.defaultMode) === 'drive';
-                    const destCode = isDriveTrip ? 'CIQ' : (guide.airportCode || 'DEST');
+                    const savedOverride = localStorage.getItem(`lintas_mode_${t.id}`);
+                    const resolvedMode = savedOverride || t.travelMode || guide.defaultMode || 'flight';
+                    const modeMeta = getTravelModeMeta(resolvedMode, guide.airportCode);
 
                     spotlightSection.classList.remove('hide');
                     document.getElementById('spotlightHeading').textContent =
-                        tl.category === 'active' ? '● Active Boarding Pass' : '● Next Boarding Pass';
+                        tl.category === 'active' ? `● Active ${modeMeta.ticketBadge}` : modeMeta.spotlightHeading;
 
                     const heroWxId = `hero_wx_${t.id}`;
                     const heroCard = document.createElement('div');
@@ -4729,7 +5044,7 @@
                         <div>
                             <div class="flex items-start justify-between gap-2 mb-3">
                                 <div class="overflow-hidden">
-                                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-sky-400 block mb-0.5">${isDriveTrip ? 'OVERLAND PASS' : 'FLIGHT PASS'}</span>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-sky-400 block mb-0.5">${escapeHtml(modeMeta.ticketBadge)}</span>
                                     <h3 class="font-black text-lg text-white truncate">${escapeHtml(t.name)}</h3>
                                 </div>
                                 <span style="${tl.badgeStyle}" class="shrink-0 whitespace-nowrap text-[11px] font-bold px-2.5 py-1 rounded-full">
@@ -4737,7 +5052,7 @@
                                 </span>
                             </div>
 
-                            <!-- Aviation Route Arc (BWN -> DEST) -->
+                            <!-- Mode-Aware Route Arc (BWN -> DEST / CIQ / JTY / STN) -->
                             <div style="background-color: rgba(6, 11, 22, 0.72); border: 1px solid rgba(148, 163, 184, 0.16);" class="rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2">
                                 <div class="text-left">
                                     <span class="text-base font-black text-white tracking-tight block leading-none">BWN</span>
@@ -4747,15 +5062,15 @@
                                     <div class="w-full flex items-center gap-1.5">
                                         <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
                                         <div class="flex-1 border-t border-dashed border-sky-400/50"></div>
-                                        <span class="text-xs">${isDriveTrip ? '🚗' : '✈️'}</span>
+                                        <span class="text-xs">${modeMeta.icon}</span>
                                         <div class="flex-1 border-t border-dashed border-sky-400/50"></div>
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                                     </div>
                                     <span style="color: #7dd3fc;" class="text-[10px] font-semibold truncate max-w-[130px] mt-0.5">${t.location ? escapeHtml(t.location.split(',')[0]) : 'Destination'}</span>
                                 </div>
                                 <div class="text-right">
-                                    <span class="text-base font-black text-emerald-300 tracking-tight block leading-none">${escapeHtml(destCode)}</span>
-                                    <span style="color: #94a3b8;" class="text-[10px]">${isDriveTrip ? 'Border' : 'Arrival'}</span>
+                                    <span class="text-base font-black text-emerald-300 tracking-tight block leading-none">${escapeHtml(modeMeta.destCode)}</span>
+                                    <span style="color: #94a3b8;" class="text-[10px]">${escapeHtml(modeMeta.destSub)}</span>
                                 </div>
                             </div>
 
@@ -4775,7 +5090,7 @@
                         </div>
                         <div class="pt-3 mt-2 flex items-center justify-between text-xs font-extrabold text-sky-400">
                             <span>Passes &amp; Travel Hub</span>
-                            <span>Open Boarding Pass →</span>
+                            <span>${escapeHtml(modeMeta.ctaLabel)}</span>
                         </div>
                     `;
                     heroCard.onclick = () => openTrip(t);
@@ -4823,7 +5138,9 @@
                     const exp = trip.expiresAt || (endBaseMs + RETENTION_MS);
                     const daysLeft = Math.max(1, Math.ceil((exp - now) / (24 * 60 * 60 * 1000)));
                     const storageTag = isCloudUser() ? "Cloud Synced" : "Device Only";
-                    const modeIcon = (trip.travelMode === 'drive') ? '🚗' : '✈️';
+                    const savedOverride = localStorage.getItem(`lintas_mode_${trip.id}`);
+                    const resolvedCardMode = savedOverride || trip.travelMode || 'flight';
+                    const modeIcon = getTravelModeMeta(resolvedCardMode).icon;
 
                     let weatherText = trip.weatherSummary || '';
                     let metaParts = [];
@@ -4952,7 +5269,7 @@
                 });
 
                 document.getElementById('tripNameInput').value = '';
-                document.getElementById('tripNameInput').placeholder = 'e.g., Weekend Getaway, Seoul Holiday';
+                document.getElementById('tripNameInput').placeholder = 'e.g., Miri Weekend, Labuan Ferry, Seoul Holiday';
                 document.getElementById('tripLocationInput').value = '';
                 syncDestChipSelection('');
                 setNewTripMode('flight');
@@ -4991,7 +5308,6 @@
             document.getElementById('tripDetailMeta').textContent = parts.join(' • ');
 
             setTripDetailTab('passes');
-            renderPreTripChecklist(trip.id);
             renderTripGuideForTrip(trip);
             showScreen('tripDetail');
             await loadDocuments(trip.id);
