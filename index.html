@@ -209,7 +209,7 @@
             color: #ffffff;
             transform: scale(0.94);
         }
-        /* Floating, Calm & Animated Travel Perks Carousel */
+        /* Floating, Calm & Animated Travel Perks Carousel with Ken Burns Visuals */
         @keyframes floatGentle {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-4px); }
@@ -221,6 +221,11 @@
         @keyframes ctaSoftGlow {
             0%, 100% { box-shadow: 0 4px 14px -2px rgba(45, 212, 191, 0.28); }
             50% { box-shadow: 0 6px 20px -2px rgba(45, 212, 191, 0.52); }
+        }
+        @keyframes slowKenBurns {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.08) translate(-1%, -1%); }
+            100% { transform: scale(1) translate(0, 0); }
         }
         .partner-float-card {
             position: relative;
@@ -237,13 +242,35 @@
         .partner-float-card:active {
             transform: scale(0.985);
         }
+        .perk-bg-media {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.44;
+            animation: slowKenBurns 14s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .perk-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(95deg, rgba(15, 23, 42, 0.94) 15%, rgba(15, 23, 42, 0.72) 65%, rgba(15, 23, 42, 0.45) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .perk-content-layer {
+            position: relative;
+            z-index: 2;
+        }
         .perk-slide-anim {
             animation: perkSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .perk-pill-btn {
-            background: linear-gradient(135deg, rgba(20, 184, 166, 0.24), rgba(14, 165, 233, 0.24));
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.28), rgba(14, 165, 233, 0.28));
             color: #99f6e4;
-            border: 1px solid rgba(94, 234, 212, 0.42);
+            border: 1px solid rgba(94, 234, 212, 0.45);
             white-space: nowrap;
             flex-shrink: 0;
             animation: ctaSoftGlow 3.2s ease-in-out infinite;
@@ -683,7 +710,7 @@
                 <div id="tripsContainer" class="space-y-3"></div>
             </div>
 
-            <!-- FLOATING ANIMATED TRAVEL PERKS CAROUSEL (SUPPORTS MULTIPLE OFFERS) -->
+            <!-- FLOATING ANIMATED VISUAL TRAVEL PERKS CAROUSEL -->
             <div id="adBannerSlot" class="mt-7"></div>
 
             <!-- CLEAN EXECUTIVE FOOTER BAR -->
@@ -2562,8 +2589,9 @@
         });
 
         // =========================================================================
-        // FLOATING ANIMATED TRAVEL PERKS CAROUSEL (SUPPORTS MULTIPLE OFFERS)
+        // FLOATING ANIMATED VISUAL TRAVEL PERKS CAROUSEL (KEN BURNS + MULTI-OFFER)
         // =========================================================================
+        const DEFAULT_PERK_IMAGE = "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=900&q=80";
         let bannerLoaded = false;
         let nextUpcomingDestination = '';
         let perkCarouselTimer = null;
@@ -2584,7 +2612,6 @@
                     ? nextUpcomingDestination.split(',')[0].trim()
                     : '';
 
-                // Support an `items` array for multiple partner perks, or fall back to single fields
                 let slides = [];
                 if (Array.isArray(data.items) && data.items.length > 0) {
                     slides = data.items.filter(item => item && item.active !== false && /^https:\/\//i.test(String(item.linkUrl || '').trim()));
@@ -2595,7 +2622,8 @@
                         title: destCity ? `${destCity} Travel eSIM Data` : (data.title || "Stay Connected Worldwide"),
                         subtitle: data.subtitle || "Instant travel eSIMs for 200+ destinations worldwide — ready in 1 min.",
                         ctaText: data.ctaText || "Get eSIM",
-                        linkUrl: data.linkUrl
+                        linkUrl: data.linkUrl,
+                        imageUrl: data.imageUrl || DEFAULT_PERK_IMAGE
                     }];
                 }
 
@@ -2611,12 +2639,19 @@
                     const titleText = escapeHtml(item.title || "Traveler Benefit");
                     const subText = escapeHtml(item.subtitle || "");
                     const ctaText = escapeHtml(item.ctaText || "Explore");
+                    const rawImg = String(item.imageUrl || DEFAULT_PERK_IMAGE).trim();
+                    const hasImg = /^https:\/\//i.test(rawImg);
+
+                    const mediaHtml = hasImg
+                        ? `<img src="${escapeHtml(rawImg)}" alt="" class="perk-bg-media" loading="lazy">
+                           <div class="perk-bg-overlay"></div>`
+                        : '';
 
                     const dotsHtml = slides.length > 1
-                        ? `<div class="flex items-center justify-center gap-1.5 mt-2.5 pt-2 border-t border-white/5">
+                        ? `<div class="perk-content-layer flex items-center justify-center gap-1.5 mt-2.5 pt-2 border-t border-white/10">
                             ${slides.map((_, i) => `
                                 <button type="button" data-perk-dot="${i}" aria-label="Offer ${i + 1}"
-                                    style="width: ${i === idx ? '16px' : '6px'}; height: 6px; border-radius: 999px; transition: all 0.25s ease; background-color: ${i === idx ? '#5eead4' : 'rgba(148, 163, 184, 0.35)'};">
+                                    style="width: ${i === idx ? '16px' : '6px'}; height: 6px; border-radius: 999px; transition: all 0.25s ease; background-color: ${i === idx ? '#5eead4' : 'rgba(148, 163, 184, 0.45)'};">
                                 </button>
                             `).join('')}
                            </div>`
@@ -2624,23 +2659,24 @@
 
                     slot.innerHTML = `
                         <div class="partner-float-card p-3.5 text-left">
+                            ${mediaHtml}
                             <a href="${cleanUrl}" target="_blank" rel="noopener noreferrer sponsored"
-                               class="${animate ? 'perk-slide-anim' : ''} flex items-center justify-between gap-3">
+                               class="perk-content-layer ${animate ? 'perk-slide-anim' : ''} flex items-center justify-between gap-3">
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5 mb-1">
-                                        <span style="background: rgba(94, 234, 212, 0.14); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.28);"
-                                              class="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full shrink-0 inline-flex items-center gap-1">
+                                        <span style="background: rgba(15, 23, 42, 0.78); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.35);"
+                                              class="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full shrink-0 inline-flex items-center gap-1 backdrop-blur-sm">
                                             <span>${iconChar}</span><span>${tagText}</span>
                                         </span>
-                                        <span class="text-xs font-extrabold text-white truncate">
+                                        <span class="text-xs font-extrabold text-white truncate drop-shadow">
                                             ${titleText}
                                         </span>
                                     </div>
-                                    <p style="color: #cbd5e1;" class="text-[11px] leading-snug">
+                                    <p style="color: #e2e8f0;" class="text-[11px] leading-snug drop-shadow-sm">
                                         ${subText}
                                     </p>
                                 </div>
-                                <span class="perk-pill-btn text-[11px] font-extrabold px-3 py-2 rounded-xl">
+                                <span class="perk-pill-btn text-[11px] font-extrabold px-3 py-2 rounded-xl backdrop-blur-md">
                                     ${ctaText} ↗
                                 </span>
                             </a>
